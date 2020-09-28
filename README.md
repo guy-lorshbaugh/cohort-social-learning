@@ -2,9 +2,7 @@
 This repository contains code prepared for submission to the the Treehouse Python 
 Techdegree Unit 5 project, described below.
 
-** IF <flask run> IS PROBLEMATIC:
-A database intialization issue could prevent the server from properly connecting. Please 
-run <python app.py> to properly create the database tables and get things rolling!
+** TO START SERVER:  run python app.py
 
 ** Build a Learning Journal with Flask **
 
