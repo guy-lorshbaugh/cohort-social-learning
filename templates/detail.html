@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="entry-list single">
+            <article>
+                    <h2>{{ id.title}}</h2>
+                    <div class="small">{{ id.date.strftime('%B %d %I:%M %p') }},
+                        Hours spent: {{ id.time_spent }}</div>
+                        <p>
+                        {% for item in id.learned.split('\n') %}
+                            {{ item }}<br>
+                        {% endfor %}
+                        </p>
+                    {% if id.remember != " " and id.remember != "": %}
+                        <p><u>Resources to Remember:</u><br>
+                            {% for item in id.remember.split('\n') %}
+                                {% if "http" in item: %}
+                                    {{ item|urlize(40, True, target="_blank") }}<br>
+                                {% else: %}
+                                    {{ item }} <br>
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        <div class="small">Tags:|
+                            {% for tag in tags: %}
+                            <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+            </article>
+        </div>
+    </div>
+    <div class="edit">
+        <p>
+            <a href="{{ url_for('edit', id=id.id) }}">Edit Entry</a>
+            <a href="{{ url_for('delete', id=id.id) }}">Delete Entry</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

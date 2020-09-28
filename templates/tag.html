@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="entry-list">
+                {% for entry in id %}
+                <article>
+                    <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
+                    <time>{{ entry.date.strftime('%B %d %I:%M %p') }}</time>
+                    <div class="small">Tags:|
+                        {% set tags = (models.Tags
+                            .select()
+                            .join(models.EntryTags)
+                            .join(models.Entry)
+                            .where(models.Entry.id == entry.id)
+                            .order_by(models.Tags.id)
+                            ) %}
+                        {% for tag in tags: %}
+                            <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
+                        {% endfor %}
+                    </div>
+                </article>
+                {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
