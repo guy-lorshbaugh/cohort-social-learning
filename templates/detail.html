@@ -25,12 +25,12 @@
                                 {% endif %}
                             {% endfor %}
                         </p>
+                    {% endif %}
                         <div class="small"><br>Tags:|
                             {% for tag in tags: %}
                             <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
                             {% endfor %}
                         </div>
-                    {% endif %}
 
             </article>
         </div>
