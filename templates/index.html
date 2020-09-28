@@ -5,9 +5,10 @@
     <div class="container">
         <div class="entry-list">
                 {% for entry in journal %}
+                {% set user = models.User.get(models.User.id==entry.user_id) %}
                 <article>
                     <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
-                    <time datetime="{{ entry.date }}"">{{ entry.date.strftime('%B %d %I:%M %p') }}</time>
+                    <time datetime="{{ entry.date }}"">By <a style="text-decoration:none; color:black;" href="{{ url_for('user', id=entry.user_id) }}">{{ user.username }}</a>, {{ entry.date.strftime('%B %d %I:%M %p') }}</time>
                     <div class="small">Tags:|
                         {% set tags = (models.Tags
                             .select()

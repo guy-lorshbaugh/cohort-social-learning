@@ -17,6 +17,7 @@ class Entry(BaseModel):
     time_spent = IntegerField(default=0)
     learned = TextField(null=False)
     remember = TextField(default=" ")
+    user_id = IntegerField()
 
 
 class Tags(BaseModel):
@@ -39,6 +40,8 @@ class User(UserMixin, BaseModel):
                 cls.create(
                     username=username,
                     password=generate_password_hash(password),
+                    # is_active=True,
+                    # is_admin=True
                     )
         except IntegrityError:
             raise ValueError("User already exists")

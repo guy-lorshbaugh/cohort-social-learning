@@ -6,9 +6,11 @@
         <div class="entry-list single">
             <article>
                     <h2>{{ id.title}}</h2>
-                    <div class="small">{{ id.date.strftime('%B %d %I:%M %p') }},
+                    {% set user = models.User.get(models.User.id==id.user_id) %}
+                    <div class="small">By <a class="small" style="text-decoration:none;" href="{{ url_for('user', id=id.user_id) }}">{{ user.username }}</a>, {{ id.date.strftime('%B %d %I:%M %p') }},
                         Hours spent: {{ id.time_spent }}</div>
                         <p>
+                        <br>
                         {% for item in id.learned.split('\n') %}
                             {{ item }}<br>
                         {% endfor %}
@@ -23,7 +25,7 @@
                                 {% endif %}
                             {% endfor %}
                         </p>
-                        <div class="small">Tags:|
+                        <div class="small"><br>Tags:|
                             {% for tag in tags: %}
                             <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
                             {% endfor %}
@@ -35,8 +37,10 @@
     </div>
     <div class="edit">
         <p>
-            <a href="{{ url_for('edit', id=id.id) }}">Edit Entry</a>
-            <a href="{{ url_for('delete', id=id.id) }}">Delete Entry</a>
+            {% if id.user_id == current_user.id %}
+                <a href="{{ url_for('edit', id=id.id) }}">Edit Entry</a>
+                <a href="{{ url_for('delete', id=id.id) }}">Delete Entry</a>
+            {% endif %}
         </p>
     </div>
 </section>

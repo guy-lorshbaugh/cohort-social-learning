@@ -37,6 +37,7 @@ def start():
             id = 1,
             title="Welcome!",
             learned="Welcome to the Learning Journal!",
+            user_id=1
         )
         tags_list = ["welcome", "python", "wtforms"]
         entry = models.Entry.get(models.Entry.title == "Welcome!")
@@ -80,6 +81,14 @@ def del_tags(id):
             )
     for item in query:
         item.delete_instance()
+
+
+def get_entries(id):
+    entries = (
+        models.Entry
+        .where(models.Entry.user_id==id)
+    )
+    return entries
 
 
 @login_manager.user_loader
@@ -129,7 +138,7 @@ def register():
         except ValueError:
             flash("That username already exists")
             return redirect(url_for('register'))
-        flash(f"Registration successful. Welcome aboard, {form.username.data}!", "success")
+        flash(f"Registration successful. Welcome aboard,{form.username.data}!")
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
@@ -144,7 +153,7 @@ def index():
 @app.route("/entries/<id>")
 def detail(id):
     info = models.Entry.get(models.Entry.id==id)
-    return render_template("detail.html", id=info, tags=get_tags(id))
+    return render_template("detail.html", id=info, models=models, tags=get_tags(id))
 
 
 @app.route("/entries/new", methods=('GET', 'POST'))
@@ -158,7 +167,8 @@ def create():
                 datetime.datetime.now().time()),
             time_spent=form.time_spent.data,
             learned=form.learned.data,
-            remember=form.remember.data
+            remember=form.remember.data,
+            user_id=current_user.id
         )
         tags_list = form.tags.data.split(', ')
         entry = models.Entry.get(models.Entry.title == form.title.data)
@@ -223,6 +233,17 @@ def tag(tag):
     )
     return render_template("tag.html", models=models, id=query)
 
+
+@app.route("/entries/<id>/user")
+def user(id):
+    entries = (models.Entry
+            .select()
+            .where(models.Entry.user_id == id)
+            .order_by(models.Entry.date.desc())
+    )
+    user = models.User.get(models.User.id == id)
+    return render_template("user.html", models=models, entries=entries,
+                    user=user)
 
 @app.route("/entries/<id>/delete")
 @login_required
