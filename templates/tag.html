@@ -3,6 +3,7 @@
 {% block content %}
 <section>
     <div class="container">
+        <h1 style="font-size: 2.5rem;text-align: center;margin-top:85px;">Posts Tagged With '{{ tag }}'</h1>
         <div class="entry-list">
                 {% for entry in id %}
                 {% set user = models.User.get(models.User.id==entry.user_id) %}

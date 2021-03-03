@@ -231,7 +231,7 @@ def tag(tag):
                 .join(models.Tags)
                 .where(models.Tags.tag == tag)
     )
-    return render_template("tag.html", models=models, id=query)
+    return render_template("tag.html", models=models, id=query, tag=tag)
 
 
 @app.route("/entries/<id>/user")
@@ -257,4 +257,4 @@ def delete(id):
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='127.0.0.1', port=80)
+    app.run(debug=True, host='127.0.0.1', port=8000)

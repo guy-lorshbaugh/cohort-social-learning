@@ -18,9 +18,10 @@ body {
 }
 header .site-header {
 	margin: 0 auto;
-	height: 95px;
+	height: 45px;
+	background-color: #54457F;
 }
-header .logo i {
+header .logo {
 	color: #678f89;
 	font-size: 40px;
 }
@@ -98,8 +99,6 @@ ul li a {
 	outline: 0;
 }
 
-
-
 /* ==========================================================================
    Typography
    ========================================================================== */
@@ -156,7 +155,6 @@ p a {
 	color: #987076;
 }
 
-
 /* ==========================================================================
    Page Styles
    ========================================================================== */
@@ -190,8 +188,8 @@ p a {
 }
 .entry {
 	max-width: 800px;
-	margin: 75px auto 0 auto;
-	text-align: left;
+	margin: 25px auto;
+	text-align: center;
 }
 .entry p {
 	margin-bottom: 40px;
@@ -206,8 +204,6 @@ p a {
 	text-transform: uppercase;
 	font-size: 18px;
 }
-
-
 
 /* ==========================================================================
    Form Styles

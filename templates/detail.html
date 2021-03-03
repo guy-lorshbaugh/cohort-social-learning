@@ -9,7 +9,7 @@
                     {% set user = models.User.get(models.User.id==id.user_id) %}
                     <div class="small">By <a class="small" style="text-decoration:none;" href="{{ url_for('user', id=id.user_id) }}">{{ user.username }}</a>, {{ id.date.strftime('%B %d %I:%M %p') }},
                         Hours spent: {{ id.time_spent }}</div>
-                        <p>
+                        <p class="entry">
                         <br>
                         {% for item in id.learned.split('\n') %}
                             {{ item }}<br>

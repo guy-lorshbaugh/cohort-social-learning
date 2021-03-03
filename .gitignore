@@ -1,2 +1,7 @@
-
+__pychache__
+*.pyc
+*.pyo
+env
 journal.db
+design-resources
+palette
