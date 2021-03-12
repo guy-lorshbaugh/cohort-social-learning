@@ -1,7 +1,10 @@
-__pychache__
-*.pyc
+__pychache__git
+*.py[cod]
 *.pyo
 env
 journal.db
 design-resources
 palette
+avatar_test.py
+templates/avatars.html
+__journal.db

@@ -5,12 +5,25 @@
 <section>
     <div class="container">
         <div class="new-entry">
-            <h2>Log In to Your Account</h2>
+            <h2>Register For a New Account</h2>
                 <form method="POST" action="" class="form">
                     {{ form.hidden_tag() }}
-                    {% for field in form %}
-                        {{ render_field(field) }}
-                    {% endfor %}
+                    {{ render_field(form.username) }}
+                    {{ render_field(form.avatar) }}
+                    <div id="avatar-choice">
+                        <span>Choose Your Avatar!</span><div id="avatar-button" onclick="openAvatarMenu()" role="button"><img class="avatar-50" src="{{ url_for('static', filename = avatars[0]['url']) }}"></div>
+                        <div id="avatars" style="width: 0px; border: none; padding: 0px">
+                            {% for item in avatars %}
+                            <div class="avatar-container">
+                                <img class="avatar-30" src="{{ url_for('static', filename = item['url']) }}" alt="{{ item['name'] }} Avatar">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <script src="{{ url_for('static', filename='script/avatar-menu.js') }}"></script>
+                    {{ render_field(form.password) }}
+                    {{ render_field(form.password2) }}
                     <button type="submit" id="submit">Register!</button>
                 </form>
             </div>

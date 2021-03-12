@@ -1,13 +1,16 @@
+from wtforms import validators
+from wtforms.fields.core import SelectField
 import datetime
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
+from peewee import BooleanField, TextField
 from wtforms import (StringField, PasswordField, TextAreaField, 
     DateField, IntegerField)
 from wtforms.validators import (DataRequired, Regexp, ValidationError,
                                Length, EqualTo)
 import models
 
-class Post(Form):
+class Post(FlaskForm):
     title = StringField(u"Title (Max. 100 characters)", validators=[
         DataRequired(),
         Length(max=100)
@@ -21,15 +24,20 @@ class Post(Form):
                 DataRequired(),
             ])
     remember = TextAreaField(u"Links and other things to remember")
+    # private = BooleanField
     tags = StringField(u"Add tags, separated by a comma.")
 
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
 
-class RegisterForm(Form):
+class CommentForm(FlaskForm):
+    contents = TextAreaField('Comment')
+
+
+class RegisterForm(FlaskForm):
     username = StringField(
         'Username',
         validators=[
@@ -40,6 +48,7 @@ class RegisterForm(Form):
                          "numbers, and underscores only.")
             ),
         ])
+    avatar = StringField()
     password = PasswordField(
         'Password',
         validators=[

@@ -6,10 +6,31 @@
         <div class="entry-list">
                 {% for entry in journal %}
                 {% set user = models.User.get(models.User.id==entry.user_id) %}
-                <article>
+                <article class="entry-preview-container" id="entry-{{ entry.id }}">
+                    <img class="avatar-50" src="{{ user.avatar }}">
                     <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
-                    <time datetime="{{ entry.date }}"">By <a style="text-decoration:none; color:black;" href="{{ url_for('user', id=entry.user_id) }}">{{ user.username }}</a>, {{ entry.date.strftime('%B %d %I:%M %p') }}</time>
-                    <div class="small">Tags:|
+                    <time datetime="{{ entry.date }}">
+                        By <a style="text-decoration:none; color:black;" href="{{ url_for('user', id=entry.user_id) }}">
+                            {{ user.username }}</a>,
+                        {{ entry.date.strftime('%B %d %I:%M %p') }}
+                    </time>
+                    <div class="like-comment-display">
+                        {% set likes = (
+                            models.Entry
+                            .select()
+                            .join(models.EntryLikes)
+                            .join(models.User)
+                            .where(models.Entry.id == entry.id)
+                            .order_by(models.User.username)
+                        ) %}
+                        <div class="like-count small">
+                        {% if likes.count() > 0 %}
+                            Likes: {{ likes.count() }}
+                        {% endif %}
+                        </div>
+                        <div class="comment-count small">{Comment Count}</div>
+                    </div>
+                    <div class="tags small">Tags:|
                         {% set tags = (models.Tags
                             .select()
                             .join(models.EntryTags)
@@ -17,13 +38,77 @@
                             .where(models.Entry.id == entry.id)
                             .order_by(models.Tags.id)
                             ) %}
-                        {% for tag in tags: %}
+                            {% for tag in tags: %}
                             <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
-                        {% endfor %}
-                        </div>
+                            {% endfor %}
+                    </div>
+                    <div class="like-button-container">
+                        {% if current_user.is_authenticated %}
+                            <span class="like" onclick="likeRequest('{{ url_for("like", entry=entry.id) }}', 'entry-{{ entry.id }}')">
+                                {% if (
+                                    models.EntryLikes
+                                    .select()
+                                    .join(models.Entry)
+                                    .where(models.EntryLikes.user_id == current_user.id,
+                                           models.EntryLikes.entry_id == entry.id)
+                                    .exists()
+                                ) %}
+                                    Unlike
+                                {% else %}
+                                    Like
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="comment-field-container">
+                        <!-- {% set url_for_str = "{}".format(url_for('comment', entry=entry.id )) %}
+                        {% set entry_id = entry.id %} -->
+                        <!-- <form method="POST" action=""> -->
+                            <!-- {{ form.hidden_tag() }}
+                            {{ form.contents(
+                                placeholder=form.contents.label.text,
+                                onkeyup=("commentRequest(" +
+                                '"{}"'.format(url_for_str) +
+                                ", " '"{}"'.format(entry_id) +
+                                ")"),
+                                type=False,
+                                id="comment-"+"{}".format(entry.id),
+                                class_="comment-field") }} -->
+                        <!-- </form> -->
+                    </div>
                 </article>
                 {% endfor %}
-        </div>
-    </div>
-</section>
-{% endblock %}
+                <form method="POST">
+                    {% set url_for_str = "{}".format(url_for('comment', entry=7 )) %}
+                    {% set entry_id = 7 %}
+                    {{ form.csrf_token }}
+                    {{ form.contents(
+                        placeholder=form.contents.label.text,
+                        onkeyup="commentRequest('comment/7', 7)",
+                        id="comment-"+"{}".format(entry_id),
+                        class_="comment-field") }}
+                    </form>
+                    <div id="response"></div>
+                </div>
+            </div>
+        </section>
+        <!-- onkeyup=("commentRequest(" +
+        '"{}"'.format(url_for_str) +
+        ", " '"{}"'.format(entry_id) +
+        ")"),
+        type=False, -->
+    <script type="text/javascript">
+        csrf_token = '{{ csrf_token() }}';
+     </script>
+    <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/like.js') }}"></script>
+    <!-- <script type="text/javascript">
+        const logComment = () => {
+            const contents = document.getElementsByClassName("comment-field");
+            console.log(contents[0])
+            if (event.keyCode === 13){
+                console.log(contents[0].value)
+            }
+        }
+    </script> -->
+    {% endblock %}

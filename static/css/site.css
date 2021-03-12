@@ -1,13 +1,45 @@
+* {
+	box-sizing: border-box;
+}
+*:focus { 
+    outline: 0 !important;
+    box-shadow:
+    0 0 0 .2rem #fff,
+    0 0 0 .35rem #069 !important;
+}
+*:focus:not(.focus-visible) {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
 
+/* --- GLOBAL STYLES --- */
 
-/* ==========================================================================
-   Global Styles
-   ========================================================================== */
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: url(https://fonts.gstatic.com/s/materialicons/v80/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+}
 
+.material-icons {
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	/* font-size: 24px; */
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+}
 body {
 	font-size: 16px;
 	color: #404a49;
-	font-family: 'Cousine', serif;
+	font-family: Verdana, serif;
 	font-weight: 400;
 	margin: 0;
 	padding: 0;
@@ -17,18 +49,24 @@ body {
 	padding: 0;
 }
 header .site-header {
+	display: flex;
+	align-items: center;
 	margin: 0 auto;
-	height: 45px;
-	background-color: #54457F;
+	height: 50px;
+	border-bottom: 2px solid black;
 }
-header .logo {
-	color: #678f89;
-	font-size: 40px;
+.logo-box {
+	display: flex;
+	align-items: center;
 }
 header .button {
 	margin: 0px 0 0 0;
 }
 footer {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	text-align: center;
 	padding: 35px 0;
 	border-top: 2px dotted #678f89;
@@ -44,18 +82,14 @@ ul {
 ul li {
 	line-height: 1.8em;
 	font-size: 18px;
-	color: #678f89;
-	float: left;
 }
 ul li a {
-	display: block;
-	color: #678f89;
+	display: inline-block;
+	align-items: center;
+	color: #54457F;
 	width: 150px;
 	text-decoration: none;
-	float: left;
 }
-
-
 
 /* ==========================================================================
    Button Styles
@@ -155,23 +189,21 @@ p a {
 	color: #987076;
 }
 
-/* ==========================================================================
-   Page Styles
-   ========================================================================== */
+/* --- Page Styles --- */
 
 .entry-list,
 .edit-entry,
 .new-entry {
-	max-width: 800px;
+	max-width: 500px;
 	margin: 0 auto;
-	padding: 70px 0 150px 0;
+	padding: 50px 0;
 }
 .edit-entry h2,
 .new-entry h2 {
 	margin-bottom: 35px;
 }
-.entry-list article {
-	margin-bottom: 70px;
+.entry-preview-container {
+	margin-bottom: 35px;
 	text-align: center;
 }
 .entry-list article:last-child {
@@ -187,12 +219,15 @@ p a {
 	font-size: 18px;
 }
 .entry {
-	max-width: 800px;
+	max-width: 500px;
 	margin: 25px auto;
 	text-align: center;
 }
 .entry p {
 	margin-bottom: 40px;
+}
+.comment-count {
+	align-self: flex-end;
 }
 .edit {
 	padding-bottom: 80px;
@@ -203,6 +238,97 @@ p a {
 	font-weight: 400;
 	text-transform: uppercase;
 	font-size: 18px;
+}
+
+/* --- AVATARS --- */
+#avatar-choice {
+    display: flex;
+    align-items: center;
+    position: relative;
+    top: 0px;
+    width: 96%;
+    height: 90px;
+	margin-bottom: 30px;
+    padding: 10px;
+	color: #757575;
+    border: 2px solid #e1e1e1;
+	border-radius: 3px;
+}
+#avatar-choice:hover {
+	border-color: #678f89;
+}
+#avatar-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 60px;
+	width: 60px;
+	margin-left: 10px;
+	/* background-image: url(../img/avatar-svg/001-elephant.svg); */
+	background-size: contain;
+	border: 2px solid lightblue;
+	border-radius: 3px;
+	cursor: pointer;
+}
+#avatars {
+	display: grid;
+	grid-template: repeat(5, 40px) / repeat(10, 40px);
+	position: absolute;
+	top: -12px;
+	left: 243px;
+	width: 0px;
+	height: 156px;
+	margin: 25px auto 50px;
+	padding: 5px;
+	background-color: white;
+	overflow-y: scroll;
+	border: 2px solid #ADD8E6;
+	border-radius: 3px;
+	z-index: 99;
+	transition: all 0.1s ease-in-out;
+}
+.avatar-container {
+	padding: 5px;
+	border-radius: 5px;
+}
+.avatar-container:hover {
+	background-color: lightblue;
+	cursor: pointer;
+}
+.avatar-container:hover img {
+	filter: drop-shadow(0px 0px 4px white);
+}
+.avatar-30 {
+	height: 30px;
+	width: 30px;
+}
+.avatar-50 {
+	height: 50px;
+	width: 50px;
+}
+/* Hiding the form field */
+#avatar {
+	display: none;
+}
+
+/* --- LIKE --- */
+
+.like {
+	cursor: pointer;
+	user-select: none;
+	text-decoration: underline;
+	color: blue;
+}
+.like-comment-display {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: center;
+	width: 75%;
+	margin: 5px auto;
+}
+.like-count {
+	align-self: flex-start;
 }
 
 /* ==========================================================================
@@ -245,17 +371,13 @@ form textarea:hover {
 input[type=submit] {
 	margin-right: 5px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.comment-field {
+	margin: 5px;
+	border: 2px solid #e1e1e1;
+	border-radius: 3px;	
+	width: 90%;
+	height: 50px;
+}
+.comment-field:hover {
+	border-color: lightblue;
+}

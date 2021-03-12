@@ -4,26 +4,24 @@
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Cohort: Your Learning Community</title>
-        <link href="https://fonts.googleapis.com/css?family=Cousine:400" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Work+Sans:600" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
     </head>
     <body>
         <header>
             <div class="container">
                 <ul class="site-header">
-                    <li><a class="logo" href="{{ url_for('index') }}"><i class="material-icons">home</i></a>
+                    <li><a class="logo-box" href="{{ url_for('index') }}"><span class="material-icons" style="font-size: 40px;">home</span><span style="font-size: 1rem;">Home</span></a>
                     </li>
-                    <li>{% if current_user.is_authenticated %}
-                        Hi, {{ current_user.username }}!
+                    <li class="logo-box">{% if current_user.is_authenticated %}
+                        <img class="avatar-30" src="{{ current_user.avatar }}">
+                        <span class="small" style="margin-left: 5px;">{{ current_user.username }}</span>
                         {% endif %}</li>
                     <li style="padding-left: 25px;">{% if current_user.is_authenticated %}
-                        <a href="{{ url_for('logout') }}" style="text-decoration: none;">Log Out</a>
+                        <a href="{{ url_for('logout') }}">Log Out</a>
                         {% else %}
-                        <a href="{{ url_for('login') }}" style="text-decoration: none;">Log In</a>
-                        <a href="{{ url_for('register') }}" style="text-decoration: none;">Register</a>
+                        <a href="{{ url_for('login') }}">Log In</a>
+                        <a href="{{ url_for('register') }}">Register</a>
                         {% endif %}</li>
                             {% with messages = get_flashed_messages() %}
                             {% if messages %}
@@ -34,27 +32,9 @@
                                 </p>
                             {% endif %}
                             {% endwith %}
-                    <li style="float: right; margin-right: 65px;"><a href="{{ url_for('create') }}"><span>New Entry</span> <i class="material-icons">note_add</i></a></li>
+                    <li style="margin-left: auto;"><a class="logo-box" href="{{ url_for('create') }}"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></a></li>
                 </ul>
             </div>
-            <!-- <div class="container">
-                <div class="site-header">
-                    <a class="logo" href="{{ url_for('index') }}"><i class="material-icons">library_books</i></a>
-                    <div class="button button-secondary">
-                        {% if current_user.is_authenticated %}
-                        Hi, {{ current_user.username }}! |
-                        {% endif %}
-                        {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('logout') }}" style="text-decoration: none;">Log Out</a> |
-                        {% else %}
-                        | <a href="{{ url_for('login') }}" style="text-decoration: none;">Log In</a> |
-                        <a href="#" style="text-decoration: none;">Register</a> |
-                        {% endif %}
-                        
-                    </div>
-                    <a class="button icon-right" href="{{ url_for('create') }}"><span>New Entry</span> <i class="material-icons">add</i></a>
-                </div>
-            </div> -->
         </header>
         </section>
         <div style="margin-bottom: 50px;"> </div>
@@ -62,8 +42,9 @@
         {% block content %}{% endblock %}
 
         <footer>
-            <div>
-                &copy;2021 Cohort
+            <div class="logo-box">
+                <div class="avatar-container"><img class="avatar-30" src="{{ url_for('static', filename='img/avatar-svg/001-elephant.svg') }}"></div>
+                <span style="font-size: 1rem;">&copy;2021 Cohort</span>
             </div>
         </footer>
     </body>
