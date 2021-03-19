@@ -3,11 +3,15 @@ import datetime
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 from peewee import *
-from flask_wtf import Form
 from wtforms.fields.simple import TextAreaField
-# from wtforms.fields.simple import HiddenField
 
 DATABASE = SqliteDatabase('journal.db')
+
+# DATABASE = {
+#     'name': 'journal.db',
+#     'engine': 'peewee.SqliteDatabase',
+#     'threadlocals': True,
+# }
 
 class BaseModel(Model):
     class Meta:
@@ -66,9 +70,9 @@ class EntryLikes(BaseModel):
 
 
 class Comment(BaseModel):
-    contents = TextAreaField(null=False)
+    contents = CharField(null=False)
     user_id = IntegerField(null=False)
-    entry_id = CharField(null=False)
+    entry_id = IntegerField(null=False)
     comment_score = IntegerField(default=0)
 
     def increment_comment_score(self):
@@ -78,11 +82,6 @@ class Comment(BaseModel):
     def decrement_comment_score(self):
         self.comment_score -= 1
         self.save()
-
-
-class EntryComments(BaseModel):
-    entry_id = ForeignKeyField(Entry)
-    comment_id = ForeignKeyField(Comment)
 
 
 def initialize():

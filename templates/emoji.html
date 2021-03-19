@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% from 'macros.html' import emoji_menu %}
+
+{% block content %}
+
+<article class="entry-list">
+    <form>
+        <div>
+            <button 
+                id="emoji-button" 
+                class="emoji-button button button-secondary"
+                type="button">Emoji &#x1F981;</button>
+        </div>
+        <div>
+            <button 
+                class="emoji-button button button-secondary"
+                type="reset">Reset &#x1F981;</button>
+        </div>
+        <div>
+            <textarea id="emoji-textarea" placeholder="Comment"></textarea>
+        </div>
+    </form>
+    {{ emoji_menu(emoji) }}
+</article>
+<script 
+    type="text/javascript" 
+    src="{{ url_for('static', filename='script/emoji-menu.js') }}"></script>
+{% endblock %}

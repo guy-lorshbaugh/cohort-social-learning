@@ -3,42 +3,40 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cohort: Your Learning Community</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
     </head>
     <body>
         <header>
-            <div class="container">
-                <ul class="site-header">
-                    <li><a class="logo-box" href="{{ url_for('index') }}"><span class="material-icons" style="font-size: 40px;">home</span><span style="font-size: 1rem;">Home</span></a>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash" id="flash">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+            {% if current_user.is_authenticated %}
+            <ul class="site-header">
+                <li><a class="logo-box" href="{{ url_for('index') }}"><span class="material-icons" style="font-size: 40px;">home</span><span style="font-size: 1rem;">Home</span></a>
+                </li>
+                <li class="logo-box">
+                    <img class="avatar-30" src="{{ current_user.avatar }}">
+                    <span class="small" style="margin-left: 5px;">{{ current_user.username }}</span>
                     </li>
-                    <li class="logo-box">{% if current_user.is_authenticated %}
-                        <img class="avatar-30" src="{{ current_user.avatar }}">
-                        <span class="small" style="margin-left: 5px;">{{ current_user.username }}</span>
-                        {% endif %}</li>
-                    <li style="padding-left: 25px;">{% if current_user.is_authenticated %}
-                        <a href="{{ url_for('logout') }}">Log Out</a>
-                        {% else %}
-                        <a href="{{ url_for('login') }}">Log In</a>
-                        <a href="{{ url_for('register') }}">Register</a>
-                        {% endif %}</li>
-                            {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                <li class="flash">
-                                {% for message in messages %}
-                                {{ message }}
-                                {% endfor %}
-                                </p>
-                            {% endif %}
-                            {% endwith %}
+                <li style="padding-left: 25px;">
+                    <a href="{{ url_for('logout') }}">Log Out</a>
+                    </li>
                     <li style="margin-left: auto;"><a class="logo-box" href="{{ url_for('create') }}"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></a></li>
                 </ul>
-            </div>
+            {% endif %}
         </header>
         </section>
         <div style="margin-bottom: 50px;"> </div>
-       
+        <div tabindex="0" onclick="topFunction()" id="top-button" class="material-icons" title="Go to top">keyboard_arrow_up</div>
         {% block content %}{% endblock %}
 
         <footer>
@@ -48,4 +46,6 @@
             </div>
         </footer>
     </body>
+    <script src="{{ url_for('static', filename='script/scroll-btn.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/flash-display.js') }}"></script>
 </html>

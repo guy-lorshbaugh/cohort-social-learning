@@ -33,10 +33,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
 
 
-class CommentForm(FlaskForm):
-    contents = TextAreaField('Comment')
-
-
 class RegisterForm(FlaskForm):
     username = StringField(
         'Username',

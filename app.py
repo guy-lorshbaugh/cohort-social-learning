@@ -1,20 +1,19 @@
 import datetime
 import json
+from os import listdir
 
-from flask import (Flask, url_for, render_template, redirect,
-                flash, request)
+from flask import (Flask, flash, jsonify, session, redirect,
+                   render_template, request, url_for)
 from flask_bcrypt import check_password_hash
 from flask_login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
 from flask_wtf.csrf import CSRFProtect
 
-# from pathlib import Path
-from os import listdir
 
 import forms
+import logging
 import models
 
-import logging
 logger = logging.getLogger('peewee')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
@@ -23,8 +22,7 @@ app = Flask(__name__)
 app.secret_key ="430po9tgjlkifdsc.p0ow40-23365fg4h,."
 app.templates_auto_reload = True
 app.debug = True
-csrf = CSRFProtect(app)
-
+CSRFProtect(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -90,6 +88,7 @@ def del_tags(id):
         item.delete_instance()
 
 def get_likes(id):
+    """Retrieves likes associated with the Entry ID passed in"""
     likes = (
         models.Entry
         .select()
@@ -102,6 +101,7 @@ def get_likes(id):
 
 
 def get_entries(id):
+    """Retrieves entries by User ID"""
     entries = (
         models.Entry
         .where(models.Entry.user_id==id)
@@ -116,7 +116,7 @@ def get_avatars(path):
         item_dict = {"name": "{}".format(name), "url": "img/avatar-svg/{}".format(item)}
         avatar_list.append(item_dict)
     return sorted(avatar_list, key = lambda i: i['url'])
-    
+
 
 @login_manager.user_loader
 def load_user(userid):
@@ -132,29 +132,36 @@ def avatar():
     avatars = get_avatars(avatar_path)
     return render_template('avatars.html', avatars=avatars)
 
+@app.route('/emoji')
+def emoji():
+    with open('static/script/emoji_.json') as file:
+        data = json.load(file)
+    return render_template('emoji.html', emoji=data)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = forms.LoginForm()
-    if form.validate_on_submit():
-        try:
-            user = models.User.get(models.User.username == form.username.data)
-        except:
-            flash("User name or password incorrect")
-            return redirect(url_for('login'))
-        if check_password_hash(user.password, form.password.data):
-            login_user(user)
-            flash('Logged in successfully.')
-        else:
-            flash("User name or password incorrect")
-            return redirect(url_for('login'))
-        return redirect(url_for('index'))
-    return render_template('login.html', form=form)
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     form = forms.LoginForm()
+#     if form.validate_on_submit():
+#         try:
+#             user = models.User.get(models.User.username == form.username.data)
+#         except:
+#             flash("User name or password incorrect")
+#             return redirect(url_for('login'))
+#         if check_password_hash(user.password, form.password.data):
+#             login_user(user)
+#             flash('Logged in successfully! Welcome!')
+#         else:
+#             flash("User name or password incorrect")
+#             return redirect(url_for('login'))
+#         return redirect(url_for('index'))
+#     return render_template('login.html', form=form)
 
 
 @app.route('/logout')
 @login_required
 def logout():
+    """Logs the user out."""
     logout_user()
     flash("You've been logged out! Come back soon!", "success")
     return redirect(url_for('index'))
@@ -162,6 +169,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Renders the User Registration page."""
     avatar_path = "static/img/avatar-svg"
     avatars = get_avatars(avatar_path)
     form = forms.RegisterForm()
@@ -184,8 +192,23 @@ def register():
 @app.route("/entries", methods=['GET', 'POST'])
 def index():
     journal = models.Entry.select().order_by(models.Entry.date.desc())
-    form = forms.CommentForm()
-    return render_template('index.html', journal=journal, models=models, form=form)
+    login_form = forms.LoginForm()
+    with open('static/script/emoji_.json') as file:
+        emoji_data = json.load(file)
+    if login_form.validate_on_submit():
+        try:
+            user = models.User.get(models.User.username == login_form.username.data)
+        except:
+            flash("User name or password incorrect")
+            return redirect(url_for('index'))
+        if check_password_hash(user.password, login_form.password.data):
+            login_user(user)
+            flash('Logged in successfully! Welcome!')
+        else:
+            flash("User name or password incorrect")
+            return redirect(url_for('index'))
+        return redirect(url_for('index'))
+    return render_template('index.html', journal=journal, models=models, form=login_form, emoji=emoji_data)
 
 
 @app.route("/entries/<id>")
@@ -260,6 +283,7 @@ def edit(id):
                 tag_id=tag_data.id
             )
         flash("Your Entry has been edited!")
+        print(f"Token: {form.csrf_token()}")
         return redirect(url_for('index'))
     return render_template("edit.html", form=form, id=id, 
                             models=models, tags=tags)
@@ -319,25 +343,29 @@ def like(entry):
     likes = entry_likes.select().where(entry_likes.entry_id == entry.id)
     return str(len(list(likes)))
 
-
-@app.route('/comment/<entry>', methods=['GET', 'POST'])
+#          '/entries/<int:entry>/<path:contents>/' 
+# @app.route('/comment/<entry>', methods=['GET', 'POST'])
+@app.route('/entries/<int:entry>/<path:contents>/', methods=['GET', 'POST'])
 @login_required
-@csrf.exempt
-def comment(entry):
-    comment_table = models.Comment
-    form = forms.CommentForm()
-    if form.validate():
-        comment_table.create(
-            contents = form.contents.data,
+def comment(entry, contents):
+    comment = models.Comment
+    if request.method == 'GET':
+        comment.create(
+            contents = contents,
             entry_id = entry,
             user_id = current_user.id
         )
-        return form.contents.data
+        target_entry = (
+            models.Entry
+            .select()
+            .where(models.Entry.id == entry)
+        )
+        target_entry.get().increment_entry_score()
+        return jsonify({ "contents": contents, "entry": entry, "username": current_user.username, "avatar": current_user.avatar })
     else:
-        print(form.errors)
-        return "Something Isn't Right."
+        print("Something Isn't Right")
 
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='127.0.0.1', port=8000)
+    app.run(debug=True, host='local.host', port="8000")
