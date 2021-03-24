@@ -26,7 +26,7 @@ function processLike(count, entry) {
   } else {
     likeCount[0].textContent = "";
   }
-  if (likeButton[0].textContent === "Unlike") {
+  if (likeButton[0].textContent.includes("Unlike")) {
     likeButton[0].textContent = "Like";
   } else {
     likeButton[0].textContent = "Unlike";

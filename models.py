@@ -84,7 +84,13 @@ class Comment(BaseModel):
         self.save()
 
 
+class CommentLikes(BaseModel):
+    user_id = ForeignKeyField(User)
+    comment_id = ForeignKeyField(Comment)
+
+
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([Entry, Tags, EntryTags, User, EntryLikes, Comment], safe=True)
+    DATABASE.create_tables([Entry, Tags, EntryTags, User, EntryLikes,
+                            Comment, CommentLikes], safe=True)
     DATABASE.close()

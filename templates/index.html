@@ -4,7 +4,6 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-{{ emoji_menu(emoji) }}
 <section>
     <div class="container">
         <div class="entry-list">
@@ -18,7 +17,8 @@
                     </div>
                     <div class="user-date small">
                         <time datetime="{{ entry.date }}">
-                            By <a style="text-decoration:none; color:black;" href="{{ url_for('user', id=entry.user_id) }}">
+                            By <a style="text-decoration:none; color:black;" 
+                                href="{{ url_for('user', id=entry.user_id) }}">
                                 {{ user.username }}</a>,
                             {{ entry.date.strftime('%B %d %I:%M %p') }}
                         </time>
@@ -100,20 +100,44 @@
                             {% set comment_user = (models.User
                                 .get(models.User.id == comment.user_id)
                             ) %}
-                            <div class="single-comment">
+                            <div class="single-comment" id="comment-{{ comment.id }}">
                                 <div class="comment-title">
                                     <img class="avatar-30" src="{{ comment_user.avatar }}">
                                     &nbsp;{{ comment_user.username }}</div>
                                 <div>{{ comment.contents|safe|truncate(length=100, killwords=True, end="...") }}</div>
+                                {% if comment.user_id == current_user.id %}
+                                    <div class="comment-options" role="button" id="comment-options-{{ comment.id }}">
+                                        more_vert
+                                    </div>
+                                    <div class="comment-menu" id="comment-menu-{{comment.id}}" style="visibility: hidden;">
+                                        <ul>
+                                            {% set comment_delete_url = url_for('delete_comment', comment = comment.id) %}
+                                            <li id="edit-comment-{{comment.id}}" class="edit-comment">Edit Comment</li>
+                                            <li id="delete-comment-{{comment.id}}" class="delete-comment">Delete Comment</li>
+                                        </ul>
+                                    </div>
+                                    <div class="confirm-dialog" id="confirm-dialog-{{comment.id}}" style="visibility: hidden;">
+                                        <div style="padding-bottom: 5px;">Are you sure?</div>
+                                        <button name="yes" class="button button-secondary" type="button">Yes</button>
+                                        <button name ="no" class="button button-secondary" type="button">No</button>
+                                    </div>
+                                {% endif %}
+                                <div class="single-comment-menu">
+                                    <ul>
+                                        <li>thumb_up</li>
+                                        <li>comment</li>
+                                        <!-- <li>file_upload</li>
+                                        <li>share</li> -->
+                                    </ul>
+                                </div>
                             </div>
                         {% endfor %}
-                        <div id="new-comment-{{ entry.id }}"></div>
                     </div>
                     <div id="comment-form-error-{{ entry.id }}" class="comment-form-error" style="height: 0px"></div>
                     <div class="comment-field-container">
                         <form method="GET" action="#">
                             <div id="emoji-menu-{{ entry }}" class="emoji-menu-container" style="width: 0px; height: 0px;"></div>
-                            <div onclick="emojiOpenClose({{ entry }})" id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
+                            <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
                             <textarea placeholder="Comment" 
                                 id="comment-{{ entry.id }}"
                                 class="comment-field"
@@ -128,8 +152,6 @@
                             <script type="text/javascript">
                                 autosize(document.getElementById("comment-{{ entry.id }}"))
                             </script>
-                            <script src="{{ url_for('static', filename='script/emoji-menu.js') }}"></script>
-                            <script type="text/javascript" async>addEmojiListeners({{ entry.id }})</script>
                         </form>
                     </div>
                 </article>
@@ -138,20 +160,22 @@
             </div>
         </div>
     </section>
+    {{ emoji_menu(emoji) }}
     <!-- <script type="text/javascript">
         console.log(`
-Greetings!
-
-This mock social media site uses the Flask framework, jinja2 templating engine, and lots of JavaScript of course!
-
-The code is available at:
-https://github.com/guy-lorshbaugh/cohort-social-learning
-
-Thank you for viewing my project! If you'd like to reach out, feel free to shoot me a line at guy.lorshbaugh@gmail.com`
+        Greetings!
+        
+        This mock social media site uses the Flask framework, jinja2 templating engine, and JavaScript!
+        
+        The code is available at:
+        https://github.com/guy-lorshbaugh/cohort-social-learning
+        
+        Thank you for viewing my project! If you'd like to reach out, feel free to shoot me a line at guy.lorshbaugh@gmail.com`
         )
     </script> -->
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/emoji-menu.js') }}"></script>
     <script type="text/javascript">
         const logComment = () => {
             const contents = document.getElementsByClassName("comment-field");

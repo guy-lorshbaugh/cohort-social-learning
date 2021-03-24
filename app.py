@@ -343,9 +343,7 @@ def like(entry):
     likes = entry_likes.select().where(entry_likes.entry_id == entry.id)
     return str(len(list(likes)))
 
-#          '/entries/<int:entry>/<path:contents>/' 
-# @app.route('/comment/<entry>', methods=['GET', 'POST'])
-@app.route('/entries/<int:entry>/<path:contents>/', methods=['GET', 'POST'])
+@app.route('/entries/<int:entry>/comment/<path:contents>/', methods=['GET', 'POST'])
 @login_required
 def comment(entry, contents):
     comment = models.Comment
@@ -361,11 +359,32 @@ def comment(entry, contents):
             .where(models.Entry.id == entry)
         )
         target_entry.get().increment_entry_score()
-        return jsonify({ "contents": contents, "entry": entry, "username": current_user.username, "avatar": current_user.avatar })
+        new_comment = comment.get(comment.contents == contents);
+        return jsonify({ "contents": contents, "entry": entry,
+                         "username": current_user.username, 
+                         "avatar": current_user.avatar, 
+                         "comment": new_comment.id })
     else:
         print("Something Isn't Right")
+
+@app.route('/entries/comment/<int:comment>/edit')
+@login_required
+def edit_comment(comment):
+    return "edited"
+
+@app.route('/entries/comment/<int:comment>/delete/')
+@login_required
+def delete_comment(comment):
+    delete_comment = models.Comment.get(models.Comment.id==comment)
+    if delete_comment.user_id == current_user.id:
+        flash("Your Comment has been deleted.")
+        delete_comment.delete_instance()
+        return "deleted"
+    else:
+        flash("You can't delete someone else's comment!")
+        return "You can't delete someone else's comment!"
 
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='local.host', port="8000")
+    app.run(debug=True, host='localhost', port="8000")

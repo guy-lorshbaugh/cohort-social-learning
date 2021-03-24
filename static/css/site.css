@@ -58,6 +58,7 @@ br {
 }
 
 /* --- NAV MENU --- */
+
 .site-header {
 	list-style-type: none;
 	display: flex;
@@ -73,8 +74,10 @@ br {
 	border-radius: 15px;
 	z-index: 100;
 }
-.site-header .logo-box {
+.site-header .logo-box,
+.user-menu-button {
 	display: flex;
+	position: relative;
 	align-items: center;
 }
 .site-header header .button {
@@ -93,7 +96,6 @@ br {
 	width: 150px;
 	text-decoration: none;
 }
-
 footer {
 	position: relative;
 	display: flex;
@@ -101,7 +103,55 @@ footer {
 	align-items: center;
 	text-align: center;
 	padding: 35px 0;
-	border-top: 2px dotted #678f89;
+	border-top: 2px dotted hsl(171, 16%, 48%);
+}
+
+/* --- USER MENU --- */
+
+.site-header .user-menu-button .user-menu {
+	display: flex;
+	flex-flow: column wrap;
+	position: absolute;
+	top: 48px;
+	padding: 10px;
+	background: white;
+	border-radius: 15px;
+	box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+	z-index: 101;
+}
+.user-menu ul {
+	list-style-type: none;
+	padding-left: 0px;
+}
+.user-menu li,
+.user-menu li a {
+	display: flex;
+	flex-flow: row nowrap;
+	padding-left: 10px;
+	border-radius: 10px;
+}
+.user-menu-icon {
+	padding-right: 5px;
+	font-family: "Material Icons";
+	color: #404a49;
+}
+
+.user-menu li:hover,
+.user-menu li:hover a,
+.user-menu li:hover .user-menu-icon {
+	background: royalblue;
+	color: white;
+}
+.user-menu-button {
+	padding: 7px;
+	border-radius: 7px;
+	user-select: none;
+	cursor: pointer;
+}
+.user-menu-button:hover {
+	text-decoration: underline;
+	color: white;
+	background: aliceblue;
 }
 
 /* ==========================================================================
@@ -149,11 +199,6 @@ Button Styles
 }
 .button:focus {
 	outline: 0;
-}
-.comment-post-button {
-	position: absolute;
-	top: 13px;
-	right: 26px;
 }
 
 /* ==========================================================================
@@ -211,7 +256,7 @@ p a {
 .flash {
 	display: block;
 	position: fixed;
-	top: -50px;
+	top: -100px;
 	left: 50%;
     transform: translate(-50%, 0);
 	min-width: 200px;
@@ -434,24 +479,110 @@ p a {
 	margin-top: 5px;
 	font-size: 14px;
 }
-.single-comment:first-child {
-	margin-top: 5px;
-	border-top: 1px solid #e1e1e1;
-}
 .single-comment {
 	display: block;
-	border-bottom: 1px solid #e1e1e1;
+	position: relative;
+	border: 1px solid #e1e1e1;
+	border-top: none;
 	overflow-wrap: anywhere;
+	border-collapse: collapse;
+}
+.single-comment:first-child {
+	/* background: lime; */
+	margin-top: 5px;
+	border-top: 1px solid #e1e1e1;
+	/* border-top-left-radius: 15px; */
+	border-top-right-radius: 15px;
+}
+.single-comment:last-child {
+	/* background: lime; */
+	border-bottom-left-radius: 15px;
+	/* border-bottom-right-radius: 15px; */
 }
 .single-comment p {
-	margin: 7px auto;
+	margin: 7px 10px;
 	font-size: 14px;
 	line-height: normal;
+}
+.single-comment-menu {
+	height: 25px;
+	font-size: 14px;
+	color: #9b9b9b;
+	border-top: 1px solid #e1e1e1;
+}
+.single-comment-menu ul {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	margin-top: 4px;
+	list-style-type: none;
+	padding-left: 0px;
+}
+.single-comment ul li {
+	display: inline-block;
+	font-family: "Material Icons";
 }
 .new-comment {
 	height: 0px;
 	transition: height 0.1s ease-in-out;
 }
+.comment-post-button {
+	position: absolute;
+	top: 13px;
+	right: 26px;
+}
+.comment-options {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	height: 25px;
+	width: 25px;
+	font-family: "Material Icons";
+	font-size: 24px;
+	cursor: pointer;
+	user-select: none;
+}
+.comment-options:hover {
+	color: royalblue;
+}
+.comment-menu,
+.confirm-dialog {
+	position: absolute;
+	top: 30px;
+	right: 5px;
+	width: 150px;
+	height: 65px;
+	padding: 5px;
+	font-size: 14px;
+	background-color: white;
+	border-radius: 15px;
+	box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+	cursor: default;
+	user-select: none;
+}
+.comment-menu {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+	z-index: 98;
+}
+.confirm-dialog {
+	z-index: 99;
+}
+.comment-menu ul {
+	padding-left: 0px;
+	list-style-type: none;
+}
+.comment-menu ul li {
+	padding: 5px;
+	font-family: Verdana, serif;
+	cursor: pointer;
+}
+.comment-menu ul li:hover {
+	color: royalblue;
+}
+
 
 /* ==========================================================================
    Form Styles
@@ -577,7 +708,7 @@ input[type=submit] {
 }
 .emoji-list-container {
 	position: relative;
-	height: 400px;
+	height: 250px;
 	padding: 10px;
 	overflow-x: hidden;
 	overflow-y: scroll;
@@ -625,6 +756,7 @@ input[type=submit] {
 }
 .emoji-category-nav ul li {
 	color: rgba(0 0 0 / 0.5);
+	transition: all 150ms linear;
 }
 .emoji-category-nav ul li:hover {
 	color:rgba(0 0 0 / 0.8);

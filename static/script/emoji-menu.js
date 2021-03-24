@@ -1,6 +1,19 @@
+//  Emoji Menu Listeners
+function emojiMenuListeners() {
+    const emojiOpeners = document.getElementsByClassName("emoji-open")
+    for (var i=0; i < emojiOpeners. length; i++) {
+        let opener = emojiOpeners[i];
+        opener.addEventListener("click", () => {
+            emojiOpenClose(getID(opener.id));
+        });
+    }
+}
+
+emojiMenuListeners();
+
 function emojiOpenClose(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    const menuContents = document.getElementById("emoji-menu-prototype").innerHTML
+    const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
     if (emojiMenu.style.width === "0px") {
         emojiMenu.style.width = "344px";
@@ -14,9 +27,33 @@ function emojiOpenClose(target) {
     if (!emojiMenu.innerHTML) {
         emojiMenu.innerHTML = menuContents;
         addEmojiListeners(target);
-        addNavMenu(target);
         closeListener(target);
+        addNavMenu(target);
+        navScrollListener(target);
     }
+}
+
+function navScrollListener(target) {
+    const emojiMenu = document.getElementById(`emoji-menu-${target}`);
+    const emojiContainer = emojiMenu.getElementsByClassName("emoji-list-container")[0];
+    const anchors = emojiMenu.getElementsByClassName("emoji-anchor");
+    const navItems = emojiMenu.getElementsByTagName("li");
+    emojiContainer.addEventListener("scroll", () => {
+        for (var anchor of anchors) {
+            anchorName = anchor.getAttribute("name");
+            if ((emojiContainer.scrollTop >= (anchor.offsetTop - 10)) && !anchor.classList.contains("active")) {
+                for (var item of navItems) {
+                    if (item.getAttribute("name") === anchorName) {
+                        item.classList.add("active");
+                        item.style.borderBottom = "3px solid royalblue";
+                    } else {
+                        item.classList.remove("active");
+                        item.style.borderBottom = "none";
+                    }
+                }
+            }
+        }
+    });
 }
 
 function closeListener(element) {
@@ -54,7 +91,7 @@ function addNavMenu(target) {
         itemName = item.getAttribute("name");
         let newItem = document.createElement('li');
         newItem.innerHTML = navLabel(itemName);
-        newItem.id = itemName;
+        newItem.setAttribute("name", `${itemName}`);
         newItem.setAttribute("onclick", `emojiScroll('emoji-menu-${target}', '${itemName}')`);
         navMenu[0].appendChild(newItem)
     }
@@ -93,15 +130,15 @@ function emojiScroll (outerItem, target) {
         itemName = item.getAttribute("name");
         if (itemName === target) {
             scrollTo = item;
-            for (var button of buttons) {
-                if (button.id === itemName) {
-                    button.classList.add("active");
-                    button.style.borderBottom = "3px solid royalblue";
-                } else {
-                    button.classList.remove("active");
-                    button.style.borderBottom = "none";
-                }
-            }
+            // for (var button of buttons) {
+            //     if (button.id === itemName) {
+            //         button.classList.add("active");
+            //         button.style.borderBottom = "3px solid royalblue";
+            //     } else {
+            //         button.classList.remove("active");
+            //         button.style.borderBottom = "none";
+            //     }
+            // }
         }
     }
     container.scrollTop = scrollTo.offsetTop;

@@ -23,15 +23,57 @@
             <ul class="site-header">
                 <li><a class="logo-box" href="{{ url_for('index') }}"><span class="material-icons" style="font-size: 40px;">home</span><span style="font-size: 1rem;">Home</span></a>
                 </li>
-                <li class="logo-box">
+                <li class="user-menu-button" id="user-menu-button" onclick="userMenuOpen()">
                     <img class="avatar-30" src="{{ current_user.avatar }}">
                     <span class="small" style="margin-left: 5px;">{{ current_user.username }}</span>
-                    </li>
-                <li style="padding-left: 25px;">
-                    <a href="{{ url_for('logout') }}">Log Out</a>
-                    </li>
-                    <li style="margin-left: auto;"><a class="logo-box" href="{{ url_for('create') }}"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></a></li>
-                </ul>
+                    <div id="user-menu" class="user-menu" style="visibility:hidden;">
+                        <ul>
+                            <li>
+                                <a href="{{ url_for('logout') }}">
+                                    <span class="user-menu-icon">logout</span>
+                                    Log Out
+                                </a>
+                            </li>
+                            <!-- <li>
+                                <a href="#">
+                                    <span class="user-menu-icon">person</span>
+                                    Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="user-menu-icon">settings</span>
+                                    Settings
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </li>
+                <script type="text/javascript">
+                    userMenu = document.getElementById("user-menu");
+                    button = document.getElementById("user-menu-button")
+                    function userMenuOpen() {
+                        if (userMenu.style.visibility === "hidden") {
+                            userMenu.style.visibility = "visible";
+                            button.style.background = "aliceblue";
+                        } else {
+                            userMenu.style.visibility = "hidden";
+                            button.style.background = "none";
+                        }
+                    }
+                    document.addEventListener('mousedown', function(event) {
+                        if(userMenu.style.visibility === "visible"){
+                            if (!userMenu.contains(event.target) || userMenu.contains(event.target)) {
+                                userMenuOpen();
+                            }
+                            if (button.contains(event.target)) {
+                                userMenuOpen();
+                            }
+                        }
+                    });
+                </script>
+                <li style="margin-left: auto;"><a class="logo-box" href="{{ url_for('create') }}"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></a></li>
+            </ul>
             {% endif %}
         </header>
         </section>
@@ -46,6 +88,7 @@
             </div>
         </footer>
     </body>
-    <script src="{{ url_for('static', filename='script/scroll-btn.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/scroll-btn.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='script/flash-display.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/get-id.js') }}"></script>
 </html>
