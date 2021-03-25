@@ -505,7 +505,7 @@ p a {
 	/* border-bottom-right-radius: 15px; */
 }
 .single-comment p {
-	margin: 7px 10px;
+	margin: 0px 10px;
 	font-size: 14px;
 	line-height: normal;
 }
@@ -530,6 +530,9 @@ p a {
 .new-comment {
 	height: 0px;
 	transition: height 0.1s ease-in-out;
+}
+.comment-contents {
+	margin: 5px 0;
 }
 .comment-post-button {
 	position: absolute;

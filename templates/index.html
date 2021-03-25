@@ -107,8 +107,12 @@
                                 <div class="comment-title">
                                     <img class="avatar-30" src="{{ comment_user.avatar }}">
                                     &nbsp;{{ comment_user.username }}</div>
-                                <!-- <div id="comment-contents-{{ comment.id }}">{{ comment.contents|safe|truncate(length=100, killwords=False, end="...") }}</div> -->
-                                <div id="comment-contents-{{ comment.id }}">{{ comment.contents|safe }}</div>
+                                <!-- <div id="comment-contents-{{ comment.id }}">
+                                    {{ comment.contents|safe|truncate(length=100, killwords=False, end="...") }}
+                                </div> -->
+                                <div class="comment-contents" id="comment-contents-{{ comment.id }}">
+                                    {{ comment.contents|safe }}
+                                </div>
                                 {% if comment.user_id == current_user.id %}
                                     <div class="comment-options" role="button" id="comment-options-{{ comment.id }}">
                                         more_vert

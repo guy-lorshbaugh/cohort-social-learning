@@ -8,17 +8,20 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
         <script type="text/javascript"
-        src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+            src="{{ url_for('static', filename='script/autosize.min.js') }}">
+        </script>
     </head>
     <body>
         <header>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="flash" id="flash">
-                {% for message in messages %}
-                {{ message }}
-                {% endfor %}
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
                 </div>
+            {% else %}
+                <div class="flash" id="flash"></div>
             {% endif %}
             {% endwith %}
             {% if current_user.is_authenticated %}

@@ -33,7 +33,6 @@ function replaceCharacters(string) {
     for (item of newString) {
         contents = contents + `\<p\>${item}\<\/p\>`;
     }
-    console.log(contents);
     return contents;
 }
 
@@ -51,7 +50,7 @@ function showError(entry, error) {
     }
 }
 
-function commentRequest(url, entry) {
+function commentRequest(url, data="") {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.setRequestHeader("SameSite", "Strict")
@@ -59,8 +58,16 @@ function commentRequest(url, entry) {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);
-                    console.log(typeof response);
-                    writeComment(response, entry);
+                    if (response.action === "comment") {
+                        writeComment(response, data);
+                    } else if (response.action === "edit") {
+                        writeNewComment(response.id, response.contents);
+                        flashMessage(contents=response.flash);
+                    } else if (response.action === "delete") {
+                        deleted_comment = document.getElementById(`comment-${data}`)
+                        deleted_comment.remove();
+                        flashMessage(contents=response.flash);
+                    }
                 } else {
                     console.error(`Error: ${xhr.statusText}`);
                 }
@@ -73,62 +80,8 @@ function commentRequest(url, entry) {
         xhr.send(null);
 };
 
-function deleteCommentRequest(url, comment) {
-    // commentMenu(comment);
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.setRequestHeader("SameSite", "Strict")
-    xhr.onload = function (e) {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                let response = xhr.responseText;
-                if (response === "deleted") {
-                    // console.log(comment);
-                    deleted_comment = document.getElementById(`comment-${comment}`)
-                    deleted_comment.remove()
-                }
-            } else {
-                console.error(`Error: ${xhr.statusText}`);
-            }
-        }
-    }
-    keyValue = ""
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText);
-    }
-    xhr.send(null);
-};
-
-function editCommentRequest(url, contents) {
-    console.log("edited");
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.setRequestHeader("SameSite", "Strict");
-    // xhr.setRequestHeader("Content-type", "text/plain");
-    // xhr.setRequestHeader("body", `${contents}`);
-    xhr.onload = function (e) {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                let response = xhr.responseText;
-                if (response.action === "edit") {
-                    console.log(response.contents);
-                    writeNewComment(id, response.contents);
-                }
-            } else {
-                console.error(`Error: ${xhr.statusText}`);
-            }
-        }
-    }
-    keyValue = ""
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText);
-    }
-    xhr.send(null);
-}
-
 function writeComment(data, entry) {
     let container = document.getElementsByClassName(`comments-container ${entry}`)[0];
-    console.log(container);
     let newComment = document.createElement('div')
     newComment.className = "single-comment";
     newComment.id = `comment-${data.comment}`
@@ -136,13 +89,15 @@ function writeComment(data, entry) {
     newComment.innerHTML = `
         <div class="comment-title">
             <img class="avatar-30" src="${data.avatar}">&nbsp;${data.username}</div>
-            ${data.contents}
+            <div class="comment-contents" id="comment-contents-${data.comment}">
+                ${data.contents}
+            </div>
             <div class="comment-options" role="button" id="comment-options-${data.comment}">
                 more_vert
             </div>
             <div class="comment-menu" id="comment-menu-${data.comment}" style="visibility: hidden;">
                 <ul>
-                    <li>Edit Comment</li>
+                    <li id="edit-comment-${data.comment}" class="edit-comment">Edit Comment</li>
                     <li id="delete-comment-${data.comment}" class="delete-comment">Delete Comment</li>
                 </ul>
             </div>
@@ -163,26 +118,32 @@ function writeComment(data, entry) {
     container.appendChild(newComment);
     startListeners("comment-options", commentMenu);
     startListeners("delete-comment", confirmDelete);
+    startListeners("edit-comment", editComment);
 }
 
 function writeNewComment(id, contents) {
     commentContents = document.getElementById(`comment-contents-${id}`);
-    console.log(commentContents)
     commentContents.innerHTML = contents;
 }
 
 function editComment(id) {
     commentMenu(id);
-    comment = document.getElementById(`comment-${id}`)
-    prevContents = comment.getElementsByTagName("p");
-    let contents = "";
-    if (prevContents.length > 1 ) {
-        for (item of prevContents) {
-            contents += `${item.textContent}\n`;
-        }
-    } else {
-        contents += `${prevContents[0].textContent}`;
-    }
+    const comment = document.getElementById(`comment-${id}`);
+    const contents = parseEditText(comment);
+    // prevContents = comment.getElementsByTagName("p");
+    // let contents = "";
+    // if (prevContents.length > 1 ) {
+    //     for (var i=0; i < prevContents.length; i++) {
+    //         let item = prevContents[i];
+    //         if (i === (prevContents.length -1)) {
+    //             contents += `${item.textContent}`;
+    //         } else {    
+    //             contents += `${item.textContent}\n`;
+    //         }
+    //     }
+    // } else {
+    //     contents += `${prevContents[0].textContent}`;
+    // }
     editDialog = document.createElement("div");
     setAttributes(editDialog, {
         "class": "comment-edit-dialog shadow-box",
@@ -216,12 +177,34 @@ function editComment(id) {
     editDialog.appendChild(form);
     editDialog.appendChild(autoResize);
     comment.appendChild(editDialog);
+    editListeners(cancelButton, saveButton, id);
+}
+
+function parseEditText(comment) {
+    prevContents = comment.getElementsByTagName("p");
+    let contents = "";
+    if (prevContents.length > 1 ) {
+        for (var i=0; i < prevContents.length; i++) {
+            let item = prevContents[i];
+            if (i === (prevContents.length -1)) {
+                contents += `${item.textContent}`;
+            } else {    
+                contents += `${item.textContent}\n`;
+            }
+        }
+    } else {
+        contents += `${prevContents[0].textContent}`;
+    }
+    return contents;
+}
+
+function editListeners(cancelButton, saveButton, id) {
     const dialog = document.getElementById(`comment-edit-dialog-${id}`)
     cancelButton.addEventListener('mousedown', () => {
         dialog.remove();
     });
     saveButton.addEventListener("mousedown", () => {
-        editCommentRequest(`/entries/comment/${id}/edit/${replaceCharacters(textArea.value)}/`, textArea.value);
+        commentRequest(`/entries/comment/${id}/edit/${replaceCharacters(textArea.value)}/`);
         dialog.remove();
     })
 }
@@ -238,7 +221,7 @@ function confirmDelete(id) {
     confirmDialog.style.visibility = "visible";
     const buttons = confirmDialog.getElementsByTagName("button");
     buttons[0].addEventListener("click", () => {
-        deleteCommentRequest(`entries/comment/${id}/delete`, `${id}`);
+        commentRequest(`entries/comment/${id}/delete`, `${id}`);
         confirmDialog.style.visibility = "hidden";
     })
     buttons[1].addEventListener("click", () => {

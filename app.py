@@ -360,7 +360,8 @@ def comment(entry, contents):
         )
         target_entry.get().increment_entry_score()
         new_comment = comment.get(comment.contents == contents);
-        return jsonify({ "contents": contents,
+        return jsonify({ "action": "comment",
+                         "contents": contents,
                          "entry": entry,
                          "username": current_user.username,
                          "avatar": current_user.avatar,
@@ -376,7 +377,9 @@ def edit_comment(comment_id, contents):
     # print(comment_id, contents)
     return jsonify({
         "action": "edit",
-        "contents": contents
+        "contents": contents,
+        "id": comment.id,
+        "flash": "Comment edited successfully."
     })
 
 
@@ -385,12 +388,12 @@ def edit_comment(comment_id, contents):
 def delete_comment(comment):
     delete_comment = models.Comment.get(models.Comment.id==comment)
     if delete_comment.user_id == current_user.id:
-        flash("Your Comment has been deleted.")
         delete_comment.delete_instance()
-        return "deleted"
+        # flash("Your Comment has been deleted.")
+        return jsonify({ "action" : "delete",
+                         "flash": "Your Comment has been deleted." })
     else:
         flash("You can't delete someone else's comment!")
-        return "You can't delete someone else's comment!"
 
 
 if __name__ == '__main__':
