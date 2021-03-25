@@ -13,7 +13,8 @@
                     <img class="avatar-50" src="{{ user.avatar }}">
                     <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
                     <div id="entry-preview-{{ entry.id }}" class="entry-preview">
-                        {{ entry.learned|truncate(length=140, killwords=True, end='...') }}
+                        <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
+                        {{ entry.learned }}
                     </div>
                     <div class="user-date small">
                         <time datetime="{{ entry.date }}">
@@ -78,7 +79,9 @@
                     </div>
                     <div class="like-button-container">
                         {% if current_user.is_authenticated %}
-                            <span class="like" role="button" onclick="likeRequest('{{ url_for("like", entry=entry.id) }}', 'entry-{{ entry.id }}')">
+                            <span class="like" 
+                                role="button"
+                                onclick="likeRequest('{{ url_for("like", entry=entry.id) }}', 'entry-{{ entry.id }}')">
                                 {% if (
                                     models.EntryLikes
                                     .select()
@@ -104,7 +107,8 @@
                                 <div class="comment-title">
                                     <img class="avatar-30" src="{{ comment_user.avatar }}">
                                     &nbsp;{{ comment_user.username }}</div>
-                                <div>{{ comment.contents|safe|truncate(length=100, killwords=True, end="...") }}</div>
+                                <!-- <div id="comment-contents-{{ comment.id }}">{{ comment.contents|safe|truncate(length=100, killwords=False, end="...") }}</div> -->
+                                <div id="comment-contents-{{ comment.id }}">{{ comment.contents|safe }}</div>
                                 {% if comment.user_id == current_user.id %}
                                     <div class="comment-options" role="button" id="comment-options-{{ comment.id }}">
                                         more_vert
@@ -147,8 +151,6 @@
                                 onclick="makeCommentLink({{ entry.id }})" 
                                 value="Post" class="button button-secondary comment-post-button"
                                 >
-                            <script type="text/javascript"
-                                src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
                             <script type="text/javascript">
                                 autosize(document.getElementById("comment-{{ entry.id }}"))
                             </script>

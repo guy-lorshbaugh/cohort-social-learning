@@ -21,7 +21,6 @@
 	/* src: url(https://fonts.gstatic.com/s/materialiconstwotone/v49/hESh6WRmNCxEqUmNyh3JDeGxjVVyMg4tHGctNCu0NjbrHg.woff2) format('woff2'); */
 	src: url(https://fonts.gstatic.com/s/materialicons/v80/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
 }
-
 .material-icons {
 	font-family: 'Material Icons';
 	font-weight: normal;
@@ -55,6 +54,12 @@ br {
 .container {
 	margin: 0 auto;
 	padding: 0;
+}
+.shadow-box {
+	background: white;
+	border-radius: 15px;
+	box-shadow: 0px 0px 8px rgba(0,0,0,0.3);	
+	z-index: 99;
 }
 
 /* --- NAV MENU --- */
@@ -655,6 +660,30 @@ input[type=submit] {
 	overflow: hidden;
 	/* transition: all 35ms ease-in-out; */
 }
+.comment-edit-dialog {
+	position: absolute;
+	top: 30px;
+	left: -34px;
+	/* height: px; */
+	width: 500px;
+}
+.comment-edit-cancel-button {
+	display: flex;
+	justify-content: space-around;
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	padding-left: 1px;
+	font-size: 26px;
+	background: white;
+	color: crimson;
+	border-radius: 50%;
+	user-select: none;
+	cursor: pointer;
+}
+/* .comment-edit-cancel-button:hover {
+	background: rgb(221, 191, 195);
+} */
 
 /*  --- SCROLL BUTTON --- */
 

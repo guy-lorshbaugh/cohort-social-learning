@@ -360,17 +360,25 @@ def comment(entry, contents):
         )
         target_entry.get().increment_entry_score()
         new_comment = comment.get(comment.contents == contents);
-        return jsonify({ "contents": contents, "entry": entry,
-                         "username": current_user.username, 
-                         "avatar": current_user.avatar, 
+        return jsonify({ "contents": contents,
+                         "entry": entry,
+                         "username": current_user.username,
+                         "avatar": current_user.avatar,
                          "comment": new_comment.id })
-    else:
-        print("Something Isn't Right")
 
-@app.route('/entries/comment/<int:comment>/edit')
+
+@app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
 @login_required
-def edit_comment(comment):
-    return "edited"
+def edit_comment(comment_id, contents):
+    comment = models.Comment.get(models.Comment.id == comment_id)
+    comment.contents = contents
+    comment.save()
+    # print(comment_id, contents)
+    return jsonify({
+        "action": "edit",
+        "contents": contents
+    })
+
 
 @app.route('/entries/comment/<int:comment>/delete/')
 @login_required
@@ -384,7 +392,8 @@ def delete_comment(comment):
         flash("You can't delete someone else's comment!")
         return "You can't delete someone else's comment!"
 
+
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='localhost', port="8000")
+    app.run(debug=True, host='local.host', port="8000")
