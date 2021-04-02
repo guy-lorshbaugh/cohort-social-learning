@@ -3,7 +3,7 @@ __pychache__git
 *.pyo
 env
 journal.db
-design-resources
+other-resources
 palette
 avatar_test.py
 templates/avatars.html
