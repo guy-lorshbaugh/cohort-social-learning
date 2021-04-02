@@ -1,0 +1,60 @@
+{% macro emoji_menu(emoji) %}
+    <div id="emoji-menu-prototype">
+        <div class="emoji-category-nav">
+            <ul>
+                <!-- <li class="emoji-nav" onclick="emojiScroll('emoji-list-container', 'Smileys&Emoticon')">emoji_emotions</li>
+                <li onclick="emojiScroll('emoji-list-container', 'People&Body')">emoji_people</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Animals&Nature')">emoji_nature</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Food&Drink')">emoji_food_beverage</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Travel&Places')">emoji_transportation</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Activities')">emoji_events</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Objects')">emoji_objects</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Symbols')">emoji_symbols</li>
+                <li onclick="emojiScroll('emoji-list-container', 'Flags')">emoji_flags</li> -->
+            </ul>
+        </div>
+        <div class="emoji-list-container" id="emoji-list-container">
+        {% set categories = [] %}
+        {% set exclude = [ 'face in clouds', 'face with spiral eyes',
+            'face exhaling', 'heart on fire', 'mending heart',
+            'eye in speech bubble', 'man: beard', 'woman: beard',
+            'man detective', 'woman detective', 'man in tuxedo', 
+            'woman in tuxedo', 'man with veil', 'woman with veil',
+            'woman feeding baby', 'man feeding baby', 'person feeding baby',
+            'man golfing', 'woman golfing', 'woman bouncing ball',
+            'man bouncing ball', 'man lifting weights', 'mx claus',
+            'woman lifting weights', 'kiss: woman, man',
+            'kiss: man, man', 'kiss: woman, woman',
+            'couple with heart: man, woman', 'couple with heart: woman, woman',
+            'couple with heart: man, man', 'couple with heart: woman, man',
+            'black cat', 'polar bear', 'transgender flag' ] %}
+
+        {% for item in emoji %}
+            {% if item['group'] not in categories: %}
+                <!-- {{ categories.append(item['group']) }} -->
+            {% endif %}
+        {% endfor %}
+        {% for item in categories %}
+            {% if item == "Component" %}
+                {{ pass }}
+            {% else %}
+                <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
+                <h6 >{{ item }}</h6>
+                <div class="emoji-container">
+                    {% for entry in emoji %}
+                        {% if entry['group'] == item %}
+                            {% if "skin tone" in entry['name'] %}
+                                {{ pass }}
+                            {% elif entry['name'] in exclude %}
+                                {{ pass }}
+                            {% else %}
+                                <span class="emoji" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+{% endmacro %}

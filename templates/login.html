@@ -8,8 +8,8 @@
             <h2>Welcome to Cohort!</h2>
             <h3>Please Log In</h3>
                 <form method="POST" action="" class="form">
-                    {{ form.hidden_tag() }}
-                    {% for field in form %}
+                    {{ login_form.hidden_tag() }}
+                    {% for field in login_form %}
                         {{ render_field(field) }}
                     {% endfor %}
                     <button type="submit" id="submit" class="button button-secondary">Login!</button>

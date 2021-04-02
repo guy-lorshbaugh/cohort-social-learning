@@ -4,7 +4,7 @@ function likeRequest(url, entry) {
   xhr.onload = function (e) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
-        let response = xhr.responseText;
+        let response = JSON.parse(xhr.responseText);
         processLike(response, entry);
       } else {
         console.error(xhr.statusText);
@@ -17,19 +17,34 @@ function likeRequest(url, entry) {
   xhr.send(null); 
 }
 
-function processLike(count, entry) {
-  const current = document.getElementById(entry);
-  const likeCount = current.getElementsByClassName("like-count small");
+function processLike(response, entry) {
+  const current = document.getElementById(`entry-${entry}`);
+  const likeCount = current.getElementsByClassName("like-count small")[0];
+  const likerList = current.getElementsByTagName("dl")[0];
   const likeButton = current.getElementsByClassName("like");
-  if (count > 0) {
-    likeCount[0].textContent = `Likes: ${count}`;
+  if (response.count > 0) {
+    likeCount.textContent = `Likes: ${response.count}`;
   } else {
-    likeCount[0].textContent = "";
+    likeCount.textContent = "";
   }
   if (likeButton[0].textContent.includes("Unlike")) {
     likeButton[0].textContent = "Like";
   } else {
     likeButton[0].textContent = "Unlike";
+  }
+  updateLikers(response, likerList)
+}
+
+function updateLikers(response, target) {
+  target.innerHTML = "";
+  for (item of response.likers) {
+    let likerItem = document.createElement("dt");
+    likerItem.innerHTML += `
+      <img class="avatar-15" 
+      src="${item.avatar}">
+      &nbsp;${item.username}
+    `
+    target.appendChild(likerItem)
   }
 }
 
@@ -37,7 +52,7 @@ function likerDisplay(div) {
   const reveal = document.getElementsByClassName(div)[0];
   reveal.style.visibility = "visible";
   reveal.style.opacity = "1";
-  document.addEventListener("mouseout", e => {
+  document.addEventListener("mouseout", () => {
     reveal.style.opacity = "0";
     reveal.style.visibility = "hidden";
   })

@@ -5,7 +5,8 @@ import datetime
 from flask_wtf import FlaskForm
 from peewee import BooleanField, TextField
 from wtforms import (StringField, PasswordField, TextAreaField, 
-    DateField, IntegerField)
+    DateField, IntegerField, BooleanField)
+from wtforms.fields.simple import HiddenField
 from wtforms.validators import (DataRequired, Regexp, ValidationError,
                                Length, EqualTo)
 import models
@@ -15,16 +16,16 @@ class Post(FlaskForm):
         DataRequired(),
         Length(max=100)
     ])  
-    date = DateField(default=datetime.date.today())
-    time_spent = IntegerField(u"Time Spent (round to nearest hour)", 
-        validators=[
-                    DataRequired(),
-                ])
-    learned = TextAreaField(u"What did you learn?", validators=[
+    # date = HiddenField(default=datetime.datetime.now())
+    # time_spent = IntegerField(u"Time Spent (round to nearest hour)", 
+    #     validators=[
+    #                 DataRequired(),
+    #             ])
+    learned = TextAreaField(u"Share a Revelation\nAsk a Question!", validators=[
                 DataRequired(),
             ])
-    remember = TextAreaField(u"Links and other things to remember")
-    # private = BooleanField
+    remember = TextAreaField(u"Links and other things to remember\n(Optional)")
+    private = BooleanField(u"Private (only you can see)", default=False)
     tags = StringField(u"Add tags, separated by a comma.")
 
 

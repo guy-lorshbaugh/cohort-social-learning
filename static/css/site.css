@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
 	box-sizing: border-box;
 }
@@ -12,7 +13,7 @@
     box-shadow: none !important;
 }
 
-/* --- GLOBAL STYLES --- */
+/*  FONTS */
 
 @font-face {
 	font-family: 'Material Icons';
@@ -36,6 +37,13 @@
 	-webkit-font-feature-settings: 'liga';
 	-webkit-font-smoothing: antialiased;
 }
+@font-face {
+	font-family: 'Noto Color Emoji';
+	src: url(https://gitcdn.xyz/repo/googlefonts/noto-emoji/master/fonts/NotoColorEmoji.ttf);
+  }
+
+/* --- GLOBAL STYLES --- */
+
 html {
 	scroll-behavior: smooth;
 }
@@ -74,6 +82,7 @@ br {
 	width: 98%;
 	height: 54px;
 	margin: 0;
+	padding-left: 0px;
 	background-color: rgb(255, 255, 255);
 	border: 2px solid lightblue;
 	border-radius: 15px;
@@ -85,21 +94,34 @@ br {
 	position: relative;
 	align-items: center;
 }
+.logo-box {
+	margin-left: 25px;
+}
 .site-header header .button {
 	margin: 0px 0 0 0;
 }
-/* header ul {
-} */
 .site-header li {
 	line-height: 1.8em;
 	font-size: 18px;
 }
-.site-header li a {
+.site-header li a,
+.new-entry-button {
 	display: inline-block;
 	align-items: center;
 	color: royalblue;
 	width: 150px;
 	text-decoration: none;
+}
+.new-entry-button {
+	margin-left: auto;
+	user-select: none;
+	cursor: pointer;
+}
+#cohort-logo {
+	width: 150px;
+    height: auto;
+    padding-top: 7px;
+    margin-left: 10px;
 }
 footer {
 	position: relative;
@@ -148,6 +170,7 @@ footer {
 	color: white;
 }
 .user-menu-button {
+	margin-left: 17px;
 	padding: 7px;
 	border-radius: 7px;
 	user-select: none;
@@ -283,16 +306,20 @@ p a {
 .new-entry {
 	max-width: 500px;
 	margin: 0 auto;
-	padding: 50px 0;
+	padding: 10px 0;
+}
+.new-entry {
+	padding: 10px;
 }
 .edit-entry h2,
 .new-entry h2 {
-	margin-bottom: 35px;
+	margin-bottom: 16px;
 }
 .entry-preview {
 	margin: 10px;
 }
 .entry-preview-container {
+	position: relative;
 	text-align: center;
 	margin-bottom: 35px;
 	padding: 10px;
@@ -461,9 +488,9 @@ p a {
 	padding: 0 5px;
 	text-align: left;
 	visibility: hidden;
-	background-color: white;
+	/* background-color: white;
 	border: 2px solid lightblue;
-	border-radius: 4px;
+	border-radius: 4px; */
 	opacity: 1;
 	transition: opacity 0.2s, visibility 0s;
 	user-select: none;
@@ -477,62 +504,103 @@ p a {
 	width: 90%;
 	margin: 0px 0px 0px 5%;
 }
-.comment-title {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin-top: 5px;
-	font-size: 14px;
-}
 .single-comment {
-	display: block;
+	display: grid;
+	grid-template-areas: 
+		"avatar username username username username username"
+		"avatar contents contents contents contents contents"
+		"avatar contents contents contents contents contents"
+		"react react react react react react";
+	grid-template-rows: 25px 1fr 1fr 25px;
+	grid-template-columns: 50px 5fr;
 	position: relative;
+	width: 100%;
 	border: 1px solid #e1e1e1;
 	border-top: none;
 	overflow-wrap: anywhere;
 	border-collapse: collapse;
 }
+.comment-avatar {
+	width: 50px;
+	padding: 5px 10px;
+	grid-area: avatar;
+}
+.comment-username {
+	grid-area: username;
+	padding-top: 5px;
+	font-size: 14px;
+	font-weight: 500;
+	text-align: left;
+}
+.comment-contents {
+	grid-area: contents;
+	padding: 0px 5px;
+	/* max-height: 150px; */
+	text-align: left;
+	margin-bottom: 5px;
+	margin-right: 25px;
+	position: relative;
+	padding: 5px 8px;
+	font-family: Verdana, 'Noto Color Emoji';
+	background: rgb(240, 240, 240);
+	border-radius: 15px;
+	border-top-left-radius: 0;
+	/* overflow-y: hidden; */
+}
+/* Fade-out effect on overflow-y: hidden */
+/* .comment-contents:after {
+	content: "";
+	text-align: right;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+	height: 1.2em;
+	background: linear-gradient(to bottom, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 50%);
+  } */
 .single-comment:first-child {
-	/* background: lime; */
 	margin-top: 5px;
 	border-top: 1px solid #e1e1e1;
 	/* border-top-left-radius: 15px; */
 	border-top-right-radius: 15px;
 }
 .single-comment:last-child {
-	/* background: lime; */
 	border-bottom-left-radius: 15px;
-	/* border-bottom-right-radius: 15px; */
+	border-bottom-right-radius: 15px;
 }
 .single-comment p {
-	margin: 0px 10px;
+	margin: 5px 0px;
 	font-size: 14px;
 	line-height: normal;
 }
 .single-comment-menu {
-	height: 25px;
+	grid-area: react;
+	padding-left: 58px;
 	font-size: 14px;
 	color: #9b9b9b;
 	border-top: 1px solid #e1e1e1;
 }
 .single-comment-menu ul {
-	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
 	margin-top: 4px;
+	margin-right: auto;
 	list-style-type: none;
+	text-align: left;
 	padding-left: 0px;
 }
-.single-comment ul li {
+.single-comment-menu ul li {
 	display: inline-block;
+	width: 39px;
+	height: 20px;
 	font-family: "Material Icons";
 }
-.new-comment {
-	height: 0px;
-	transition: height 0.1s ease-in-out;
+.single-comment-menu ul li.comment-date {
+	font-family: Verdana, sans-serif;
+	color: #9b9b9b;
+	width: 200px;
 }
-.comment-contents {
-	margin: 5px 0;
+.new-comment .single-comment {
+	margin-top: 0px;
+	border-top-right-radius: 0px;
 }
 .comment-post-button {
 	position: absolute;
@@ -583,7 +651,7 @@ p a {
 	list-style-type: none;
 }
 .comment-menu ul li {
-	padding: 5px;
+	width: 100%;
 	font-family: Verdana, serif;
 	cursor: pointer;
 }
@@ -604,20 +672,25 @@ form label {
 form input[type=text],
 form input[type=password],
 form input[type=date],
-form textarea {
+form textarea,
+select {
 	border: 2px solid #e1e1e1;
-	font-size: 18px;
-	line-height: 1.8em;
-	margin: 5px auto;
-	padding:10px 13px;
-	padding-right: 70px;
-	border-radius: 4px;
-	width: calc(100% - 32px);
-	white-space: pre-wrap;
+    font-size: 18px;
+    margin: 5px auto;
+    padding: 10px 13px;
+    width: calc(100% - 32px);
+    font-family: Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.8em;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    resize: none;
 }
 textarea.comment-field {
 	height: 50px;
+	font: 400 14px/20px Verdana, sans-serif, "Noto Color Emoji", "apple color emoji","windows emoji","windows symbol";
 	font-size: 14px;
+	padding-right: 95px;
 	resize: none;
 }
 textarea.comment-field:hover {
@@ -626,18 +699,18 @@ textarea.comment-field:hover {
 form input[type=text]:focus,
 form input[type=date]:focus,
 form input[type=password]:focus,
-form textarea:focus {
+form textarea:focus,
+select:focus {
 	outline: 0;
 	border-color: lightblue;
 }
 form input[type=text]:hover,
 form input[type=date]:hover
-form textarea:hover {
+form textarea:hover,
+.edit-entry form textarea:hover,
+.new-entry form textarea:hover,
+select:hover {
 	border-color: lightblue;
-}
-.edit-entry form textarea,
-.new-entry form textarea {
-	min-height: 200px;
 }
 input[type=submit] {
 	margin-right: 5px;
@@ -647,36 +720,40 @@ input[type=submit] {
 	margin-top: 5px;
 }
 .comment-form-error {
-	box-sizing: content-box;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-	width: fit-content;
-	height: 0px;
-	margin: 0 auto;
-	margin-top: 5px;
-	padding: 0px 5px;
-	border: 0px solid coral;
-	border-radius: 4px;
-	color: coral;
-	overflow: hidden;
-	/* transition: all 35ms ease-in-out; */
+	z-index: 99;
+    box-sizing: content-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 68px;
+    left: 100px;
+    visibility: hidden;
+    width: fit-content;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 5px;
+    padding: 0px 5px;
+    background: white;
+    border: 2px solid coral;
+    border-radius: 8px;
+    color: coral;
+    overflow: hidden;
 }
 .comment-edit-dialog {
 	position: absolute;
 	top: 30px;
 	left: -34px;
-	/* height: px; */
 	width: 500px;
 }
+.new-entry-cancel-button,
 .comment-edit-cancel-button {
 	display: flex;
 	justify-content: space-around;
 	position: absolute;
 	top: -10px;
 	right: -10px;
-	padding-left: 1px;
+	/* padding-left: 1px; */
 	font-size: 26px;
 	background: white;
 	color: crimson;
@@ -684,9 +761,21 @@ input[type=submit] {
 	user-select: none;
 	cursor: pointer;
 }
-/* .comment-edit-cancel-button:hover {
-	background: rgb(221, 191, 195);
-} */
+.top-recent {
+	display: flex;
+	justify-content: start;
+	position: relative;
+	width: 500px;
+	margin: 0 auto;
+	margin-top: 78px;
+}
+.top-recent select {
+	position: relative;
+	width: 150px;
+	height: 35px;
+	margin-left: 15px;
+	padding: 5px 13px;
+}
 
 /*  --- SCROLL BUTTON --- */
 
@@ -756,6 +845,7 @@ input[type=submit] {
 	justify-content: center;
 	width: 36px;
 	height: 36px;
+	font-family: "Noto Color Emoji", "Apple Color Emoji", "Android Emoji", "EmojiOne Mozilla", "Twemoji Mozilla";
 	font-size: 24px;
 	cursor: pointer;
 }
@@ -770,7 +860,6 @@ input[type=submit] {
 	width: 100%;
 	margin: 0px;
 	padding: 10px;
-	/* padding-left: 0px; */
 	border-bottom: 1px solid rgba(0 0 0 / 0.2);
 	list-style-type: none;
 }
@@ -823,4 +912,53 @@ input[type=submit] {
 	width: 150px;
 	margin-bottom: 10px;
 	font-size: 26px;
+}
+
+/* --- NEW ENTRY WINDOW --- */
+
+.new-entry-container {
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	top: 0px;
+	background-color: rgba(65, 105, 225, 0.5);
+	visibility: hidden;
+	z-index: 102;
+}
+.new-entry-frame {
+	position: absolute;
+	top: 75px;
+	left: 20%;
+	width: 60%;
+	height: 450px;
+	border-radius: 15px;
+}
+.entry-bottom-field {
+    display: flex;
+    align-items: center;
+	flex-flow: row nowrap;
+    justify-content: flex-start;
+}
+.entry-bottom-field button {
+	margin-right: 10px;
+}
+#private-option {
+    display: flex;
+    align-content: center;
+	flex-flow: row nowrap;
+    /* justify-content: flex-start; */
+	/* position: absolute;
+    bottom: 32px;
+    right: 45px; */
+    font-size: 14px;
+}
+label[for=private] {
+	color: #7a7a7a;
+}
+
+@media only screen and (max-width: 768px) {
+	.new-entry-frame {
+		left: 0px;
+		width: 100%;
+	}
 }

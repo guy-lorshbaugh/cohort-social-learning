@@ -15,21 +15,21 @@ function emojiOpenClose(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
-    if (emojiMenu.style.width === "0px") {
-        emojiMenu.style.width = "344px";
-        emojiMenu.style.height = "300px";
-        button.classList.add("active");
-    } else {
-        emojiMenu.style.width = "0px";
-        emojiMenu.style.height = "0px";
-        button.classList.remove("active");
-    }
     if (!emojiMenu.innerHTML) {
         emojiMenu.innerHTML = menuContents;
         addEmojiListeners(target);
         closeListener(target);
         addNavMenu(target);
         navScrollListener(target);
+    }
+    if (emojiMenu.style.width === "0px") {
+        emojiMenu.style.width = "355px";
+        emojiMenu.style.height = "300px";
+        button.classList.add("active");
+    } else {
+        emojiMenu.style.width = "0px";
+        emojiMenu.style.height = "0px";
+        button.classList.remove("active");
     }
 }
 
@@ -130,15 +130,6 @@ function emojiScroll (outerItem, target) {
         itemName = item.getAttribute("name");
         if (itemName === target) {
             scrollTo = item;
-            // for (var button of buttons) {
-            //     if (button.id === itemName) {
-            //         button.classList.add("active");
-            //         button.style.borderBottom = "3px solid royalblue";
-            //     } else {
-            //         button.classList.remove("active");
-            //         button.style.borderBottom = "none";
-            //     }
-            // }
         }
     }
     container.scrollTop = scrollTo.offsetTop;

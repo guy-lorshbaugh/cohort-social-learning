@@ -1,19 +1,50 @@
-{% extends "layout.html" %} 
 {% block content %}
+<html>
+    <head>
+        <link rel="stylesheet" 
+              href="{{ url_for('static', filename='css/site.css') }}">
+        <script type="text/javascript"
+        src="{{ url_for('static', filename='script/autosize.min.js') }}">
+    </script>
+    </head>
+    <body>
         <section>
             <div class="container">
                 <div class="new-entry">
                     <h2>New Entry</h2>
                     {% from 'macros.html' import render_field %}
-                    <form method="POST" action="">
+                    <form method="POST" action="" autocomplete="off" id="entry-form">
                         {{ form.hidden_tag() }}
                         {% for field in form %}
-                            {{ render_field(field) }}
+                            {% if field.type == "BooleanField" %}
+                                {{ pass }}
+                            {% else %}
+                                {{ render_field(field) }}
+                            {% endif %}
                         {% endfor %}
-                        <button class="button button-secondary" type="submit" id="submit">Post!</button>
-                        <a href="{{ url_for('index') }}" class="button button-secondary">Cancel</a>
+                        <div class="entry-bottom-field">
+                            <button class="button button-secondary" 
+                                    type="submit" 
+                                    id="entry-post-submit">
+                                Post!</button>
+                            <button id="entry-cancel-button" 
+                                    class="button button-secondary" 
+                                    type="reset">
+                                Cancel</button>
+                            {% for field in form if field.type == "BooleanField" %}
+                                <div id="private-option">{{ field }}{{ field.label }}</div>
+                            {% endfor %}
+                        </div>
                     </form>
                 </div>
             </div>
         </section>
+    </body>
+        <script type="text/javascript">
+            autosize(document.getElementById("learned"))
+            autosize(document.getElementById("remember"))
+        </script>
+        <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
+        <script src="{{ url_for('static', filename='script/entry-listeners.js') }}"></script>
+</html>
 {% endblock %}

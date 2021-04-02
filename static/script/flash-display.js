@@ -13,11 +13,3 @@ function flashMessage(contents="") {
     flashDiv.style.top = "35px";
     const disappear = window.setTimeout(function() {flashDiv.style.top = "-100px"}, 2500);
 }
-
-// const observer = new MutationObserver(flashMessage);
-// const observerOptions = {
-//     childList: true,
-//     attributes: true,
-//     subtree: true
-// }
-// observer.observe(flashDiv, observerOptions);

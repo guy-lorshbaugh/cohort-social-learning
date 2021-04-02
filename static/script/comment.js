@@ -1,19 +1,6 @@
-function startListeners(className, callback) {
-    const targets = document.getElementsByClassName(className);
-    for (var i = 0; i < targets.length; i++) {
-        let option = targets[i];
-        if (!option.getAttribute("listener")) {
-            option.setAttribute("listener", "true")
-            option.addEventListener("click", () => {
-                callback(getID(option.id));
-            });
-        }
-    }
-}
-
-startListeners("comment-options", commentMenu);
-startListeners("delete-comment", confirmDelete);
-startListeners("edit-comment", editComment);
+startListeners("comment-options", "click", commentMenu);
+startListeners("delete-comment", "click", confirmDelete);
+startListeners("edit-comment", "click", editComment);
 
 function makeCommentLink(entry) {
     let input = document.getElementById(`comment-${entry}`);
@@ -22,9 +9,9 @@ function makeCommentLink(entry) {
     }
     else {
         var contents = replaceCharacters(input.value);
+        input.value = ""
+        commentRequest(`/entries/${entry}/comment/${contents}/`, `${entry}`);
     }
-    input.value = ""
-    commentRequest(`/entries/${entry}/comment/${contents}/`, `${entry}`);
 }
 
 function replaceCharacters(string) {
@@ -38,11 +25,12 @@ function replaceCharacters(string) {
 
 function showError(entry, error) {
     const errorDiv = document.getElementById(`comment-form-error-${entry}`);
-    if (errorDiv.style.height === "0px") {
-        errorDiv.style.height = "25px";
+    if (errorDiv.style.visibility = "hidden") {
         errorDiv.style.visibility = "visible";
-        errorDiv.style.borderWidth = "2px";
         errorDiv.textContent = error;
+        const close = setTimeout(function() {
+            errorDiv.style.visibility = "hidden";
+        }, 2000)
     } else {
         errorDiv.style.height = "0px";
         errorDiv.style.visibility = "hidden";
@@ -50,7 +38,7 @@ function showError(entry, error) {
     }
 }
 
-function commentRequest(url, data="") {
+function commentRequest(url, entry="") {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.setRequestHeader("SameSite", "Strict")
@@ -59,12 +47,13 @@ function commentRequest(url, data="") {
                 if (xhr.status === 200) {
                     let response = JSON.parse(xhr.responseText);
                     if (response.action === "comment") {
-                        writeComment(response, data);
+                        // console.log(response)
+                        writeComment(response.html, entry);
                     } else if (response.action === "edit") {
                         writeNewComment(response.id, response.contents);
                         flashMessage(contents=response.flash);
                     } else if (response.action === "delete") {
-                        deleted_comment = document.getElementById(`comment-${data}`)
+                        deleted_comment = document.getElementById(`comment-${entry}`)
                         deleted_comment.remove();
                         flashMessage(contents=response.flash);
                     }
@@ -80,46 +69,70 @@ function commentRequest(url, data="") {
         xhr.send(null);
 };
 
+
 function writeComment(data, entry) {
-    let container = document.getElementsByClassName(`comments-container ${entry}`)[0];
-    let newComment = document.createElement('div')
-    newComment.className = "single-comment";
-    newComment.id = `comment-${data.comment}`
-    newComment.style.borderTop = "none";
-    newComment.innerHTML = `
-        <div class="comment-title">
-            <img class="avatar-30" src="${data.avatar}">&nbsp;${data.username}</div>
-            <div class="comment-contents" id="comment-contents-${data.comment}">
-                ${data.contents}
-            </div>
-            <div class="comment-options" role="button" id="comment-options-${data.comment}">
-                more_vert
-            </div>
-            <div class="comment-menu" id="comment-menu-${data.comment}" style="visibility: hidden;">
-                <ul>
-                    <li id="edit-comment-${data.comment}" class="edit-comment">Edit Comment</li>
-                    <li id="delete-comment-${data.comment}" class="delete-comment">Delete Comment</li>
-                </ul>
-            </div>
-            <div class="confirm-dialog" id="confirm-dialog-${data.comment}" style="visibility: hidden;">
-                <div style="padding-bottom: 5px;">Are you sure?</div>
-                <button name="yes" class="button button-secondary" type="button">Yes</button>
-                <button name ="no" class="button button-secondary" type="button">No</button>
-            </div>
-            <div class="single-comment-menu">
-                <ul>
-                    <li>thumb_up</li>
-                    <li>comment</li>
-                    <!-- <li>file_upload</li>
-                    <li>share</li> -->
-                </ul>
-            </div>
-        `;
+    const container = document.getElementsByClassName(`comments-container ${entry}`)[0];
+    const newComment = document.createElement("div");
+    newComment.className = "new-comment";
+    newComment.innerHTML = data;
     container.appendChild(newComment);
-    startListeners("comment-options", commentMenu);
-    startListeners("delete-comment", confirmDelete);
-    startListeners("edit-comment", editComment);
+    startListeners("comment-options", "click", commentMenu);
+    startListeners("delete-comment", "click", confirmDelete);
+    startListeners("edit-comment", "click", editComment);
+
 }
+// function writeComment(data, entry) {
+//     const container = document.getElementsByClassName(`comments-container ${entry}`)[0];
+//     const raw_date = new Date(data.date);
+//     const date_options = { hour12: true,
+//         timeZone: "UTC",
+//         month: "long",
+//         day: "numeric",
+//         hour: "numeric",
+//         minute: "numeric" };
+//     const date = raw_date.toLocaleDateString('en-US', date_options);
+//     const newComment = document.createElement('div')
+//     newComment.className = "single-comment";
+//     newComment.id = `comment-${data.comment}`
+//     newComment.innerHTML = `
+//         <div class="comment-avatar">
+//             <img class="avatar-30" src="${data.avatar}">
+//         </div>
+//         <div class="comment-username">
+//             ${data.username}
+//         </div>
+//             <div class="comment-contents" id="comment-contents-${data.comment}">
+//                 ${data.contents}
+//             </div>
+//             <div class="comment-options" role="button" id="comment-options-${data.comment}">
+//                 more_vert
+//             </div>
+//             <div class="comment-menu" id="comment-menu-${data.comment}" style="visibility: hidden;">
+//                 <ul>
+//                     <li id="edit-comment-${data.comment}" class="edit-comment">Edit Comment</li>
+//                     <li id="delete-comment-${data.comment}" class="delete-comment">Delete Comment</li>
+//                 </ul>
+//             </div>
+//             <div class="confirm-dialog" id="confirm-dialog-${data.comment}" style="visibility: hidden;">
+//                 <div style="padding-bottom: 5px;">Are you sure?</div>
+//                 <button name="yes" class="button button-secondary" type="button">Yes</button>
+//                 <button name ="no" class="button button-secondary" type="button">No</button>
+//             </div>
+//             <div class="single-comment-menu">
+//                 <ul>
+//                     <li>thumb_up</li>
+//                     <li>comment</li>
+//                     <li class="comment-date small">${date}</li>
+//                     <!-- <li>file_upload</li>
+//                     <li>share</li> -->
+//                 </ul>
+//             </div>
+//         `;
+    // container.appendChild(newComment);
+    // startListeners("comment-options", "click", commentMenu);
+    // startListeners("delete-comment", "click", confirmDelete);
+    // startListeners("edit-comment", "click", editComment);
+// }
 
 function writeNewComment(id, contents) {
     commentContents = document.getElementById(`comment-contents-${id}`);
@@ -130,20 +143,6 @@ function editComment(id) {
     commentMenu(id);
     const comment = document.getElementById(`comment-${id}`);
     const contents = parseEditText(comment);
-    // prevContents = comment.getElementsByTagName("p");
-    // let contents = "";
-    // if (prevContents.length > 1 ) {
-    //     for (var i=0; i < prevContents.length; i++) {
-    //         let item = prevContents[i];
-    //         if (i === (prevContents.length -1)) {
-    //             contents += `${item.textContent}`;
-    //         } else {    
-    //             contents += `${item.textContent}\n`;
-    //         }
-    //     }
-    // } else {
-    //     contents += `${prevContents[0].textContent}`;
-    // }
     editDialog = document.createElement("div");
     setAttributes(editDialog, {
         "class": "comment-edit-dialog shadow-box",
@@ -162,9 +161,9 @@ function editComment(id) {
         "value": "Save",
         "class": "button button-secondary comment-post-button"
     });
-    cancelButton = document.createElement("div");
-    cancelButton.textContent = "cancel"
-    setAttributes(cancelButton, {
+    cancelCommentButton = document.createElement("div");
+    cancelCommentButton.textContent = "cancel"
+    setAttributes(cancelCommentButton, {
         "class": "shadow-box comment-edit-cancel-button material-icons",
         "id": `cancel-button-${id}`
     })
@@ -173,11 +172,11 @@ function editComment(id) {
     autoResize.textContent = `autosize(document.getElementById("${textArea.id}"))`;
     form.appendChild(textArea);
     form.appendChild(saveButton);
-    form.appendChild(cancelButton);
+    form.appendChild(cancelCommentButton);
     editDialog.appendChild(form);
     editDialog.appendChild(autoResize);
     comment.appendChild(editDialog);
-    editListeners(cancelButton, saveButton, id);
+    editListeners(cancelCommentButton, saveButton, id);
 }
 
 function parseEditText(comment) {
@@ -198,9 +197,9 @@ function parseEditText(comment) {
     return contents;
 }
 
-function editListeners(cancelButton, saveButton, id) {
+function editListeners(cancelCommentButton, saveButton, id) {
     const dialog = document.getElementById(`comment-edit-dialog-${id}`)
-    cancelButton.addEventListener('mousedown', () => {
+    cancelCommentButton.addEventListener('mousedown', () => {
         dialog.remove();
     });
     saveButton.addEventListener("mousedown", () => {

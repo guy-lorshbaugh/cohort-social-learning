@@ -12,12 +12,6 @@
                         <label for="title">Title</label>
                         {% set process = form.title.process_data(info.title) %}
                         {{ form.title() }}
-                        <label for="date"> Date</label>
-                        {% set process = form.date.process_data(info.date) %}
-                        {{ form.date() }}
-                        <label for="time_spent">Time Spent</label>
-                        {% set process = form.time_spent.process_data(info.time_spent) %}
-                        {{ form.time_spent() }}
                         <label for="learned">What I Learned</label>
                         {% set process = form.learned.process_data(info.learned) %}
                         {{ form.learned() }}

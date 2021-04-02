@@ -1,4 +1,4 @@
-import datetime
+import datetime, time
 import json
 from os import listdir
 
@@ -14,12 +14,12 @@ import forms
 import logging
 import models
 
-logger = logging.getLogger('peewee')
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
+# logger = logging.getLogger('peewee')
+# logger.addHandler(logging.StreamHandler())
+# logger.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
-app.secret_key ="430po9tgjlkifdsc.p0ow40-23365fg4h,."
+app.secret_key = "430po9tgjlkifdsc.p0ow40-23365fg4h,."
 app.templates_auto_reload = True
 app.debug = True
 CSRFProtect(app)
@@ -100,6 +100,16 @@ def get_likes(id):
     return likes
 
 
+def del_entry_comments(id):
+    """Deletes comments associated with a deleted entry"""
+    comments = (models.Comment
+                .select()
+                .where(models.Comment.entry_id == id)
+        )
+    for item in comments:
+        item.delete_instance()
+
+
 def get_entries(id):
     """Retrieves entries by User ID"""
     entries = (
@@ -118,6 +128,15 @@ def get_avatars(path):
     return sorted(avatar_list, key = lambda i: i['url'])
 
 
+@app.context_processor
+def insert_now():
+    return { "insert_now": datetime.datetime.now() }
+
+@app.context_processor
+def get_browser():
+    return { "browser": request.user_agent.browser }
+
+
 @login_manager.user_loader
 def load_user(userid):
     try:
@@ -131,6 +150,7 @@ def avatar():
     avatar_path = "static/img/avatar-svg"
     avatars = get_avatars(avatar_path)
     return render_template('avatars.html', avatars=avatars)
+
 
 @app.route('/emoji')
 def emoji():
@@ -191,10 +211,22 @@ def register():
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/entries", methods=['GET', 'POST'])
 def index():
-    journal = models.Entry.select().order_by(models.Entry.date.desc())
+    # journal = (models.Entry.select()
+    #         .where(models.Entry.private==False)
+    #         .order_by(models.Entry.date.desc())
+    #         )
+    journal = (models.Entry.select()
+            .where(models.Entry.private==False)
+            .order_by(models.Entry.date.desc()).limit(10)
+            )
     login_form = forms.LoginForm()
-    with open('static/script/emoji_.json') as file:
+    with open('static/script/emoji_.json', encoding='UTF-8') as file:
         emoji_data = json.load(file)
+    emoji = {}
+    for record in emoji_data:
+        name = record["name"]
+        if name not in emoji:
+            emoji[name] = record
     if login_form.validate_on_submit():
         try:
             user = models.User.get(models.User.username == login_form.username.data)
@@ -208,7 +240,8 @@ def index():
             flash("User name or password incorrect")
             return redirect(url_for('index'))
         return redirect(url_for('index'))
-    return render_template('index.html', journal=journal, models=models, form=login_form, emoji=emoji_data)
+    return render_template('index.html', journal=journal, models=models,
+                         login_form=login_form, emoji=emoji.values())
 
 
 @app.route("/entries/<id>")
@@ -224,12 +257,11 @@ def create():
     if form.validate_on_submit():
         models.Entry.create(
             title=form.title.data,
-            date=datetime.datetime.combine(form.date.data,
-                datetime.datetime.now().time()),
-            time_spent=form.time_spent.data,
+            date=datetime.datetime.now(),
             learned=form.learned.data,
             remember=form.remember.data,
-            user_id=current_user.id
+            user_id=current_user.id,
+            private=form.private.data
         )
         tags_list = form.tags.data.split(', ')
         entry = models.Entry.get(models.Entry.title == form.title.data)
@@ -244,8 +276,8 @@ def create():
                 entry_id=entry.id,
                 tag_id=tag_data
             )
-        flash("Your Entry has been created!")
-        return redirect(url_for('index'))
+        # flash("Your Entry has been created!")
+        return redirect(url_for('create'))
     return render_template('new.html', form=form)
 
 
@@ -263,10 +295,6 @@ def edit(id):
     form = forms.Post()
     if form.validate_on_submit():
         entry.title = form.title.data
-        entry.date = (datetime.datetime
-                        .combine(form.date.data, entry.date.time())
-                        )
-        entry.time_spent = form.time_spent.data
         entry.learned = form.learned.data
         entry.remember = form.remember.data
         for item in form.tags.data.split(', '):
@@ -287,6 +315,22 @@ def edit(id):
         return redirect(url_for('index'))
     return render_template("edit.html", form=form, id=id, 
                             models=models, tags=tags)
+
+
+@app.route("/entries/get/<path:contents>")
+def get_entry(contents):
+    contents = contents.replace("&quest;", "?")
+    query = (models.Entry
+            .select()
+            .where(models.Entry.title == contents)
+            .order_by(models.Entry.date.desc())
+            .limit(1)
+            )
+    entry = query.dicts().get()
+    # time.sleep(5)
+    return jsonify(render_template("get-entry.html", entry=entry, models=models))
+    
+
 
 @app.route("/entries/<tag>/tag")
 def tag(tag):
@@ -312,10 +356,11 @@ def user(id):
 
 @app.route("/entries/<id>/delete")
 @login_required
-def delete(id):
+def delete_entry(id):
     models.Entry.get(models.Entry.id==id).delete_instance()
     del_tags(id)
-    flash("Your journal entry has been deleted.")
+    del_entry_comments(id)
+    flash("Your entry has been deleted.")
     return redirect(url_for('index'))
 
 
@@ -341,15 +386,40 @@ def like(entry):
         )
         entry.increment_entry_score()
     likes = entry_likes.select().where(entry_likes.entry_id == entry.id)
-    return str(len(list(likes)))
+    liker_query = (
+        models.User
+        .select()
+        .join(models.EntryLikes)
+        .join(models.Entry)
+        .where(models.Entry.id == entry.id)
+        .order_by(models.User.username)
+    )
+    likers = []
+    for user in liker_query:
+        likers.append({
+            "username": user.username,
+            "avatar": user.avatar
+            })
+    return jsonify({
+        "action": "like",
+        "count": str(len(list(likes))),
+        "likers": likers
+        })
 
 @app.route('/entries/<int:entry>/comment/<path:contents>/', methods=['GET', 'POST'])
 @login_required
 def comment(entry, contents):
     comment = models.Comment
+    comments = (models.Comment
+                .select()
+                .where(models.Comment.entry_id == entry)
+                .order_by(models.Comment.date.desc())
+                .limit(1)
+                )
     if request.method == 'GET':
         comment.create(
             contents = contents,
+            date = datetime.datetime.now(),
             entry_id = entry,
             user_id = current_user.id
         )
@@ -359,13 +429,38 @@ def comment(entry, contents):
             .where(models.Entry.id == entry)
         )
         target_entry.get().increment_entry_score()
+        action = "'action': 'comment'"
         new_comment = comment.get(comment.contents == contents);
-        return jsonify({ "action": "comment",
-                         "contents": contents,
-                         "entry": entry,
-                         "username": current_user.username,
-                         "avatar": current_user.avatar,
-                         "comment": new_comment.id })
+        return jsonify({"action": "comment",
+                "html": render_template('comment.html', comments=comments,
+                models=models, current_user=current_user) })
+
+# @app.route('/entries/<int:entry>/comment/<path:contents>/', methods=['GET', 'POST'])
+# @login_required
+# def comment(entry, contents):
+#     comment = models.Comment
+#     date = datetime.datetime.now()
+#     if request.method == 'GET':
+#         comment.create(
+#             contents = contents,
+#             date = date,
+#             entry_id = entry,
+#             user_id = current_user.id
+#         )
+#         target_entry = (
+#             models.Entry
+#             .select()
+#             .where(models.Entry.id == entry)
+#         )
+#         target_entry.get().increment_entry_score()
+#         new_comment = comment.get(comment.contents == contents);
+#         return jsonify({ "action": "comment",
+#                          "contents": contents,
+#                          "date": datetime.datetime.now(),
+#                          "entry": entry,
+#                          "username": current_user.username,
+#                          "avatar": current_user.avatar,
+#                          "comment": new_comment.id })
 
 
 @app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
@@ -374,7 +469,6 @@ def edit_comment(comment_id, contents):
     comment = models.Comment.get(models.Comment.id == comment_id)
     comment.contents = contents
     comment.save()
-    # print(comment_id, contents)
     return jsonify({
         "action": "edit",
         "contents": contents,
@@ -387,16 +481,44 @@ def edit_comment(comment_id, contents):
 @login_required
 def delete_comment(comment):
     delete_comment = models.Comment.get(models.Comment.id==comment)
+    entry = models.Entry.get(models.Entry.id == delete_comment.entry_id)
     if delete_comment.user_id == current_user.id:
         delete_comment.delete_instance()
-        # flash("Your Comment has been deleted.")
-        return jsonify({ "action" : "delete",
-                         "flash": "Your Comment has been deleted." })
+        entry.decrement_entry_score()
+        return jsonify({ "action": "delete",
+                "flash": "Your Comment has been deleted." })
     else:
-        flash("You can't delete someone else's comment!")
+        return jsonify({ "action": "delete",
+                "flash": "You can't delete someone else's comment." })
+
+@app.route('/entries/sortby/<string:choice>/')
+def sort_entries(choice):
+    journal = models.Entry.select().where(models.Entry.private==False)
+    if choice == "top":
+        journal = ( journal
+                    .order_by(models.Entry.entry_score.desc())
+                    .limit(10)
+                )
+    elif choice == "recent":
+        journal = ( journal
+                    .order_by(models.Entry.date
+                    .desc())
+                    .limit(10)
+                )
+    login_form = forms.LoginForm()
+    with open('static/script/emoji_.json', encoding='UTF-8') as file:
+        emoji_data = json.load(file)
+    emoji = {}
+    for record in emoji_data:
+        name = record["name"]
+        if name not in emoji:
+            emoji[name] = record
+    return jsonify(render_template('sort.html', journal=journal, models=models,
+                    login_form=login_form, emoji=emoji.values()))
+
 
 
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='local.host', port="8000")
+    app.run(debug=True, host='192.168.0.16', port="8000")

@@ -26,8 +26,13 @@
             {% endwith %}
             {% if current_user.is_authenticated %}
             <ul class="site-header">
-                <li><a class="logo-box" href="{{ url_for('index') }}"><span class="material-icons" style="font-size: 40px;">home</span><span style="font-size: 1rem;">Home</span></a>
+                <li><a class="logo-box" href="{{ url_for('index') }}">
+                    <span class="material-icons" style="font-size: 40px;">
+                        home
+                    </span>
+                    <span style="font-size: 1rem;">Home</span></a>
                 </li>
+                <!-- <li><a href="{{ url_for('index') }}"><img id="cohort-logo" src="{{ url_for('static', filename='img/cohort-logo-no-ds.svg')}}"></a></li> -->
                 <li class="user-menu-button" id="user-menu-button" onclick="userMenuOpen()">
                     <img class="avatar-30" src="{{ current_user.avatar }}">
                     <span class="small" style="margin-left: 5px;">{{ current_user.username }}</span>
@@ -54,7 +59,7 @@
                         </ul>
                     </div>
                 </li>
-                <script type="text/javascript">
+                <!-- <script type="text/javascript">
                     userMenu = document.getElementById("user-menu");
                     button = document.getElementById("user-menu-button")
                     function userMenuOpen() {
@@ -76,14 +81,15 @@
                             }
                         }
                     });
-                </script>
-                <li style="margin-left: auto;"><a class="logo-box" href="{{ url_for('create') }}"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></a></li>
+                </script> -->
+                <li class="new-entry-button logo-box"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></li>
             </ul>
             {% endif %}
         </header>
         </section>
         <div style="margin-bottom: 50px;"> </div>
         <div tabindex="0" onclick="topFunction()" id="top-button" class="material-icons" title="Go to top">keyboard_arrow_up</div>
+        
         {% block content %}{% endblock %}
 
         <footer>
@@ -93,7 +99,19 @@
             </div>
         </footer>
     </body>
-    <script type="text/javascript" src="{{ url_for('static', filename='script/scroll-btn.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='script/flash-display.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='script/get-id.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='script/emoji-menu.js') }}">
+    </script>
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/scroll-btn.js') }}">
+    </script>
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/user-menu-open.js') }}">
+    </script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='script/flash-display.js') }}">
+    </script>
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/get-id.js') }}">
+    </script>
 </html>

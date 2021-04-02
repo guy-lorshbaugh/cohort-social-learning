@@ -21,9 +21,9 @@ class BaseModel(Model):
 class Entry(BaseModel):
     title = CharField(max_length=100)
     date = DateTimeField(default=datetime.datetime.now)
-    time_spent = IntegerField(default=0)
     learned = TextField(null=False)
     remember = TextField(default=" ")
+    private = BooleanField(default=False)
     user_id = IntegerField()
     entry_score = IntegerField(default=0)
 
@@ -71,6 +71,7 @@ class EntryLikes(BaseModel):
 
 class Comment(BaseModel):
     contents = CharField(null=False)
+    date = DateTimeField(null=False)
     user_id = IntegerField(null=False)
     entry_id = IntegerField(null=False)
     comment_score = IntegerField(default=0)
@@ -89,8 +90,18 @@ class CommentLikes(BaseModel):
     comment_id = ForeignKeyField(Comment)
 
 
+class CommentReplies(BaseModel):
+    content = CharField(null=False)
+    comment_id = ForeignKeyField(Comment)
+    user_id = ForeignKeyField(User)
+
+
+class Test(BaseModel):
+    content = CharField()
+
+
 def initialize():
     DATABASE.connect()
     DATABASE.create_tables([Entry, Tags, EntryTags, User, EntryLikes,
-                            Comment, CommentLikes], safe=True)
+                Comment, CommentLikes, CommentReplies, Test], safe=True)
     DATABASE.close()
