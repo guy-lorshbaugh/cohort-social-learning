@@ -1,4 +1,5 @@
 import datetime, time
+from operator import add
 import json
 from os import listdir
 
@@ -128,6 +129,55 @@ def get_avatars(path):
     return sorted(avatar_list, key = lambda i: i['url'])
 
 
+# def process_emoji(skin_tone=""):
+#     with open('static/script/emoji_.json', encoding='UTF-8') as file:
+#         emoji_data = json.load(file)
+#     emoji = {}
+#     for record in emoji_data:
+#         name = record["name"]
+#         if name not in emoji:
+#             if "People & Body" in record["category"]:
+#                 if (skin_tone
+#                     and skin_tone != "light skin tone"
+#                     and skin_tone != "dark skin tone"):
+#                     if skin_tone not in name:
+#                         pass
+#                     else:
+#                         emoji[name] = record
+#                 elif skin_tone == "light skin tone":
+#                     if (skin_tone not in name
+#                         or "medium-light skin tone" in name):
+#                         pass
+#                     else:
+#                         emoji[name] = record
+#                 elif skin_tone == "dark skin tone":
+#                     if (skin_tone not in name
+#                         or "medium-dark skin tone" in name):
+#                         pass
+#                     else:
+#                         emoji[name] = record
+#                 elif skin_tone == "":
+#                     if "skin tone" in name:
+#                         pass
+#                     else:
+#                         emoji[name] = record
+#             else:
+#                 emoji[name] = record
+#     return emoji
+
+
+def process_emoji():
+    with open('static/script/emoji_copy.json', encoding='UTF-8') as file:
+        emoji_data = json.load(file)
+    emoji = {}
+    for record in emoji_data:
+        name = record["name"]
+        if name not in emoji:
+            emoji[name] = record
+    return emoji
+
+
+
 @app.context_processor
 def insert_now():
     return { "insert_now": datetime.datetime.now() }
@@ -220,13 +270,7 @@ def index():
             .order_by(models.Entry.date.desc()).limit(10)
             )
     login_form = forms.LoginForm()
-    with open('static/script/emoji_.json', encoding='UTF-8') as file:
-        emoji_data = json.load(file)
-    emoji = {}
-    for record in emoji_data:
-        name = record["name"]
-        if name not in emoji:
-            emoji[name] = record
+    emoji = process_emoji()
     if login_form.validate_on_submit():
         try:
             user = models.User.get(models.User.username == login_form.username.data)
@@ -328,8 +372,7 @@ def get_entry(contents):
             )
     entry = query.dicts().get()
     # time.sleep(5)
-    return jsonify(render_template("get-entry.html", entry=entry, models=models))
-    
+    return jsonify(render_template("get-entry.html", entry=entry, models=models))    
 
 
 @app.route("/entries/<tag>/tag")
@@ -406,6 +449,7 @@ def like(entry):
         "likers": likers
         })
 
+
 @app.route('/entries/<int:entry>/comment/<path:contents>/', methods=['GET', 'POST'])
 @login_required
 def comment(entry, contents):
@@ -431,36 +475,11 @@ def comment(entry, contents):
         target_entry.get().increment_entry_score()
         action = "'action': 'comment'"
         new_comment = comment.get(comment.contents == contents);
-        return jsonify({"action": "comment",
-                "html": render_template('comment.html', comments=comments,
-                models=models, current_user=current_user) })
-
-# @app.route('/entries/<int:entry>/comment/<path:contents>/', methods=['GET', 'POST'])
-# @login_required
-# def comment(entry, contents):
-#     comment = models.Comment
-#     date = datetime.datetime.now()
-#     if request.method == 'GET':
-#         comment.create(
-#             contents = contents,
-#             date = date,
-#             entry_id = entry,
-#             user_id = current_user.id
-#         )
-#         target_entry = (
-#             models.Entry
-#             .select()
-#             .where(models.Entry.id == entry)
-#         )
-#         target_entry.get().increment_entry_score()
-#         new_comment = comment.get(comment.contents == contents);
-#         return jsonify({ "action": "comment",
-#                          "contents": contents,
-#                          "date": datetime.datetime.now(),
-#                          "entry": entry,
-#                          "username": current_user.username,
-#                          "avatar": current_user.avatar,
-#                          "comment": new_comment.id })
+        return jsonify({
+            "action": "comment",
+            "html": render_template('comment.html', comments=comments,
+                models=models, current_user=current_user)
+            })
 
 
 @app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
@@ -491,6 +510,7 @@ def delete_comment(comment):
         return jsonify({ "action": "delete",
                 "flash": "You can't delete someone else's comment." })
 
+
 @app.route('/entries/sortby/<string:choice>/')
 def sort_entries(choice):
     journal = models.Entry.select().where(models.Entry.private==False)
@@ -506,19 +526,12 @@ def sort_entries(choice):
                     .limit(10)
                 )
     login_form = forms.LoginForm()
-    with open('static/script/emoji_.json', encoding='UTF-8') as file:
-        emoji_data = json.load(file)
-    emoji = {}
-    for record in emoji_data:
-        name = record["name"]
-        if name not in emoji:
-            emoji[name] = record
+    emoji = process_emoji()
     return jsonify(render_template('sort.html', journal=journal, models=models,
                     login_form=login_form, emoji=emoji.values()))
-
 
 
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='192.168.0.16', port="8000")
+    app.run(debug=True, host='localhost', port="8000")

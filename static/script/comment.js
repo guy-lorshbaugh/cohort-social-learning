@@ -81,58 +81,6 @@ function writeComment(data, entry) {
     startListeners("edit-comment", "click", editComment);
 
 }
-// function writeComment(data, entry) {
-//     const container = document.getElementsByClassName(`comments-container ${entry}`)[0];
-//     const raw_date = new Date(data.date);
-//     const date_options = { hour12: true,
-//         timeZone: "UTC",
-//         month: "long",
-//         day: "numeric",
-//         hour: "numeric",
-//         minute: "numeric" };
-//     const date = raw_date.toLocaleDateString('en-US', date_options);
-//     const newComment = document.createElement('div')
-//     newComment.className = "single-comment";
-//     newComment.id = `comment-${data.comment}`
-//     newComment.innerHTML = `
-//         <div class="comment-avatar">
-//             <img class="avatar-30" src="${data.avatar}">
-//         </div>
-//         <div class="comment-username">
-//             ${data.username}
-//         </div>
-//             <div class="comment-contents" id="comment-contents-${data.comment}">
-//                 ${data.contents}
-//             </div>
-//             <div class="comment-options" role="button" id="comment-options-${data.comment}">
-//                 more_vert
-//             </div>
-//             <div class="comment-menu" id="comment-menu-${data.comment}" style="visibility: hidden;">
-//                 <ul>
-//                     <li id="edit-comment-${data.comment}" class="edit-comment">Edit Comment</li>
-//                     <li id="delete-comment-${data.comment}" class="delete-comment">Delete Comment</li>
-//                 </ul>
-//             </div>
-//             <div class="confirm-dialog" id="confirm-dialog-${data.comment}" style="visibility: hidden;">
-//                 <div style="padding-bottom: 5px;">Are you sure?</div>
-//                 <button name="yes" class="button button-secondary" type="button">Yes</button>
-//                 <button name ="no" class="button button-secondary" type="button">No</button>
-//             </div>
-//             <div class="single-comment-menu">
-//                 <ul>
-//                     <li>thumb_up</li>
-//                     <li>comment</li>
-//                     <li class="comment-date small">${date}</li>
-//                     <!-- <li>file_upload</li>
-//                     <li>share</li> -->
-//                 </ul>
-//             </div>
-//         `;
-    // container.appendChild(newComment);
-    // startListeners("comment-options", "click", commentMenu);
-    // startListeners("delete-comment", "click", confirmDelete);
-    // startListeners("edit-comment", "click", editComment);
-// }
 
 function writeNewComment(id, contents) {
     commentContents = document.getElementById(`comment-contents-${id}`);

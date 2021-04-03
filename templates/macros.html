@@ -15,9 +15,25 @@
 -->
 {% macro emoji_menu(emoji) %}
     <div id="emoji-menu-prototype">
+        <div class ="tone-picker">
+            <div class="tone-choice default" tone="default"> </div>
+            <div class="tone-choice light" tone="skin-tone-1"> </div>
+            <div class="tone-choice mediumlight" tone="skin-tone-2"> </div>
+            <div class="tone-choice medium" tone="skin-tone-3"> </div>
+            <div class="tone-choice mediumdark" tone="skin-tone-4"> </div>
+            <div class="tone-choice dark" tone="skin-tone-5"> </div>
+        </div>
         <div class="emoji-category-nav">
             <ul>
             </ul>
+        </div>
+        <div class="kiss-selector shadow-box">
+            {% for entry in emoji 
+               if "People & Body" in entry["category"]
+               and "kiss: skin-tone-" in entry["name"]
+               or "kiss: person, person" in entry["name"] %}
+               <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+            {% endfor %}
         </div>
         <div class="emoji-list-container" id="emoji-list-container">
         {% set categories = [] %}
@@ -47,22 +63,48 @@
         {% for item in categories %}
             {% if item == "Component" %}
                 {{ pass }}
+            {% elif item == "People & Body" %}
+                <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
+                <h6 >{{ item }}</h6>
+                <div class="emoji-container people-body">
+                    {% for entry in emoji if "People & Body" in entry["category"] %}
+                        {% set name = entry["name"] %}
+                        {% if "holding hands" in name %}
+                            {{ pass }}
+                        {% elif "kiss" in name %}
+                            {{ pass }}
+                        {% elif "couple with heart" in name %}
+                            {{ pass }}
+                        {% elif "family" in name %}
+                            {{ pass }}
+                        {% elif "no_tone" in name %}
+                            <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone" not in name %}
+                            <span class="emoji" tone="default" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-1" in name %}
+                            <span class="emoji" tone="skin-tone-1" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-2" in name %}
+                            <span class="emoji" tone="skin-tone-2" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-3" in name %}
+                            <span class="emoji" tone="skin-tone-3" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-4" in name %}
+                            <span class="emoji" tone="skin-tone-4" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-5" in name %}
+                            <span class="emoji" tone="skin-tone-5" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="emoji" id="kiss" title="kiss">💏</span>
+                </div>
             {% else %}
                 <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
                 <h6 >{{ item }}</h6>
                 <div class="emoji-container">
                     {% for entry in emoji %}
                         {% if entry['group'] == item %}
-                            {% if "skin tone" in entry['name'] %}
+                            {% if entry['name'] in exclude %}
                                 {{ pass }}
-                            {% elif  browser == "chrome" %}
-                                <span class="emoji" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
                             {% else %}
-                                {% if entry['name'] in exclude %}
-                                    {{ pass }}
-                                {% else %}
-                                    <span class="emoji" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                                {% endif %}
+                                <span class="emoji" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
                             {% endif %}
                         {% endif %}
                     {% endfor %}

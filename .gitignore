@@ -9,3 +9,4 @@ avatar_test.py
 templates/avatars.html
 __journal.db
 jinja_dump
+static/img/noto-svg

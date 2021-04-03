@@ -913,6 +913,56 @@ input[type=submit] {
 	margin-bottom: 10px;
 	font-size: 26px;
 }
+.kiss-selector {
+	display: grid;
+    grid-template-columns: repeat(5, 36px);
+    grid-template-rows: repeat(5, 36px);
+	position: absolute;
+	top: 55px;
+	left: 83px;
+	width: 190px;
+	height: 190px;
+	padding: 5px;
+}
+.tone-picker {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-evenly;
+	align-items: center;
+	position: absolute;
+	top: 51px;
+	right: 25px;
+	width: 140px;
+	height: 20px;
+	/* border: 1px solid royalblue; */
+	border-radius: 8px;
+	background-color: white;
+	z-index: 100;
+}
+.tone-choice {
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+.tone-choice.default {
+	background-color: #FFC400;
+}
+.tone-choice.light {
+	background-color: #FBDAB1;
+}
+.tone-choice.mediumlight {
+	background-color: #DAB389;
+}
+.tone-choice.medium {
+	background-color: #B48663;
+}
+.tone-choice.mediumdark {
+	background-color: #9E653B;
+}
+.tone-choice.dark {
+	background-color: #64473D;
+}
 
 /* --- NEW ENTRY WINDOW --- */
 

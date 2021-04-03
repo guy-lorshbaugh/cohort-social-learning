@@ -8,13 +8,16 @@ function emojiMenuListeners() {
         });
     }
 }
-
 emojiMenuListeners();
+
+
 
 function emojiOpenClose(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
+    // console.log(emojiMenu);
     const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
+    const tone_choices = emojiMenu.getElementsByClassName("tone-choice");
     if (!emojiMenu.innerHTML) {
         emojiMenu.innerHTML = menuContents;
         addEmojiListeners(target);
@@ -30,6 +33,30 @@ function emojiOpenClose(target) {
         emojiMenu.style.width = "0px";
         emojiMenu.style.height = "0px";
         button.classList.remove("active");
+    }
+    for (var item of tone_choices) {
+        let tone = item.getAttribute("tone");
+        item.addEventListener("click", () => {
+            skinTonePicker(emojiMenu, tone)
+        })
+    }
+    skinTonePicker(emojiMenu);
+}
+
+function skinTonePicker(emojiMenu, skin_tone="default") {
+    const peopleBody = emojiMenu.getElementsByClassName("people-body")[0];
+    const emoji = peopleBody.getElementsByTagName("span");
+    for (item of emoji) {
+        let title = item.getAttribute("tone");
+        if (title.includes("none")) {
+            if (item.style.display === "hidden") {
+                item.style.display = "flex";
+            }
+        } else if (title.includes(skin_tone)) {
+            item.style.display = "flex";
+        } else {
+            item.style.display = "none";
+        }
     }
 }
 
