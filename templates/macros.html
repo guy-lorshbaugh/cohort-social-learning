@@ -27,17 +27,48 @@
             <ul>
             </ul>
         </div>
-        <div class="kiss-selector shadow-box">
-            {% for entry in emoji 
-               if "People & Body" in entry["category"]
-               and "kiss: skin-tone-" in entry["name"]
-               or "kiss: person, person" in entry["name"] %}
-               <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+        <!-- Selector for "kiss" -->
+        <div class="kiss-selector shadow-box" style="visibility: hidden;">
+            {% for entry in emoji %}
+                {% set code = entry["codes"].replace(" ", "_") %}
+                {% set src = url_for('static', filename='img/noto-svg/emoji_u' + code + '.svg') %}
+                {% if "People & Body" in entry["category"]
+                   and "kiss: skin-tone-" in entry["name"]
+                   or "kiss: person, person" in entry["name"] %}
+                    {% set code = entry["codes"].replace(" ", "_") %}
+                    {% set src = url_for('static', filename='img/noto-svg/emoji_u' + code + '.svg') %}
+                    <span class="emoji" tone="none"
+                    title="{{ entry['name'] }}"
+                    char="{{ entry['char'] }}">
+                        <img src="{{ src }}" loading="lazy" width="28px" height="28px"></span>
+                {% endif %}
             {% endfor %}
         </div>
+        <span class="emoji kiss-default shadow-box" 
+         style="visibility: hidden;" tone="none" title="kiss-default">
+            <img width="28px" height="28px" class="emoji-svg"
+             src="{{ url_for('static', filename='img/noto-svg/emoji_u1F48F.svg') }}">
+        </span>
+        <!-- Selector for "couple with heart" -->
+        <!-- <div class="kiss-selector shadow-box" style="visibility: hidden;">
+            {% for entry in emoji %}
+                {% set code = entry["codes"].replace(" ", "_") %}
+                {% set src = url_for('static', filename='img/noto-svg/emoji_u' + code + '.svg') %}
+                {% if "People & Body" in entry["category"]
+                   and "kiss: skin-tone-" in entry["name"]
+                   or "kiss: person, person" in entry["name"] %}
+                    {% set code = entry["codes"].replace(" ", "_") %}
+                    {% set src = url_for('static', filename='img/noto-svg/emoji_u' + code + '.svg') %}
+                    <span class="emoji" tone="none"
+                    title="{{ entry['name'] }}"
+                    char="{{ entry['char'] }}">
+                        <img src="{{ src }}" loading="lazy" width="24px" height="24px"></span>
+                {% endif %}
+            {% endfor %}
+        </div> -->
         <div class="emoji-list-container" id="emoji-list-container">
         {% set categories = [] %}
-        {% set exclude = [ 'face in clouds', 'face with spiral eyes',
+        <!-- {% set exclude = [ 'face in clouds', 'face with spiral eyes',
             'face exhaling', 'heart on fire', 'mending heart',
             'eye in speech bubble', 'man: beard', 'woman: beard',
             'man detective', 'woman detective', 'man in tuxedo', 
@@ -54,7 +85,8 @@
             'people hugging', 'black cat', 'bison', 'mammoth', 'beaver',
             'dodo', 'feather', 'seal, beetle', 'cockroach', 'fly', 
             'worm', 'potted plant', 'blueberries', 'olive', 'bell pepper',
-            'flatbread', 'tamale', 'fondue', 'teapot' ] %}
+            'flatbread', 'tamale', 'fondue', 'teapot' ] %} -->
+        {% set exclude = [] %}
         {% for item in emoji %}
             {% if item['group'] not in categories: %}
                 <!-- {{ categories.append(item['group']) }} -->
@@ -64,47 +96,69 @@
             {% if item == "Component" %}
                 {{ pass }}
             {% elif item == "People & Body" %}
-                <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
+                <span class="emoji-anchor" 
+                 name="{{ item.replace(' ', '').replace('&', '-').lower() }}">
+                </span>
                 <h6 >{{ item }}</h6>
                 <div class="emoji-container people-body">
                     {% for entry in emoji if "People & Body" in entry["category"] %}
+                        {% set code = entry["codes"].replace(" ", "_") %}
+                        {% set src = url_for('static', filename='img/noto-svg/emoji_u' + code + '.svg') %}
+                            <!-- {{ code }} -->
                         {% set name = entry["name"] %}
-                        {% if "holding hands" in name %}
+                        {% if "holding hands" in name 
+                           or "kiss" in name 
+                           or "couple with heart" in name 
+                           or "family" in name %}
                             {{ pass }}
-                        {% elif "kiss" in name %}
-                            {{ pass }}
-                        {% elif "couple with heart" in name %}
-                            {{ pass }}
-                        {% elif "family" in name %}
-                            {{ pass }}
-                        {% elif "no_tone" in name %}
-                            <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                        {% elif "skin-tone" not in name %}
-                            <span class="emoji" tone="default" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                        {% elif "skin-tone-1" in name %}
-                            <span class="emoji" tone="skin-tone-1" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                        {% elif "skin-tone-2" in name %}
-                            <span class="emoji" tone="skin-tone-2" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                        {% elif "skin-tone-3" in name %}
-                            <span class="emoji" tone="skin-tone-3" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                        {% elif "skin-tone-4" in name %}
-                            <span class="emoji" tone="skin-tone-4" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
-                        {% elif "skin-tone-5" in name %}
-                            <span class="emoji" tone="skin-tone-5" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% else %}
+                        <span class="emoji" 
+                            {% if "no_tone" in name %}
+                                tone="none"
+                            {% elif "skin-tone" not in name %}
+                                tone="default"
+                            {% elif "skin-tone-1" in name %}
+                                tone="skin-tone-1"
+                            {% elif "skin-tone-2" in name %}
+                                tone="skin-tone-2"
+                            {% elif "skin-tone-3" in name %}
+                                tone="skin-tone-3"
+                            {% elif "skin-tone-4" in name %}
+                                tone="skin-tone-4"
+                            {% elif "skin-tone-5" in name %}
+                                tone="skin-tone-5" 
+                            {% endif %}
+                         title="{{ entry['name'] }}"
+                         char="{{ entry['char'] }}">
+                            <img src="{{ src }}" loading="lazy"
+                             title="{{ entry['name'] }}" class="emoji-svg"
+                             width="28px" height="28px"></span>
                         {% endif %}
                     {% endfor %}
-                    <span class="emoji" id="kiss" title="kiss">💏</span>
+                    <span class="emoji kiss-opener" id="kiss" tone="none" title="kiss">
+                        <img width="28px" height="28px"  class="emoji-svg"
+                         title="kiss"
+                         src="{{ url_for('static',
+                         filename='img/noto-svg/emoji_u1F48F.svg') }}">
+                    </span>
                 </div>
             {% else %}
                 <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
                 <h6 >{{ item }}</h6>
                 <div class="emoji-container">
                     {% for entry in emoji %}
+                        {% set code = entry["codes"].replace(" ", "_") %}
+                        {% set src = url_for('static',
+                           filename='img/noto-svg/emoji_u' + code + '.svg') %}
                         {% if entry['group'] == item %}
                             {% if entry['name'] in exclude %}
                                 {{ pass }}
                             {% else %}
-                                <span class="emoji" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                                <span class="emoji" title="{{ entry['name'] }}"
+                                 char="{{ entry['char'] }}">
+                                    <img src="{{ src }}" loading="lazy"
+                                     title="{{ entry['name'] }}" class="emoji-svg"
+                                     width="28px" height="28px"></span>
                             {% endif %}
                         {% endif %}
                     {% endfor %}

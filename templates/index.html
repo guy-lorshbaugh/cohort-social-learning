@@ -124,7 +124,17 @@
                                 <form method="GET" action="#">
                                     <div id="emoji-menu-{{ entry }}" class="emoji-menu-container" style="width: 0px; height: 0px;"></div>
                                     <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
-                                    <textarea placeholder="Comment" 
+                                    <div data-ph="Comment" 
+                                        contenteditable="true"
+                                        id="comment-{{ entry.id }}"
+                                        class="comment-field-div"
+                                        required
+                                        aria-required="true"></div>
+                                        <input type="button" 
+                                        onclick="makeCommentLink({{ entry.id }})" 
+                                        value="Post" class="button button-secondary comment-post-button"
+                                        >
+                                    <!-- <textarea placeholder="Comment" 
                                         id="comment-{{ entry.id }}"
                                         class="comment-field"
                                         required
@@ -135,7 +145,7 @@
                                         >
                                     <script type="text/javascript">
                                         autosize(document.getElementById("comment-{{ entry.id }}"))
-                                    </script>
+                                    </script> -->
                                 </form>
                             </div>
                         </article>

@@ -1,0 +1,185 @@
+{% macro render_field(field) %}
+    <div class="field">
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <div class="notification error">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ field(placeholder=field.label.text) }}
+    </div>
+{% endmacro %}
+
+<!--
+    Renders HTML for emoji menu.
+    NOTE: 4/1/21, Previous exclude list stopped at 'transgender flag'
+-->
+{% macro emoji_menu(emoji) %}
+    <div id="emoji-menu-prototype">
+        <div class ="tone-picker">
+            <div class="tone-choice default" tone="default"> </div>
+            <div class="tone-choice light" tone="skin-tone-1"> </div>
+            <div class="tone-choice mediumlight" tone="skin-tone-2"> </div>
+            <div class="tone-choice medium" tone="skin-tone-3"> </div>
+            <div class="tone-choice mediumdark" tone="skin-tone-4"> </div>
+            <div class="tone-choice dark" tone="skin-tone-5"> </div>
+        </div>
+        <div class="emoji-category-nav">
+            <ul>
+            </ul>
+        </div>
+        <div class="kiss-selector shadow-box">
+            {% for entry in emoji 
+               if "People & Body" in entry["category"]
+               and "kiss: skin-tone-" in entry["name"]
+               or "kiss: person, person" in entry["name"] %}
+               <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+            {% endfor %}
+        </div>
+        <div class="emoji-list-container" id="emoji-list-container">
+        {% set categories = [] %}
+        {% set exclude = [ 'face in clouds', 'face with spiral eyes',
+            'face exhaling', 'heart on fire', 'mending heart',
+            'eye in speech bubble', 'man: beard', 'woman: beard',
+            'man detective', 'woman detective', 'man in tuxedo', 
+            'woman in tuxedo', 'man with veil', 'woman with veil',
+            'woman feeding baby', 'man feeding baby', 'person feeding baby',
+            'man golfing', 'woman golfing', 'woman bouncing ball',
+            'man bouncing ball', 'man lifting weights', 'mx claus',
+            'woman lifting weights', 'kiss: woman, man',
+            'kiss: man, man', 'kiss: woman, woman',
+            'couple with heart: man, woman', 'couple with heart: woman, woman',
+            'couple with heart: man, man', 'couple with heart: woman, man', 
+            'transgender flag', 'smiling face with tear', 'disguised face',
+            'pinched fingers', 'anatomical heart', 'lungs', 'ninja',
+            'people hugging', 'black cat', 'bison', 'mammoth', 'beaver',
+            'dodo', 'feather', 'seal, beetle', 'cockroach', 'fly', 
+            'worm', 'potted plant', 'blueberries', 'olive', 'bell pepper',
+            'flatbread', 'tamale', 'fondue', 'teapot' ] %}
+        {% for item in emoji %}
+            {% if item['group'] not in categories: %}
+                <!-- {{ categories.append(item['group']) }} -->
+            {% endif %}
+        {% endfor %}
+        {% for item in categories %}
+            {% if item == "Component" %}
+                {{ pass }}
+            {% elif item == "People & Body" %}
+                <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
+                <h6 >{{ item }}</h6>
+                <div class="emoji-container people-body">
+                    {% for entry in emoji if "People & Body" in entry["category"] %}
+                        {% set name = entry["name"] %}
+                        {% if "holding hands" in name %}
+                            {{ pass }}
+                        {% elif "kiss" in name %}
+                            {{ pass }}
+                        {% elif "couple with heart" in name %}
+                            {{ pass }}
+                        {% elif "family" in name %}
+                            {{ pass }}
+                        {% elif "no_tone" in name %}
+                            <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone" not in name %}
+                            <span class="emoji" tone="default" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-1" in name %}
+                            <span class="emoji" tone="skin-tone-1" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-2" in name %}
+                            <span class="emoji" tone="skin-tone-2" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-3" in name %}
+                            <span class="emoji" tone="skin-tone-3" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-4" in name %}
+                            <span class="emoji" tone="skin-tone-4" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% elif "skin-tone-5" in name %}
+                            <span class="emoji" tone="skin-tone-5" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="emoji" id="kiss" title="kiss">💏</span>
+                </div>
+            {% else %}
+                <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
+                <h6 >{{ item }}</h6>
+                <div class="emoji-container">
+                    {% for entry in emoji %}
+                        {% if entry['group'] == item %}
+                            {% if entry['name'] in exclude %}
+                                {{ pass }}
+                            {% else %}
+                                <span class="emoji" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+{% endmacro %}
+
+
+<!-- 
+    Macro write_comments takes in database and user data to render 
+    comments for a single entry.
+-->
+{% macro write_comments(comments, models, current_user) %}
+    {% for comment in comments %}
+        {% set comment_user = (models.User
+            .get(models.User.id == comment.user_id)
+        ) %}
+        <div class="single-comment emoji-span" id="comment-{{ comment.id }}">
+            <div class="comment-avatar">
+                <img class="avatar-30" src="{{ comment_user.avatar }}">
+            </div>
+            <div class="comment-username">
+                {{ comment_user.username }}
+            </div>
+            <div class="comment-contents" id="comment-contents-{{ comment.id }}">
+                {{ comment.contents|safe }}
+            </div>
+            {% if comment.user_id == current_user.id %}
+                <div class="comment-options" role="button" id="comment-options-{{ comment.id }}">
+                    more_vert
+                </div>
+                <div class="comment-menu" id="comment-menu-{{comment.id}}" style="visibility: hidden;">
+                    <ul>
+                        {% set comment_delete_url = url_for('delete_comment', comment = comment.id) %}
+                        <li id="edit-comment-{{ comment.id }}" class="edit-comment">Edit Comment</li>
+                        <li id="delete-comment-{{ comment.id }}" class="delete-comment">Delete Comment</li>
+                    </ul>
+                </div>
+                <div class="confirm-dialog" id="confirm-dialog-{{ comment.id }}" style="visibility: hidden;">
+                    <div style="padding-bottom: 5px;">Are you sure?</div>
+                    <button name="yes" class="button button-secondary" type="button">Yes</button>
+                    <button name ="no" class="button button-secondary" type="button">No</button>
+                </div>
+            {% endif %}
+            <div class="single-comment-menu">
+                <ul>
+                    <li>thumb_up</li>
+                    <li>comment</li>
+                    <li class="comment-date small">{{ relative_time(comment) }}</li>
+                    <!-- <li>file_upload</li>
+                    <li>share</li> -->
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+
+{% macro relative_time(entry) %}
+    {% set now = insert_now %}
+    {% set rel_time = now - entry.date %}
+    {% if rel_time.seconds < 60 %}
+        A moment ago
+    {% elif entry.date.day == now.day and rel_time.seconds < 3600 %}
+        {{ (rel_time.seconds/60)|round|int }} minutes ago
+    {% elif entry.date.day == now.day and rel_time.seconds > 3600 %}
+        {{ (rel_time.seconds/3600)|round|int }} hours ago
+    {% elif now.year == entry.date.year and now.day - entry.date.day <= 1 %}
+        yesterday, {{ entry.date.strftime('%I:%M %p') }}
+    {% elif now.year == entry.date.year %}
+        {{ entry.date.strftime('%B %d') }}
+    {% elif now.year > entry.date.year %}
+        {{ entry.date.strftime('%B %d %Y') }}
+    {% endif %}
+{% endmacro %}

@@ -4,12 +4,13 @@ startListeners("edit-comment", "click", editComment);
 
 function makeCommentLink(entry) {
     let input = document.getElementById(`comment-${entry}`);
-    if (input.value.trim().length < 1) {
+    console.log(input.innerHTML);
+    if (input.innerHTML.trim().length < 1) {
         showError(entry, "You can't post an empty comment.");
     }
     else {
-        var contents = replaceCharacters(input.value);
-        input.value = ""
+        var contents = replaceCharacters(input.innerHTML);
+        input.innerHTML = ""
         commentRequest(`/entries/${entry}/comment/${contents}/`, `${entry}`);
     }
 }
@@ -128,7 +129,7 @@ function editComment(id) {
 }
 
 function parseEditText(comment) {
-    prevContents = comment.getElementsByTagName("p");
+    const prevContents = comment.getElementsByTagName("p");
     let contents = "";
     if (prevContents.length > 1 ) {
         for (var i=0; i < prevContents.length; i++) {
