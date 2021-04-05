@@ -27,7 +27,7 @@
             <ul>
             </ul>
         </div>
-        <div class="kiss-selector shadow-box">
+        <div class="kiss-selector shadow-box" style="visibility: hidden;">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
                and "kiss" in entry["name"]
@@ -93,7 +93,7 @@
                             <span class="emoji" tone="skin-tone-5" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
                         {% endif %}
                     {% endfor %}
-                    <span class="emoji" id="kiss" title="kiss">💏</span>
+                    <span class="emoji kiss-opener" id="kiss" tone="none" title="kiss-default">💏</span>
                 </div>
             {% else %}
                 <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
