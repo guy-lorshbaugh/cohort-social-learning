@@ -39,7 +39,7 @@
 }
 @font-face {
 	font-family: 'Noto Color Emoji';
-	src: url(https://gitcdn.xyz/repo/googlefonts/noto-emoji/master/fonts/NotoColorEmoji.ttf);
+	src: url('../font/NotoColorEmoji.ttf');
   }
 
 /* --- GLOBAL STYLES --- */
@@ -915,14 +915,13 @@ input[type=submit] {
 }
 .kiss-selector {
 	display: grid;
-    grid-template-columns: repeat(5, 36px);
-    grid-template-rows: repeat(5, 36px);
-	position: absolute;
-	top: 55px;
-	left: 83px;
-	width: 190px;
-	height: 190px;
-	padding: 5px;
+    grid-template-columns: repeat(4, 36px);
+    position: absolute;
+    top: 123px;
+    left: 100px;
+    width: 154px;
+    height: 46px;
+    padding: 5px;
 }
 .tone-picker {
 	display: flex;

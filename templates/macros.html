@@ -30,8 +30,8 @@
         <div class="kiss-selector shadow-box">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
-               and "kiss: skin-tone-" in entry["name"]
-               or "kiss: person, person" in entry["name"] %}
+               and "kiss" in entry["name"]
+               and "skin-tone-" not in entry["name"] %}
                <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
             {% endfor %}
         </div>
