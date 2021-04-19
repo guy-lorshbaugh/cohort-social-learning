@@ -56,6 +56,9 @@
                                     .where(models.Comment.entry_id == entry.id)
                                     .order_by(models.Comment.id)
                                 ) %}
+
+                                <!-- LIKERS HOVER DISPLAY -->
+
                                 <div class="likers likers-{{ entry.id }} shadow-box">
                                     <dl>
                                         {% set likers = (
@@ -71,6 +74,9 @@
                                     {% endfor %}
                                     </dl>
                                 </div>
+                                
+                                <!-- LIKE & COMMENT COUNT DISPLAY -->
+                                
                                 <div class="like-count small" onmouseover="likerDisplay('likers likers-{{ entry.id }}')">
                                 <!-- <div class="like-count small"> -->
                                     {% if likes.count() > 0 %}
@@ -83,6 +89,9 @@
                                     {% endif %}    
                                 </div>
                             </div>
+                            
+                            <!-- TAGS -->
+
                             <div class="tags small">Tags:|
                                 {% set tags = (models.Tags
                                     .select()
@@ -95,6 +104,9 @@
                                     <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
                                 {% endfor %}
                             </div>
+
+                            <!-- LIKE & COMMENT BUTTONS -->
+
                             <div class="like-button-container">
                                 {% if current_user.is_authenticated %}
                                     <span class="like" 
@@ -116,11 +128,36 @@
                                     <label class="comment-button" role="button" for="comment-{{ entry.id }}">Comment</label>
                                 {% endif %}
                             </div>
+
+                            <!--  COMMENTS -->
+
                             <div class="comments-container  {{ entry.id }}">
                                 {{ write_comments(comments, models, current_user) }}
                             </div>
+
+                            <!-- COMMENT FORM -->
+
                             <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div>
                             <div class="comment-field-container">
+                                <form method="POST" action="#">
+                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container" style="width: 0px; height: 0px;"></div>
+                                    <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
+                                    <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
+                                    <textarea placeholder="Comment" 
+                                            id="comment-{{ entry.id }}"
+                                            class="comment-field"
+                                            required
+                                            aria-required="true"></textarea>
+                                        <input type="button" 
+                                            onclick="commentRequest('create', 'entries/{{ entry.id }}/comment/', {{ entry.id }})" 
+                                            value="Post" class="button button-secondary comment-post-button"
+                                        >
+                                    <script type="text/javascript">
+                                        autosize(document.getElementById("comment-{{ entry.id }}"))
+                                    </script>
+                                </form>
+                            </div>
+                            <!-- <div class="comment-field-container">
                                 <form method="GET" action="#">
                                     <div id="emoji-menu-{{ entry }}" class="emoji-menu-container" style="width: 0px; height: 0px;"></div>
                                     <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
@@ -137,7 +174,7 @@
                                         autosize(document.getElementById("comment-{{ entry.id }}"))
                                     </script>
                                 </form>
-                            </div>
+                            </div> -->
                         </article>
                     {% endif %}
                 {% endfor %}

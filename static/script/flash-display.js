@@ -11,5 +11,7 @@ function flashMessage(contents="") {
         flashDiv.textContent = contents;
     }
     flashDiv.style.top = "35px";
-    const disappear = window.setTimeout(function() {flashDiv.style.top = "-100px"}, 2500);
+    const disappear = window.setTimeout(function() {
+        flashDiv.style.top = "-100px"
+    }, 2500);
 }

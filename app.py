@@ -9,7 +9,8 @@ from flask_bcrypt import check_password_hash
 from flask_login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
 from flask_wtf.csrf import CSRFProtect
-
+import jinja2
+from jinja2 import Template, filters, Environment, FileSystemLoader
 
 import forms
 import logging
@@ -29,6 +30,19 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+loader = jinja2.FileSystemLoader('/tmp')
+environment = jinja2.Environment(autoescape=True, loader=loader)
+
+
+@app.template_filter
+def exclude(string, array):
+    if any(x in string for x in array):
+        return True
+    else:
+        return False
+
+app.jinja_env.globals.update(exclude=exclude)
+environment.filters['exclude'] = exclude
 
 def start():
     """For the sake of code review, this funciton creates initial
@@ -177,10 +191,10 @@ def process_emoji():
     return emoji
 
 
-
 @app.context_processor
 def insert_now():
     return { "insert_now": datetime.datetime.now() }
+
 
 @app.context_processor
 def get_browser():
@@ -450,9 +464,9 @@ def like(entry):
         })
 
 
-@app.route('/entries/<int:entry>/comment/<path:contents>/', methods=['GET', 'POST'])
+@app.route('/entries/<int:entry>/comment/', methods=['GET', 'POST'])
 @login_required
-def comment(entry, contents):
+def comment(entry):
     comment = models.Comment
     comments = (models.Comment
                 .select()
@@ -460,9 +474,9 @@ def comment(entry, contents):
                 .order_by(models.Comment.date.desc())
                 .limit(1)
                 )
-    if request.method == 'GET':
+    if request.method == 'POST':
         comment.create(
-            contents = contents,
+            contents = request.form["contents"],
             date = datetime.datetime.now(),
             entry_id = entry,
             user_id = current_user.id
@@ -473,8 +487,8 @@ def comment(entry, contents):
             .where(models.Entry.id == entry)
         )
         target_entry.get().increment_entry_score()
-        action = "'action': 'comment'"
-        new_comment = comment.get(comment.contents == contents);
+        # action = "'action': 'comment'"
+        # new_comment = comment.get(comment.contents == contents);
         return jsonify({
             "action": "comment",
             "html": render_template('comment.html', comments=comments,
@@ -482,10 +496,11 @@ def comment(entry, contents):
             })
 
 
-@app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
+@app.route('/entries/comment/<int:comment_id>/edit/', methods=['GET', 'POST'])
 @login_required
-def edit_comment(comment_id, contents):
+def edit_comment(comment_id):
     comment = models.Comment.get(models.Comment.id == comment_id)
+    contents = request.form["contents"]
     comment.contents = contents
     comment.save()
     return jsonify({
@@ -496,7 +511,23 @@ def edit_comment(comment_id, contents):
     })
 
 
-@app.route('/entries/comment/<int:comment>/delete/')
+#  --- OLD MICKEY MOUSE EDIT ROUTE ---
+# 
+# @app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
+# @login_required
+# def edit_comment(comment_id, contents):
+#     comment = models.Comment.get(models.Comment.id == comment_id)
+#     comment.contents = contents
+#     comment.save()
+#     return jsonify({
+#         "action": "edit",
+#         "contents": contents,
+#         "id": comment.id,
+#         "flash": "Comment edited successfully."
+#     })
+
+
+@app.route('/entries/comment/<int:comment>/delete', methods=['GET', 'POST'])
 @login_required
 def delete_comment(comment):
     delete_comment = models.Comment.get(models.Comment.id==comment)

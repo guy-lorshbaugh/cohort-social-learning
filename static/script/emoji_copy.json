@@ -3299,7 +3299,7 @@
     {
         "codes": "1FAC0",
         "char": "🫀",
-        "name": "anatomical heart no_tone",
+        "name": "anatomical heart",
         "category": "People & Body (body-parts)",
         "group": "People & Body",
         "subgroup": "body-parts"
@@ -3307,7 +3307,7 @@
     {
         "codes": "1FAC1",
         "char": "🫁",
-        "name": "lungs no_tone",
+        "name": "lungs",
         "category": "People & Body (body-parts)",
         "group": "People & Body",
         "subgroup": "body-parts"
@@ -24539,7 +24539,7 @@
     {
         "codes": "1FAC2",
         "char": "🫂",
-        "name": "people hugging no_tone",
+        "name": "people hugging",
         "category": "People & Body (person-symbol)",
         "group": "People & Body",
         "subgroup": "person-symbol"

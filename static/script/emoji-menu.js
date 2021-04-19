@@ -161,14 +161,14 @@ function addEmojiListeners(target) {
 
 function insertAtCursor (input, textToInsert) {
     const isSuccess = document.execCommand("insertText", false, textToInsert);
-  
+
     // Firefox (non-standard method)
     if (!isSuccess && typeof input.setRangeText === "function") {
         const start = input.selectionStart;
         input.setRangeText(textToInsert);
         // update cursor to be at the end of insertion
         input.selectionStart = input.selectionEnd = start + textToInsert.length;
-    
+
         // Notify any possible listeners of the change
         const e = document.createEvent("UIEvent");
         e.initEvent("input", true, false);

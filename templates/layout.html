@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cohort: Your Learning Community</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+        <meta content="{{ csrf_token() }}" name="csrf-token">
         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
         <script type="text/javascript"
             src="{{ url_for('static', filename='script/autosize.min.js') }}">

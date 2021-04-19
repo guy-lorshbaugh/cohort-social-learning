@@ -2,16 +2,17 @@ startListeners("comment-options", "click", commentMenu);
 startListeners("delete-comment", "click", confirmDelete);
 startListeners("edit-comment", "click", editComment);
 
-function makeCommentLink(entry) {
-    let input = document.getElementById(`comment-${entry}`);
-    if (input.value.trim().length < 1) {
-        showError(entry, "You can't post an empty comment.");
+function formatPost(string) {
+    const newString = string.split('\n');
+    let contents = "";
+    for (item of newString) {
+        if (item === "") {
+            // pass
+        } else {
+            contents = contents + `<p>${item}</p>`;
+        }
     }
-    else {
-        var contents = replaceCharacters(input.value);
-        input.value = ""
-        commentRequest(`/entries/${entry}/comment/${contents}/`, `${entry}`);
-    }
+    return contents;
 }
 
 function replaceCharacters(string) {
@@ -38,43 +39,53 @@ function showError(entry, error) {
     }
 }
 
-function commentRequest(url, entry="") {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.setRequestHeader("SameSite", "Strict")
-        xhr.onload = function (e) {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);
-                    if (response.action === "comment") {
-                        // console.log(response)
-                        writeComment(response.html, entry);
-                    } else if (response.action === "edit") {
-                        writeNewComment(response.id, response.contents);
-                        flashMessage(contents=response.flash);
-                    } else if (response.action === "delete") {
-                        deleted_comment = document.getElementById(`comment-${entry}`)
-                        deleted_comment.remove();
-                        flashMessage(contents=response.flash);
-                    }
-                } else {
-                    console.error(`Error: ${xhr.statusText}`);
-                }
+
+function commentRequest(action, url="", entry="") {
+    console.log(entry);
+    const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+    if (action === "create"){
+        const input = document.getElementById(`comment-${entry}`).value;
+        const contents = formatPost(input);
+        xhr.send("contents=" + contents);
+    } else if (action === "edit") {
+        const input = document.getElementById(`comment-edit-${entry}`).value;
+        console.log(input);
+        const contents = formatPost(input)
+        xhr.send("contents=" + contents);
+    } else {
+        xhr.send(null);
+    }
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4
+                && xhr.status === 200) {
+            let response = JSON.parse(xhr.responseText);
+            if (response.action === "comment") {
+                writeComment(response.html, entry);
+                document.getElementById(`comment-${entry}`).value = ""
+            } else if (response.action === "edit") {
+                writeNewComment(response.id, response.contents);
+                flashMessage(contents=response.flash);
+            } else if (response.action === "delete") {
+                deleted_comment = document.getElementById(`comment-${entry}`)
+                deleted_comment.remove();
+                flashMessage(contents=response.flash);
             }
         }
-        keyValue = ""
         xhr.onerror = function (e) {
             console.error(xhr.statusText);
         }
-        xhr.send(null);
-};
+    }
+}
 
-
-function writeComment(data, entry) {
+function writeComment(contents, entry) {
     const container = document.getElementsByClassName(`comments-container ${entry}`)[0];
     const newComment = document.createElement("div");
     newComment.className = "new-comment";
-    newComment.innerHTML = data;
+    newComment.innerHTML = contents;
     container.appendChild(newComment);
     startListeners("comment-options", "click", commentMenu);
     startListeners("delete-comment", "click", confirmDelete);
@@ -128,7 +139,7 @@ function editComment(id) {
 }
 
 function parseEditText(comment) {
-    prevContents = comment.getElementsByTagName("p");
+    let prevContents = comment.getElementsByTagName("p");
     let contents = "";
     if (prevContents.length > 1 ) {
         for (var i=0; i < prevContents.length; i++) {
@@ -151,7 +162,7 @@ function editListeners(cancelCommentButton, saveButton, id) {
         dialog.remove();
     });
     saveButton.addEventListener("mousedown", () => {
-        commentRequest(`/entries/comment/${id}/edit/${replaceCharacters(textArea.value)}/`);
+        commentRequest("edit", `/entries/comment/${id}/edit/`, id);
         dialog.remove();
     })
 }
@@ -168,7 +179,7 @@ function confirmDelete(id) {
     confirmDialog.style.visibility = "visible";
     const buttons = confirmDialog.getElementsByTagName("button");
     buttons[0].addEventListener("click", () => {
-        commentRequest(`entries/comment/${id}/delete`, `${id}`);
+        commentRequest("del", `entries/comment/${id}/delete`, `${id}`);
         confirmDialog.style.visibility = "hidden";
     })
     buttons[1].addEventListener("click", () => {

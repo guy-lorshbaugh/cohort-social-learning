@@ -39,8 +39,7 @@
         {% set categories = [] %}
         {% set exclude = [ 'face in clouds', 'face with spiral eyes',
             'face exhaling', 'heart on fire', 'mending heart',
-            'eye in speech bubble', 'man: beard', 'woman: beard',
-            'man detective', 'woman detective', 'man in tuxedo', 
+            'eye in speech bubble', 'man: beard', 'woman: beard', 'man in tuxedo', 
             'woman in tuxedo', 'man with veil', 'woman with veil',
             'woman feeding baby', 'man feeding baby', 'person feeding baby',
             'man golfing', 'woman golfing', 'woman bouncing ball',
@@ -54,7 +53,10 @@
             'people hugging', 'black cat', 'bison', 'mammoth', 'beaver',
             'dodo', 'feather', 'seal, beetle', 'cockroach', 'fly', 
             'worm', 'potted plant', 'blueberries', 'olive', 'bell pepper',
-            'flatbread', 'tamale', 'fondue', 'teapot' ] %}
+            'flatbread', 'tamale', 'fondue', 'teapot', 'pinched fingers',
+            'anatomical heart no_tone', 'lungs no_tone', 'people hugging',
+            'seal', 'beetle', 'rock', 'wood', 'hut', 'roller skate',
+            'bubble tea' ] %}
         {% for item in emoji %}
             {% if item['group'] not in categories: %}
                 <!-- {{ categories.append(item['group']) }} -->
@@ -70,6 +72,8 @@
                     {% for entry in emoji if "People & Body" in entry["category"] %}
                         {% set name = entry["name"] %}
                         {% if "holding hands" in name %}
+                            {{ pass }}
+                        {% elif name in exclude %}
                             {{ pass }}
                         {% elif "kiss" in name %}
                             {{ pass }}
