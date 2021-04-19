@@ -41,7 +41,6 @@ function showError(entry, error) {
 
 
 function commentRequest(action, url="", entry="") {
-    console.log(entry);
     const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url, true);
@@ -53,7 +52,6 @@ function commentRequest(action, url="", entry="") {
         xhr.send("contents=" + contents);
     } else if (action === "edit") {
         const input = document.getElementById(`comment-edit-${entry}`).value;
-        console.log(input);
         const contents = formatPost(input)
         xhr.send("contents=" + contents);
     } else {

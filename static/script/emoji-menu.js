@@ -72,17 +72,31 @@ function emojiOpenClose(target) {
     skinTonePicker(emojiMenu);
 }
 
-function skinTonePicker(emojiMenu, skin_tone="default") {
+function skinTonePicker(emojiMenu, skinTone="default") {
+    console.log(skinTone);
     const peopleBody = emojiMenu.getElementsByClassName("people-body")[0];
     const emoji = peopleBody.getElementsByTagName("span");
+    const exclude = [ 'pinched fingers', `man: ${skinTone}, beard`,
+        `woman: ${skinTone}, beard`, `ninja`, 'man in tuxedo',
+        'woman in tuxedo', 'man with veil', 'woman with veil',
+        'feeding baby', 'mx claus' ];
+    console.log(exclude);
     for (item of emoji) {
-        let title = item.getAttribute("tone");
-        if (title.includes("none")) {
+        let tone = item.getAttribute("tone");
+        if (tone.includes("none")) {
             if (item.style.display === "hidden") {
                 item.style.display = "flex";
             }
-        } else if (title.includes(skin_tone)) {
-            item.style.display = "flex";
+        } else if (tone.includes(skinTone)) {
+            for (title of exclude) {
+                if (item.getAttribute("title").includes(title)) {
+                    console.log(item);
+                    item.remove();
+                    // pass
+                } else {
+                    item.style.display = "flex";
+                }
+            }
         } else {
             item.style.display = "none";
         }
@@ -126,18 +140,6 @@ function closeListener(element) {
         }
     });
 }
-
-// function addEmojiListeners(target) {
-//     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-//     const emojiTextarea = document.getElementById(`comment-${target}`)
-//     const choices = emojiMenu.getElementsByClassName("emoji");
-//     for (var choice of choices) {
-//         choice.addEventListener('click', event => {
-//             const emoji = event.target.innerHTML;
-//             emojiTextarea.value += emoji;
-//         })
-//     }
-// }
 
 function addEmojiListeners(target) {
     const exclude = [ "kiss-default" ];

@@ -24,6 +24,7 @@ app = Flask(__name__)
 app.secret_key = "430po9tgjlkifdsc.p0ow40-23365fg4h,."
 app.templates_auto_reload = True
 app.debug = True
+SESSION_COOKIE_SECURE = True
 CSRFProtect(app)
 
 login_manager = LoginManager()
@@ -141,43 +142,6 @@ def get_avatars(path):
         item_dict = {"name": "{}".format(name), "url": "img/avatar-svg/{}".format(item)}
         avatar_list.append(item_dict)
     return sorted(avatar_list, key = lambda i: i['url'])
-
-
-# def process_emoji(skin_tone=""):
-#     with open('static/script/emoji_.json', encoding='UTF-8') as file:
-#         emoji_data = json.load(file)
-#     emoji = {}
-#     for record in emoji_data:
-#         name = record["name"]
-#         if name not in emoji:
-#             if "People & Body" in record["category"]:
-#                 if (skin_tone
-#                     and skin_tone != "light skin tone"
-#                     and skin_tone != "dark skin tone"):
-#                     if skin_tone not in name:
-#                         pass
-#                     else:
-#                         emoji[name] = record
-#                 elif skin_tone == "light skin tone":
-#                     if (skin_tone not in name
-#                         or "medium-light skin tone" in name):
-#                         pass
-#                     else:
-#                         emoji[name] = record
-#                 elif skin_tone == "dark skin tone":
-#                     if (skin_tone not in name
-#                         or "medium-dark skin tone" in name):
-#                         pass
-#                     else:
-#                         emoji[name] = record
-#                 elif skin_tone == "":
-#                     if "skin tone" in name:
-#                         pass
-#                     else:
-#                         emoji[name] = record
-#             else:
-#                 emoji[name] = record
-#     return emoji
 
 
 def process_emoji():

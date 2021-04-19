@@ -935,7 +935,7 @@ input[type=submit] {
 	height: 20px;
 	/* border: 1px solid royalblue; */
 	border-radius: 8px;
-	background-color: white;
+	background-color: rgba(255 255 255 / 0.75);
 	z-index: 100;
 }
 .tone-choice {
