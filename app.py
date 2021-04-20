@@ -464,6 +464,7 @@ def comment(entry):
 @login_required
 def edit_comment(comment_id):
     comment = models.Comment.get(models.Comment.id == comment_id)
+    print(request.form)
     contents = request.form["contents"]
     comment.contents = contents
     comment.save()

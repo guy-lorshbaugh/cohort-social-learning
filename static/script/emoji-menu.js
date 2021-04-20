@@ -10,15 +10,15 @@ function emojiMenuListeners() {
 }
 emojiMenuListeners();
 
-function kissOpener(menu, target) {
-    const kissDiv = menu.getElementsByClassName("kiss-selector")[0];
-    const defaultDiv = menu.getElementsByClassName("kiss-default")[0];
-    const kissEmoji = menu.getElementsByClassName("kiss-opener")[0];
-    // console.log("kisses: ", kissDiv);
+function typeOpener(menu, type) {
+    const selector = menu.getElementsByClassName(`${type}-selector`)[0];
+    const defaultDiv = menu.getElementsByClassName(`${type}-default`)[0];
+    const typeEmoji = menu.getElementsByClassName(`${type}-opener`)[0];
+    // console.log(`${type}: `, selectorDiv);
     // console.log(kissEmoji);
-    kissEmoji.addEventListener("click", () => {
-        console.log("kiss")
-        openSelector(kissDiv, defaultDiv);
+    typeEmoji.addEventListener("click", () => {
+        console.log(`${type}`)
+        openSelector(selector, defaultDiv);
     })
 }
 
@@ -52,7 +52,17 @@ function emojiOpenClose(target) {
         closeListener(target);
         addNavMenu(target);
         navScrollListener(target);
-        kissOpener(emojiMenu);
+        typeOpener(emojiMenu, "kiss");
+        typeOpener(emojiMenu, "hands");
+        typeOpener(emojiMenu, "family");
+        typeOpener(emojiMenu, "couple");
+        for (var item of tone_choices) {
+            let tone = item.getAttribute("tone");
+            item.addEventListener("click", () => {
+                skinTonePicker(emojiMenu, tone)
+            })
+        }
+        skinTonePicker(emojiMenu);
     }
     if (emojiMenu.style.width === "0px") {
         emojiMenu.style.width = "355px";
@@ -61,26 +71,18 @@ function emojiOpenClose(target) {
     } else {
         emojiMenu.style.width = "0px";
         emojiMenu.style.height = "0px";
+        emojiMenu.innerHTML = "";
         button.classList.remove("active");
     }
-    for (var item of tone_choices) {
-        let tone = item.getAttribute("tone");
-        item.addEventListener("click", () => {
-            skinTonePicker(emojiMenu, tone)
-        })
-    }
-    skinTonePicker(emojiMenu);
 }
 
 function skinTonePicker(emojiMenu, skinTone="default") {
-    console.log(skinTone);
     const peopleBody = emojiMenu.getElementsByClassName("people-body")[0];
     const emoji = peopleBody.getElementsByTagName("span");
     const exclude = [ 'pinched fingers', `man: ${skinTone}, beard`,
         `woman: ${skinTone}, beard`, `ninja`, 'man in tuxedo',
         'woman in tuxedo', 'man with veil', 'woman with veil',
         'feeding baby', 'mx claus' ];
-    console.log(exclude);
     for (item of emoji) {
         let tone = item.getAttribute("tone");
         if (tone.includes("none")) {
@@ -90,9 +92,7 @@ function skinTonePicker(emojiMenu, skinTone="default") {
         } else if (tone.includes(skinTone)) {
             for (title of exclude) {
                 if (item.getAttribute("title").includes(title)) {
-                    console.log(item);
                     item.remove();
-                    // pass
                 } else {
                     item.style.display = "flex";
                 }
@@ -142,7 +142,8 @@ function closeListener(element) {
 }
 
 function addEmojiListeners(target) {
-    const exclude = [ "kiss-default" ];
+    const exclude = [ "kiss-default", "hands-default", "family-default",
+                      "couple-default" ];
     // const defaultListeners = [ "kiss-default" ]
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const emojiTextarea = document.getElementById(`comment-${target}`);

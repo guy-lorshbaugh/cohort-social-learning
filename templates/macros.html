@@ -35,6 +35,30 @@
                <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
             {% endfor %}
         </div>
+        <div class="hands-selector shadow-box" style="visibility: hidden;">
+            {% for entry in emoji 
+               if "People & Body" in entry["category"]
+               and "holding hands" in entry["name"]
+               and "skin-tone-" not in entry["name"] %}
+               <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+            {% endfor %}
+        </div>
+        <div class="family-selector shadow-box" style="visibility: hidden;">
+            {% for entry in emoji 
+               if "People & Body" in entry["category"]
+               and "family" in entry["name"]
+               and "skin-tone-" not in entry["name"] %}
+               <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+            {% endfor %}
+        </div>
+        <div class="couple-selector shadow-box" style="visibility: hidden;">
+            {% for entry in emoji 
+               if "People & Body" in entry["category"]
+               and "couple" in entry["name"]
+               and "skin-tone-" not in entry["name"] %}
+               <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+            {% endfor %}
+        </div>
         <div class="emoji-list-container" id="emoji-list-container">
         {% set categories = [] %}
         {% set exclude = [ 'face in clouds', 'face with spiral eyes',
@@ -104,6 +128,9 @@
                         {% endif %}
                     {% endfor %}
                     <span class="emoji kiss-opener" id="kiss" tone="none" title="kiss-default">💏</span>
+                    <span class="emoji hands-opener" id="hands" tone="none" title="hands-default">🧑‍🤝‍🧑</span>
+                    <span class="emoji family-opener" id="family" tone="none" title="family-default">👪</span>
+                    <span class="emoji couple-opener" id="couple" tone="none" title="couple-default">💑</span>
                 </div>
             {% else %}
                 <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>

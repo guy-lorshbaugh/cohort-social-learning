@@ -913,7 +913,9 @@ input[type=submit] {
 	margin-bottom: 10px;
 	font-size: 26px;
 }
-.kiss-selector {
+.kiss-selector,
+.hands-selector,
+.couple-selector {
 	display: grid;
     grid-template-columns: repeat(4, 36px);
     position: absolute;
@@ -922,6 +924,32 @@ input[type=submit] {
     width: 154px;
     height: 46px;
     padding: 5px;
+}
+.family-selector {
+	display: grid;
+    grid-template-columns: repeat(6, 36px);
+    position: absolute;
+	top: 81px;
+	left: 65px;
+	padding: 5px;
+}
+#kiss,
+#hands,
+#family,
+#couple {
+	position: relative;
+}
+#kiss::before,
+#hands::before,
+#family::before,
+#couple::before {
+    content: "arrow_right";
+    position: absolute;
+    top: 18px;
+    right: -6px;
+    font-family: "Material Icons";
+    color: royalblue;
+    transform: rotate(45deg);
 }
 .tone-picker {
 	display: flex;

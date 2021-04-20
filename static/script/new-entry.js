@@ -50,7 +50,7 @@ function newEntryRequest(data) {
                 writeNewEntry(response);
             } else {
                 // console.error(xhr.statusText);
-                setTimeout(function() {newEntryRequest(data)}, 1000);
+                setTimeout(function() { newEntryRequest(data) }, 1000);
             }
         }
     };
