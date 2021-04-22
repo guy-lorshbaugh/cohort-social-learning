@@ -1,11 +1,15 @@
 //  Emoji Menu Listeners
-function emojiMenuListeners() {
+function emojiMenuListeners(target="") {
+    // console.log("starting menu listeners")
     const emojiOpeners = document.getElementsByClassName("emoji-open")
+    if (target) {
+        let opener = [document.getElementById(`emoji-open${target}`)];
+    }
     for (var i=0; i < emojiOpeners. length; i++) {
         let opener = emojiOpeners[i];
-        opener.addEventListener("click", () => {
+        opener.addEventListener("mousedown", function fn() {
             emojiOpenClose(getID(opener.id));
-        });
+        }, {once: true});
     }
 }
 emojiMenuListeners();
@@ -14,10 +18,7 @@ function typeOpener(menu, type) {
     const selector = menu.getElementsByClassName(`${type}-selector`)[0];
     const defaultDiv = menu.getElementsByClassName(`${type}-default`)[0];
     const typeEmoji = menu.getElementsByClassName(`${type}-opener`)[0];
-    // console.log(`${type}: `, selectorDiv);
-    // console.log(kissEmoji);
     typeEmoji.addEventListener("click", () => {
-        console.log(`${type}`)
         openSelector(selector, defaultDiv);
     })
 }
@@ -46,32 +47,40 @@ function emojiOpenClose(target) {
     const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
     const tone_choices = emojiMenu.getElementsByClassName("tone-choice");
-    if (!emojiMenu.innerHTML) {
+    // console.log("emojiMenu " + emojiMenu.classList.contains("open"));
+    // console.log("Button " + button.classList.contains("active"));
+    if (!emojiMenu.classList.contains("open")) {
         emojiMenu.innerHTML = menuContents;
         addEmojiListeners(target);
-        closeListener(target);
         addNavMenu(target);
         navScrollListener(target);
         typeOpener(emojiMenu, "kiss");
         typeOpener(emojiMenu, "hands");
         typeOpener(emojiMenu, "family");
         typeOpener(emojiMenu, "couple");
+        emojiSearchListener(target);
         for (var item of tone_choices) {
             let tone = item.getAttribute("tone");
             item.addEventListener("click", () => {
                 skinTonePicker(emojiMenu, tone)
             })
         }
+        closeListener(target);
         skinTonePicker(emojiMenu);
     }
     if (emojiMenu.style.width === "0px") {
+        // console.log("opening");
+        emojiMenu.classList.add("open");
         emojiMenu.style.width = "355px";
         emojiMenu.style.height = "300px";
         button.classList.add("active");
-    } else {
+    } 
+    else {
+        // console.log("closing");
         emojiMenu.style.width = "0px";
         emojiMenu.style.height = "0px";
         emojiMenu.innerHTML = "";
+        emojiMenu.classList.remove("open");
         button.classList.remove("active");
     }
 }
@@ -130,15 +139,18 @@ function closeListener(element) {
     const emojiMenu = document.getElementById(`emoji-menu-${element}`);
     const button = document.getElementById(`emoji-open-${element}`);
     document.addEventListener('mousedown', function(event) {
-        if(emojiMenu.style.height === "300px"){
+        if (emojiMenu.style.height === "300px") {
             if (!emojiMenu.contains(event.target)) {
+                // console.log("document attempting close")
                 emojiOpenClose(element);
             }
             if (button.contains(event.target)) {
+                // console.log("button attempting close")
                 emojiOpenClose(element);
             }
         }
     });
+    // console.log("close listener activated");
 }
 
 function addEmojiListeners(target) {
@@ -164,14 +176,12 @@ function addEmojiListeners(target) {
 
 function insertAtCursor (input, textToInsert) {
     const isSuccess = document.execCommand("insertText", false, textToInsert);
-
     // Firefox (non-standard method)
     if (!isSuccess && typeof input.setRangeText === "function") {
         const start = input.selectionStart;
         input.setRangeText(textToInsert);
         // update cursor to be at the end of insertion
         input.selectionStart = input.selectionEnd = start + textToInsert.length;
-
         // Notify any possible listeners of the change
         const e = document.createEvent("UIEvent");
         e.initEvent("input", true, false);
@@ -230,3 +240,25 @@ function emojiScroll (outerItem, target) {
     }
     container.scrollTop = scrollTo.offsetTop;
 }
+
+function emojiSearchListener(target) {
+    // console.log("listening");
+    const emojiMenu = document.getElementById(`emoji-menu-${target}`);
+    const emojiSearchOpener = emojiMenu.getElementsByClassName("emoji-search-opener")[0];
+    emojiSearchOpener.addEventListener("mousedown", () => {
+        openEmojiSearch(target);
+    })
+}
+
+function openEmojiSearch(target) {
+    // console.log("search");
+    const emojiMenu = document.getElementById(`emoji-menu-${target}`);
+    const searchDiv = emojiMenu.getElementsByTagName("input")[0];
+    // console.log(searchDiv);
+    if (searchDiv.style.visibility === "hidden") {
+        searchDiv.style.visibility = "visible";
+    } else {
+        searchDiv.style.visibility = "hidden";
+    }
+}
+

@@ -182,6 +182,10 @@
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>
     <script src="{{ url_for('static', filename='script/new-entry.js') }}"></script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/get-id.js') }}">
+    </script>
+
     <script type="text/javascript">
         const logComment = () => {
             const contents = document.getElementsByClassName("comment-field");

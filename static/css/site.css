@@ -27,7 +27,7 @@
 	font-weight: normal;
 	font-style: normal;
 	/* font-size: 24px; */
-	line-height: 1;
+	/* line-height: 1; */
 	/* letter-spacing: normal;
 	text-transform: none; */
 	display: inline-block;
@@ -950,6 +950,40 @@ input[type=submit] {
     font-family: "Material Icons";
     color: royalblue;
     transform: rotate(45deg);
+}
+.emoji-search {
+	display: flex;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	position: absolute;
+	top: 51px;
+	left: 14px;
+	width: 115px;
+	height: 20px;
+	padding: 0px 10px;
+	border-radius: 8px;
+	background-color: rgba(255 255 255 / 0.75);
+	z-index: 100;
+}
+#emoji-search-input {
+	position: absolute;
+    top: 2px;
+    left: -12px;
+    margin: 0;
+    padding: 5px 13px;
+    width: 175px;
+    font-size: 12px;
+    line-height: 1em;
+}
+.emoji-search-opener {
+	font-size: 12px;
+	color: rgba(0 0 0 / 0.8);
+	cursor: pointer;
+}
+.emoji-search-opener .material-icons {
+	font-size: 14px;
+	font-family: "Material Icons";
 }
 .tone-picker {
 	display: flex;
