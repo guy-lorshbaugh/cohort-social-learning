@@ -23,24 +23,6 @@ function typeOpener(menu, type) {
     })
 }
 
-function openSelector(selector, defaultDiv) {
-    if (selector.style.visibility === "hidden") {
-        selector.style.visibility = "visible";
-        // defaultDiv.style.visibility = "visible";
-    } else {
-        selector.style.visibility = "hidden";
-        // defaultDiv.style.visibility = "hidden";
-    }
-    document.addEventListener('mouseup', function(event) {
-        if(selector.style.visibility === "visible"){
-            if (!selector.contains(event.target) 
-                || selector.contains(event.target)) {
-                openSelector(selector, defaultDiv);
-            }
-        }
-    });
-}
-
 function emojiOpenClose(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     // console.log(emojiMenu);
@@ -67,22 +49,36 @@ function emojiOpenClose(target) {
         }
         closeListener(target);
         skinTonePicker(emojiMenu);
-    }
-    if (emojiMenu.style.width === "0px") {
-        // console.log("opening");
+        console.log("opening");
         emojiMenu.classList.add("open");
         emojiMenu.style.width = "355px";
         emojiMenu.style.height = "300px";
         button.classList.add("active");
     } 
     else {
-        // console.log("closing");
+        console.log("closing");
         emojiMenu.style.width = "0px";
         emojiMenu.style.height = "0px";
         emojiMenu.innerHTML = "";
         emojiMenu.classList.remove("open");
         button.classList.remove("active");
+        emojiMenuListeners(button);
     }
+}
+
+function closeListener(element) {
+    const emojiMenu = document.getElementById(`emoji-menu-${element}`);
+    const button = document.getElementById(`emoji-open-${element}`);
+    document.addEventListener('mousedown', function(event) {
+        if (emojiMenu.style.height === "300px") {
+            if (!emojiMenu.contains(event.target)) {
+                emojiOpenClose(element);
+            }
+            if (button.contains(event.target)) {
+                emojiOpenClose(element);
+            }
+        }
+    }, { once: true });
 }
 
 function skinTonePicker(emojiMenu, skinTone="default") {
@@ -133,24 +129,6 @@ function navScrollListener(target) {
             }
         }
     });
-}
-
-function closeListener(element) {
-    const emojiMenu = document.getElementById(`emoji-menu-${element}`);
-    const button = document.getElementById(`emoji-open-${element}`);
-    document.addEventListener('mousedown', function(event) {
-        if (emojiMenu.style.height === "300px") {
-            if (!emojiMenu.contains(event.target)) {
-                // console.log("document attempting close")
-                emojiOpenClose(element);
-            }
-            if (button.contains(event.target)) {
-                // console.log("button attempting close")
-                emojiOpenClose(element);
-            }
-        }
-    });
-    // console.log("close listener activated");
 }
 
 function addEmojiListeners(target) {
@@ -241,6 +219,24 @@ function emojiScroll (outerItem, target) {
     container.scrollTop = scrollTo.offsetTop;
 }
 
+function openSelector(selector, defaultDiv) {
+    if (selector.style.visibility === "hidden") {
+        selector.style.visibility = "visible";
+        // defaultDiv.style.visibility = "visible";
+    } else {
+        selector.style.visibility = "hidden";
+        // defaultDiv.style.visibility = "hidden";
+    }
+    document.addEventListener('mouseup', function(event) {
+        if(selector.style.visibility === "visible"){
+            if (!selector.contains(event.target) 
+                || selector.contains(event.target)) {
+                openSelector(selector, defaultDiv);
+            }
+        }
+    });
+}
+
 function emojiSearchListener(target) {
     // console.log("listening");
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
@@ -251,14 +247,46 @@ function emojiSearchListener(target) {
 }
 
 function openEmojiSearch(target) {
-    // console.log("search");
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    const searchDiv = emojiMenu.getElementsByTagName("input")[0];
-    // console.log(searchDiv);
-    if (searchDiv.style.visibility === "hidden") {
-        searchDiv.style.visibility = "visible";
+    const emojiSearchOpener = emojiMenu.getElementsByClassName("emoji-search-opener")[0];
+    const searchDiv = emojiMenu.getElementsByClassName("emoji-search")[0];
+    const searchInput = emojiMenu.getElementsByTagName("input")[0];
+    if (searchInput.style.visibility === "hidden") {
+        searchInput.style.visibility = "visible";
+        searchDiv.style.width = "355px";
+        searchDiv.style.height = "250px";
+        searchDiv.style.left = "0px";
+        searchDiv.style.backgroundColor = "white";
+        searchDiv.style.zIndex = 101;
+        emojiSearch(emojiMenu, searchInput);
+        emojiSearchOpener.classList.add("material-icons"),
+        emojiSearchOpener.textContent = "cancel"
+        emojiSearchOpener.style.right = "10px"
+        emojiSearchOpener.style.top = "10px"
     } else {
-        searchDiv.style.visibility = "hidden";
+        searchInput.style.visibility = "hidden";
+        searchDiv.style.width = "115px";
+        searchDiv.style.height = "20px";
+        searchDiv.style.left = "14px";
+        searchDiv.style.backgroundColor = "rgba(255 255 255 / 0.75)";
+        emojiSearchOpener.classList.remove("material-icons"),
+        emojiSearchOpener.innerHTML = "<span class='material-icons'>search</span>" + "Search Emoji";
+        emojiSearchOpener.style.right = "0px";
+        emojiSearchOpener.style.top = "0px";
     }
 }
 
+function emojiSearch(emojiMenu, searchInput) {
+    searchInput.addEventListener("input", () => {
+        console.log("search");
+        const emoji = emojiMenu.getElementsByClassName("emoji");
+        console.log(typeof emoji[0].getAttribute("title"));
+        for (var item of emoji) {
+            if (item.getAttribute("title").includes(searchInput.value)) {
+                item.style.visibility = "visible";
+            } else {
+                item.style.visibility = "hidden";
+            }
+        }
+    })
+}
