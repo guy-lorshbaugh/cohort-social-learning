@@ -986,6 +986,14 @@ input[type=submit] {
 	font-size: 14px;
 	font-family: "Material Icons";
 }
+.emoji-search-results {
+	width: 355px;
+	height: 230px;
+	top: 25px;
+	left: -10px;
+	/* border: 1px solid lime; */
+	overflow-y: scroll;
+}
 .tone-picker {
 	display: flex;
 	flex-flow: row nowrap;

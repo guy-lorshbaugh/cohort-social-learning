@@ -251,6 +251,7 @@ function openEmojiSearch(target) {
     const emojiSearchOpener = emojiMenu.getElementsByClassName("emoji-search-opener")[0];
     const searchDiv = emojiMenu.getElementsByClassName("emoji-search")[0];
     const searchInput = emojiMenu.getElementsByTagName("input")[0];
+    const searchResults =emojiMenu.getElementsByClassName("emoji-search-results")[0];
     if (searchInput.style.visibility === "hidden") {
         searchInput.style.visibility = "visible";
         searchDiv.style.width = "355px";
@@ -263,6 +264,7 @@ function openEmojiSearch(target) {
         emojiSearchOpener.textContent = "cancel"
         emojiSearchOpener.style.right = "10px"
         emojiSearchOpener.style.top = "10px"
+        searchResults.style.visibility = "visible";
     } else {
         searchInput.style.visibility = "hidden";
         searchDiv.style.width = "115px";
@@ -273,19 +275,35 @@ function openEmojiSearch(target) {
         emojiSearchOpener.innerHTML = "<span class='material-icons'>search</span>" + "Search Emoji";
         emojiSearchOpener.style.right = "0px";
         emojiSearchOpener.style.top = "0px";
+        searchResults.style.visibility = "hidden";
+        searchResults.innerHTML = "";
     }
 }
 
 function emojiSearch(emojiMenu, searchInput) {
+    const emoji = emojiMenu.getElementsByClassName("emoji");
+    const searchResults = emojiMenu.getElementsByClassName("emoji-search-results")[0];
     searchInput.addEventListener("input", () => {
-        console.log("search");
-        const emoji = emojiMenu.getElementsByClassName("emoji");
-        console.log(typeof emoji[0].getAttribute("title"));
-        for (var item of emoji) {
-            if (item.getAttribute("title").includes(searchInput.value)) {
-                item.style.visibility = "visible";
-            } else {
-                item.style.visibility = "hidden";
+        let results = [];
+        console.log(searchInput.value);
+        searchResults.innerHTML = "";
+        const result = document.createElement("span");
+        result.classList.add("emoji");
+        if (searchInput.value) {
+            for (var item of emoji) {
+                if (item.getAttribute("title").includes(searchInput.value)) {
+                    if (!results.includes(item)){
+                        results.push(item);
+                    }
+                } else {
+                    // item.style.visibility = "hidden";
+                }
+            }
+            // console.log(results);
+            for (var item of results) {
+                result.setAttribute("title", `${item.title}`)
+                result.innerHTML = item.innerHTML;
+                searchResults.innerHTML += result.outerHTML;
             }
         }
     })
