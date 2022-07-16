@@ -1,15 +1,42 @@
 //  Emoji Menu Listeners
-function emojiMenuListeners(target="") {
-    // console.log("starting menu listeners")
+
+// function emojiMenuListeners(target="") {
+//     // console.log("starting menu listeners")
+//     const emojiOpeners = document.getElementsByClassName("emoji-open")
+//     console.log(emojiOpeners);
+//     var openers = [];
+//     if (target) {
+//         opener = [ document.getElementById(`emoji-open-${target}`) ];
+//         console.log("Restarting Listener: " + target);
+//     } else {
+//         for (item of emojiOpeners) {
+//             // console.log(item)
+//             openers.push(item);
+//         }
+//         // console.log(openers[1].id);
+//     }
+//     for (var item of openers) {
+//         var target = getID(item.id);
+//         // console.log("Starting Listener " + target);
+//         item.addEventListener("mouseup", function fn() {
+//             // console.log("Menu " + target + " Opening");
+//             emojiOpenClose(target);
+//         });
+//         // }, { once: true });
+//     }
+// }
+
+function emojiMenuListeners() {
     const emojiOpeners = document.getElementsByClassName("emoji-open")
-    if (target) {
-        let opener = [document.getElementById(`emoji-open${target}`)];
-    }
-    for (var i=0; i < emojiOpeners. length; i++) {
-        let opener = emojiOpeners[i];
-        opener.addEventListener("mousedown", function fn() {
-            emojiOpenClose(getID(opener.id));
-        }, {once: true});
+    // console.log(emojiOpeners)
+    for (var i = 0; i < emojiOpeners.length; i++) {
+        // console.log(emojiOpeners[i]);
+        var target = getID(emojiOpeners[i].id);
+        emojiOpeners[i].classList.add(target);
+        emojiOpeners[i].addEventListener("mouseup", function() {
+            emojiOpenClose(target);
+        });
+        // }, { once: true });
     }
 }
 emojiMenuListeners();
@@ -25,13 +52,11 @@ function typeOpener(menu, type) {
 
 function emojiOpenClose(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    // console.log(emojiMenu);
+    console.log(emojiMenu);
     const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
     const tone_choices = emojiMenu.getElementsByClassName("tone-choice");
-    // console.log("emojiMenu " + emojiMenu.classList.contains("open"));
-    // console.log("Button " + button.classList.contains("active"));
-    if (!emojiMenu.classList.contains("open")) {
+    if (emojiMenu.classList.contains("closed")) {
         emojiMenu.innerHTML = menuContents;
         addEmojiListeners(target);
         addNavMenu(target);
@@ -47,22 +72,24 @@ function emojiOpenClose(target) {
                 skinTonePicker(emojiMenu, tone)
             })
         }
-        closeListener(target);
+        // setTimeout(closeListener(target), 500);
         skinTonePicker(emojiMenu);
-        console.log("opening");
+        // console.log("Opening " + target);
+        emojiMenu.classList.remove("closed");
         emojiMenu.classList.add("open");
         emojiMenu.style.width = "355px";
         emojiMenu.style.height = "300px";
         button.classList.add("active");
     } 
-    else {
-        console.log("closing");
+    else if (emojiMenu.classList.contains("open")) {
+        // console.log("closing " + target);
         emojiMenu.style.width = "0px";
         emojiMenu.style.height = "0px";
         emojiMenu.innerHTML = "";
         emojiMenu.classList.remove("open");
+        emojiMenu.classList.add("closed");
         button.classList.remove("active");
-        emojiMenuListeners(button);
+        // emojiMenuListeners(button);
     }
 }
 
@@ -132,20 +159,20 @@ function navScrollListener(target) {
 }
 
 function addEmojiListeners(target) {
+    const commentTextarea = document.getElementById(`comment-${target}`);
     const exclude = [ "kiss-default", "hands-default", "family-default",
                       "couple-default" ];
     // const defaultListeners = [ "kiss-default" ]
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    const emojiTextarea = document.getElementById(`comment-${target}`);
     const choices = emojiMenu.getElementsByClassName("emoji");
     // const choices = emojiMenu.getElementsByTagName("img");
     for (var choice of choices) {
         if (!exclude.includes(choice.getAttribute("title"))) {
             choice.addEventListener('mousedown', event => {
-                // console.log(event.target.outerHTML);
+                console.log(event.target.outerHTML);
                 // contents = cloneElement(event.target);
                 const emoji = event.target.innerHTML;
-                insertAtCursor(emojiTextarea, emoji);
+                insertAtCursor(commentTextarea, emoji);
                 }
             )
         }
@@ -246,7 +273,51 @@ function emojiSearchListener(target) {
     })
 }
 
+function getCaretPosition(ctrl) {
+    // IE < 9 Support 
+    if (document.selection) {
+        ctrl.focus();
+        var range = document.selection.createRange();
+        var rangelen = range.text.length;
+        range.moveStart('character', -ctrl.value.length);
+        var start = range.text.length - rangelen;
+        return {
+            'start': start,
+            'end': start + rangelen
+        };
+    } // IE >=9 and other browsers
+    else if (ctrl.selectionStart || ctrl.selectionStart == '0') {
+        return {
+            'start': ctrl.selectionStart,
+            'end': ctrl.selectionEnd
+        };
+    } else {
+        return {
+            'start': 0,
+            'end': 0
+        };
+    }
+}
+
+function setCaretPosition(ctrl, start, end) {
+    // IE >= 9 and other browsers
+    if (ctrl.setSelectionRange) {
+        ctrl.focus();
+        ctrl.setSelectionRange(start, end);
+    }
+    // IE < 9 
+    else if (ctrl.createTextRange) {
+        var range = ctrl.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', end);
+        range.moveStart('character', start);
+        range.select();
+    }
+}
+
 function openEmojiSearch(target) {
+    const commentTextarea = document.getElementById(`comment-${target}`);
+    const caretPosition = getCaretPosition(commentTextarea);
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const emojiSearchOpener = emojiMenu.getElementsByClassName("emoji-search-opener")[0];
     const searchDiv = emojiMenu.getElementsByClassName("emoji-search")[0];
@@ -258,8 +329,8 @@ function openEmojiSearch(target) {
         searchDiv.style.height = "250px";
         searchDiv.style.left = "0px";
         searchDiv.style.backgroundColor = "white";
-        searchDiv.style.zIndex = 101;
-        emojiSearch(emojiMenu, searchInput);
+        searchDiv.style.zIndex = 1;
+        emojiSearch(emojiMenu, searchInput, target, caretPosition);
         emojiSearchOpener.classList.add("material-icons"),
         emojiSearchOpener.textContent = "cancel"
         emojiSearchOpener.style.right = "10px"
@@ -267,6 +338,7 @@ function openEmojiSearch(target) {
         searchResults.style.visibility = "visible";
     } else {
         searchInput.style.visibility = "hidden";
+        searchInput.value = "";
         searchDiv.style.width = "115px";
         searchDiv.style.height = "20px";
         searchDiv.style.left = "14px";
@@ -280,31 +352,72 @@ function openEmojiSearch(target) {
     }
 }
 
-function emojiSearch(emojiMenu, searchInput) {
+function emojiSearch(emojiMenu, searchInput, target, caret) {
+    const commentTextarea = document.getElementById(`comment-${target}`);
     const emoji = emojiMenu.getElementsByClassName("emoji");
     const searchResults = emojiMenu.getElementsByClassName("emoji-search-results")[0];
     searchInput.addEventListener("input", () => {
         let results = [];
-        console.log(searchInput.value);
         searchResults.innerHTML = "";
         const result = document.createElement("span");
         result.classList.add("emoji");
-        if (searchInput.value) {
-            for (var item of emoji) {
-                if (item.getAttribute("title").includes(searchInput.value)) {
-                    if (!results.includes(item)){
-                        results.push(item);
+        // if (searchInput.value) {
+        if (searchInput.value.length >= 2) {
+            for (var i = 0; i < emoji.length; i++) {
+                if (emoji[i].getAttribute("title").includes(searchInput.value)) {
+                    if (!results.includes(emoji[i])){
+                        results.push(emoji[i]);
                     }
                 } else {
                     // item.style.visibility = "hidden";
                 }
             }
-            // console.log(results);
             for (var item of results) {
                 result.setAttribute("title", `${item.title}`)
                 result.innerHTML = item.innerHTML;
                 searchResults.innerHTML += result.outerHTML;
             }
+            const resultSpans = searchResults.getElementsByTagName("span")
+            for (var item of resultSpans) {
+                // Adds emoji to end of current inout (can't use cursor to insert)
+                item.addEventListener('mousedown', event => {
+                    // 
+                    // --> ADDS EMOJI TO END OF ENTERED TEXT, NOT CURSOR POINT
+                    // 
+                    // const emoji = event.target.innerHTML;
+                    // if (commentTextarea.value) {
+                    //     var comment = commentTextarea.value + emoji;
+                    //     commentTextarea.value = comment;
+                    // } else {
+                    //     commentTextarea.value += emoji;
+                    // }
+                    // 
+                    // --> USES FUNCTION insertAtCursor
+                    // 
+                    // const emoji = event.target.innerHTML;
+                    // insertAtCursor(commentTextarea, emoji);
+                    // 
+                    // --> USING CARET POSITION
+                    // 
+                    const emoji = event.target.innerHTML;
+                    const caretPosition = getCaretPosition(commentTextarea).start;
+                    if (caret.start === caretPosition) {
+                        setCaretPosition(commentTextarea, caretPosition, caretPosition);
+                        insertAtCursor(commentTextarea, emoji);
+                    } else {
+                        setCaretPosition(commentTextarea, caretPosition, caretPosition);
+                        insertAtCursor(commentTextarea, emoji);
+                    }
+                })
+            }
+        } else {
+            results = [];
         }
     })
 }
+
+// function delay(delayInms) {
+//     console.log(delayInms)
+//     setTimeout('', delayInms);
+// }
+

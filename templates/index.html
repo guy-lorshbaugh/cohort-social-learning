@@ -140,7 +140,7 @@
                             <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div>
                             <div class="comment-field-container">
                                 <form method="POST" action="#">
-                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container" style="width: 0px; height: 0px;"></div>
+                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container closed" style="width: 0px; height: 0px;"></div>
                                     <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
                                     <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
                                     <textarea placeholder="Comment" 

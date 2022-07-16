@@ -969,12 +969,12 @@ input[type=submit] {
 #emoji-search-input {
 	position: absolute;
     top: 2px;
-    /* left: -12px; */
     margin: 0;
     padding: 5px 13px;
     width: 175px;
     font-size: 12px;
     line-height: 1em;
+	z-index: 2;
 }
 .emoji-search-opener {
 	position: absolute;
@@ -988,7 +988,7 @@ input[type=submit] {
 }
 .emoji-search-results {
 	width: 355px;
-	height: 230px;
+	height: auto;
 	top: 25px;
 	left: -10px;
 	/* border: 1px solid lime; */
