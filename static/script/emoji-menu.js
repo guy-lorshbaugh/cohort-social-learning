@@ -29,11 +29,11 @@
 function emojiMenuListeners() {
     const emojiOpeners = document.getElementsByClassName("emoji-open")
     // console.log(emojiOpeners)
-    for (var i = 0; i < emojiOpeners.length; i++) {
+    for (let item of emojiOpeners) {
         // console.log(emojiOpeners[i]);
-        var target = getID(emojiOpeners[i].id);
-        emojiOpeners[i].classList.add(target);
-        emojiOpeners[i].addEventListener("mouseup", function() {
+        let target = getID(item.id);
+        item.classList.add(target);
+        item.addEventListener("mouseup", function() {
             emojiOpenClose(target);
         });
         // }, { once: true });
@@ -52,7 +52,7 @@ function typeOpener(menu, type) {
 
 function emojiOpenClose(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    console.log(emojiMenu);
+    // console.log(emojiMenu);
     const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
     const tone_choices = emojiMenu.getElementsByClassName("tone-choice");
@@ -66,7 +66,7 @@ function emojiOpenClose(target) {
         typeOpener(emojiMenu, "family");
         typeOpener(emojiMenu, "couple");
         emojiSearchListener(target);
-        for (var item of tone_choices) {
+        for (let item of tone_choices) {
             let tone = item.getAttribute("tone");
             item.addEventListener("click", () => {
                 skinTonePicker(emojiMenu, tone)
@@ -74,7 +74,7 @@ function emojiOpenClose(target) {
         }
         // setTimeout(closeListener(target), 500);
         skinTonePicker(emojiMenu);
-        // console.log("Opening " + target);
+        console.log("Opening " + target);
         emojiMenu.classList.remove("closed");
         emojiMenu.classList.add("open");
         emojiMenu.style.width = "355px";
@@ -82,7 +82,7 @@ function emojiOpenClose(target) {
         button.classList.add("active");
     } 
     else if (emojiMenu.classList.contains("open")) {
-        // console.log("closing " + target);
+        console.log("closing " + target);
         emojiMenu.style.width = "0px";
         emojiMenu.style.height = "0px";
         emojiMenu.innerHTML = "";
