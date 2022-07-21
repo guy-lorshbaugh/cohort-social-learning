@@ -8,14 +8,19 @@
             <h2>Welcome to Cohort!</h2>
             <h3>Please Log In</h3>
                 <form method="POST" action="" class="form">
-                    {{ login_form.hidden_tag() }}
+                    <!-- {{ login_form.hidden_tag() }} -->
+                    {{ login_form.csrf_token(id = "unique_id") }}
                     {% for field in login_form %}
                         {{ render_field(field) }}
                     {% endfor %}
+                    <i class="eye-button material-icons" id="togglePassword">visibility</i>
                     <button type="submit" id="submit" class="button button-secondary">Login!</button>
                 </form>
             <p><a href="{{ url_for('register') }}">Don't have an account yet? Register!</a></p>
         </div>
     </div>
 </section>
+
+<script src="{{ url_for('static', filename='script/toggle-password.js') }}"></script>
+
 {% endblock %}

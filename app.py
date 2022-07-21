@@ -238,7 +238,7 @@ def register():
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/entries", methods=['GET', 'POST'])
-def index():
+def index(choice=""):
     # journal = (models.Entry.select()
     #         .where(models.Entry.private==False)
     #         .order_by(models.Entry.date.desc())

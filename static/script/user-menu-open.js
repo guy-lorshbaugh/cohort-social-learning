@@ -10,7 +10,7 @@ function userMenuOpen() {
         button.style.background = "none";
     }
 }
-document.addEventListener('mousedown', function(event) {
+userMenu.addEventListener('mousedown', function(event) {
     if(userMenu.style.visibility === "visible"){
         if (!userMenu.contains(event.target) || userMenu.contains(event.target)) {
             userMenuOpen();
