@@ -43,12 +43,12 @@ function showError(entry, error) {
 function commentRequest(action, url="", entry="") {
     const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
     const xhr = new XMLHttpRequest();
+    const input = document.getElementById(`comment-${entry}`);
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader("X-CSRFToken", csrfToken);
     if (action === "create"){
-        const input = document.getElementById(`comment-${entry}`).value;
-        const contents = formatPost(input);
+        const contents = formatPost(input.value);
         xhr.send("contents=" + contents);
     } else if (action === "edit") {
         const input = document.getElementById(`comment-edit-${entry}`).value;
@@ -77,6 +77,7 @@ function commentRequest(action, url="", entry="") {
             console.error(xhr.statusText);
         }
     }
+    input.style.height = "50px";
 }
 
 function writeComment(contents, entry) {
@@ -92,39 +93,42 @@ function writeComment(contents, entry) {
 }
 
 function writeNewComment(id, contents) {
-    commentContents = document.getElementById(`comment-contents-${id}`);
+    const commentArea = document.getElementById(`comment-${id}`);
+    const commentContents = document.getElementById(`comment-contents-${id}`);
     commentContents.innerHTML = contents;
+    commentArea.style.height = "fit-content";
+    commentContents.style.height = "fit-content";
 }
 
 function editComment(id) {
     commentMenu(id);
     const comment = document.getElementById(`comment-${id}`);
     const contents = parseEditText(comment);
+    const form = document.createElement("form");
+    const textArea = document.createElement("textarea");
     editDialog = document.createElement("div");
     setAttributes(editDialog, {
         "class": "comment-edit-dialog shadow-box",
         "id": `comment-edit-dialog-${id}`
     });
-    form = document.createElement("form");
-    textArea = document.createElement("textarea");
     textArea.value = contents.replaceAll("&amp;", "&");
     setAttributes(textArea, {
         "class": "comment-field",
         "id": `comment-edit-${id}`
     });
-    saveButton = document.createElement("input");
+    const saveButton = document.createElement("input");
     setAttributes(saveButton, {
         "type": "button",
         "value": "Save",
         "class": "button button-secondary comment-post-button"
     });
-    cancelCommentButton = document.createElement("div");
+    const cancelCommentButton = document.createElement("div");
     cancelCommentButton.textContent = "cancel"
     setAttributes(cancelCommentButton, {
         "class": "shadow-box comment-edit-cancel-button material-icons",
         "id": `cancel-button-${id}`
     })
-    autoResize = document.createElement("script");
+    const autoResize = document.createElement("script");
     autoResize.type = "text/javascript",
     autoResize.textContent = `autosize(document.getElementById("${textArea.id}"))`;
     form.appendChild(textArea);
@@ -166,7 +170,7 @@ function editListeners(cancelCommentButton, saveButton, id) {
 }
 
 function setAttributes(element, attributes) {
-    for(var key in attributes) {
+    for(let key in attributes) {
       element.setAttribute(key, attributes[key]);
     }
   }
@@ -177,7 +181,7 @@ function confirmDelete(id) {
     confirmDialog.style.visibility = "visible";
     const buttons = confirmDialog.getElementsByTagName("button");
     buttons[0].addEventListener("click", () => {
-        commentRequest("del", `entries/comment/${id}/delete`, `${id}`);
+        commentRequest("del", `/entries/comment/${id}/delete`, `${id}`);
         confirmDialog.style.visibility = "hidden";
     })
     buttons[1].addEventListener("click", () => {

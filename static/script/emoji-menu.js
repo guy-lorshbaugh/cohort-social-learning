@@ -1,72 +1,98 @@
 //  Emoji Menu Listeners
-function emojiMenuListeners() {
-    const emojiOpeners = document.getElementsByClassName("emoji-open")
-    // console.log(emojiOpeners);
-    for (let item of emojiOpeners) {
-        // console.log(emojiOpeners[i]);
-        let target = getID(item.id);
-        item.classList.add(target);
-        item.addEventListener("mouseup", function() {
-            emojiOpenClose(target);
-        });
+
+startListeners("emoji-open", "click", emojiMenuStart);
+
+// OLDER VERSION allowed a target to add a listener to a single menu.
+// function emojiMenuListeners(target="") {
+//     const emojiOpeners = document.getElementsByClassName("emoji-open")
+//     if (target) {
+//         let currMenu = document.getElementById(`emoji-menu-${target}`);
+//         currMenu.addEventListener("click", function() {
+//             emojiMenu(currMenu);
+//         }, { once: true });
+//     } else {
+//         for (let item of emojiOpeners) {
+//             let targetItem = getID(item.id);
+//             item.classList.add(targetItem);
+//             item.addEventListener("click", (e) => {
+//                 // console.log("EMoji Menu Listener");
+//                 // e.stopPropagation;
+//                 emojiMenu(targetItem);
+//             });
+//         }
+//     }
+// }
+// emojiMenuListeners();
+
+function typeOpener(menu, typeArray) {
+    for (item of typeArray) {
+        const selector = menu.getElementsByClassName(`${item}-selector`)[0];
+        const defaultDiv = menu.getElementsByClassName(`${item}-default`)[0];
+        const typeEmoji = menu.getElementsByClassName(`${item}-opener`)[0];
+        typeEmoji.addEventListener("click", () => {
+            openSelector(selector, defaultDiv);
+        })
     }
 }
-emojiMenuListeners();
 
-function typeOpener(menu, type) {
-    const selector = menu.getElementsByClassName(`${type}-selector`)[0];
-    const defaultDiv = menu.getElementsByClassName(`${type}-default`)[0];
-    const typeEmoji = menu.getElementsByClassName(`${type}-opener`)[0];
-    typeEmoji.addEventListener("click", () => {
-        openSelector(selector, defaultDiv);
-    })
+function emojiMenuStart(emojiMenu, target, button) {
+    const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
+    const tone_choices = emojiMenu.getElementsByClassName("tone-choice");
+    emojiMenu.innerHTML = menuContents;
+    addEmojiListeners(target);
+    addNavMenu(target);
+    navScrollListener(target);
+    typeOpener(emojiMenu, [ "kiss", "hands", "family", "couple" ])
+    emojiSearchListener(target);
+    for (let item of tone_choices) {
+        let tone = item.getAttribute("tone");
+        item.addEventListener("click", () => {
+            skinTonePicker(emojiMenu, tone)
+        })
+    }
+    skinTonePicker(emojiMenu);
+    console.log("Opening " + target);
+    emojiMenu.classList.remove("closed");
+    emojiMenu.classList.add("open");
+    emojiMenu.style.visibility = "visible";
+    button.classList.add("active");
 }
 
-function emojiOpenClose(target) {
+function emojiMenuClose (emojiMenu, target, button) {
+    console.log("Closing " + target);
+    emojiMenu.style.visibility = "hidden";
+    // emojiMenu.innerHTML = "";
+    emojiMenu.classList.remove("open");
+    emojiMenu.classList.add("closed");
+    button.classList.remove("active");
+    // document.removeEventListener('click', handleClick(event));
+    // emojiMenu.removeEventListener('click', handleClick(event));
+}
+
+const handleClick = e => {
+    // console.log(event);
+    return;
+  } 
+
+function emojiMenuStart(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     const button = document.getElementById(`emoji-open-${target}`);
-    const tone_choices = emojiMenu.getElementsByClassName("tone-choice");
     if (emojiMenu.classList.contains("closed")) {
-        emojiMenu.innerHTML = menuContents;
-        addEmojiListeners(target);
-        addNavMenu(target);
-        navScrollListener(target);
-        typeOpener(emojiMenu, "kiss");
-        typeOpener(emojiMenu, "hands");
-        typeOpener(emojiMenu, "family");
-        typeOpener(emojiMenu, "couple");
-        emojiSearchListener(target);
-        for (let item of tone_choices) {
-            let tone = item.getAttribute("tone");
-            item.addEventListener("click", () => {
-                skinTonePicker(emojiMenu, tone)
-            })
-        }
-        skinTonePicker(emojiMenu);
-        // console.log("Opening " + target);
-        emojiMenu.classList.remove("closed");
-        emojiMenu.classList.add("open");
-        emojiMenu.style.width = "355px";
-        emojiMenu.style.height = "300px";
-        button.classList.add("active");
-        setTimeout(function() {
-            document.addEventListener('mouseup', (e) => {
-                if (!emojiMenu.contains(e.target)) {
-                    emojiOpenClose(target);
-                }
-        }, { once: true })}, 500);
+        emojiMenuOpen(emojiMenu, target, button);
     } 
     else if (emojiMenu.classList.contains("open")) {
-        // console.log("Closing " + target);
-        emojiMenu.style.width = "0px";
-        emojiMenu.style.height = "0px";
-        emojiMenu.innerHTML = "";
-        emojiMenu.classList.remove("open");
-        emojiMenu.classList.add("closed");
-        button.classList.remove("active");
-        // emojiMenuListeners(button);
+        emojiMenuClose (emojiMenu, target, button);
     }
+    document.addEventListener('mousedown', function(event) {
+        if (emojiMenu.style.visibility === "visible"){
+            if (!emojiMenu.contains(event.target)) {
+                emojiMenuStart(target);
+            }
+            if (button.contains(event.target)) {
+                emojiMenuStart(target);
+            }
+        }
+    });
 }
 
 // function closeListener(element) {
@@ -75,10 +101,10 @@ function emojiOpenClose(target) {
 //     document.addEventListener('mousedown', function(event) {
 //         if (emojiMenu.style.height === "300px") {
 //             if (!emojiMenu.contains(event.target)) {
-//                 emojiOpenClose(element);
+//                 emojiMenu(element);
 //             }
 //             if (button.contains(event.target)) {
-//                 emojiOpenClose(element);
+//                 emojiMenu(element);
 //             }
 //         }
 //     }, { once: true });
@@ -357,8 +383,6 @@ function emojiSearch(emojiMenu, searchInput, target, caret) {
                     if (!results.includes(emoji[i])){
                         results.push(emoji[i]);
                     }
-                } else {
-                    // item.style.visibility = "hidden";
                 }
             }
             for (var item of results) {

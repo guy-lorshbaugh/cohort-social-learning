@@ -1,7 +1,10 @@
 const newEntryButton = document.getElementsByClassName("new-entry-button")[0];
+const parentContainer = document.getElementsByClassName("container")[0];
 const entryDialog = document.getElementsByClassName("new-entry-container")[0];
 const newEntryFrame = document.getElementById("new-entry-frame").contentWindow.document;
 const entryPostButton = newEntryFrame.getElementsByClassName("button button-secondary")[0];
+
+console.log(parentContainer);
 
 startListeners(newEntryButton, "click", openEntryWindow);
 startListeners(entryPostButton, "click", getNewEntry);
@@ -9,6 +12,7 @@ startListeners(entryPostButton, "click", getNewEntry);
 function openEntryWindow() {
     if (entryDialog.style.visibility === "hidden") {
         entryDialog.style.visibility = "visible";
+        document.body.style.overflow = "hidden";
     } else {
         entryDialog.style.visibility = "hidden"
     }
@@ -21,7 +25,7 @@ function getNewEntry() {
         let commentContents = newEntryFrame.getElementById("title").value;
         openEntryWindow();
         resetListener();
-        setTimeout(function() {newEntryRequest(commentContents)}, 500);
+        setTimeout(() => { newEntryRequest(commentContents) }, 500);
     }
 }
 

@@ -91,6 +91,13 @@ def get_tags(id):
         .where(models.Entry.id == id)
         .order_by(models.Tags.id)
         )
+    tag_list = []
+    for tag in tags:
+        if tag.tag == '':
+            print("Empty tag skipped")
+            # pass
+        else:
+            tag_list.append(tag)
     return tags
     
 
@@ -238,7 +245,8 @@ def register():
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/entries", methods=['GET', 'POST'])
-def index(choice=""):
+@app.route("/entries/", methods=['GET', 'POST'])
+def index():
     # journal = (models.Entry.select()
     #         .where(models.Entry.private==False)
     #         .order_by(models.Entry.date.desc())
@@ -510,7 +518,7 @@ def delete_comment(comment):
 @app.route('/entries/sortby/<string:choice>/')
 def sort_entries(choice):
     journal = models.Entry.select().where(models.Entry.private==False)
-    if choice == "top":
+    if choice == "top" or choice == "":
         journal = ( journal
                     .order_by(models.Entry.entry_score.desc())
                     .limit(10)
@@ -523,8 +531,8 @@ def sort_entries(choice):
                 )
     login_form = forms.LoginForm()
     emoji = process_emoji()
-    return jsonify(render_template('sort.html', journal=journal, models=models,
-                    login_form=login_form, emoji=emoji.values()))
+    return render_template('index.html', journal=journal, models=models,
+                    login_form=login_form, emoji=emoji.values())
 
 
 if __name__ == '__main__':

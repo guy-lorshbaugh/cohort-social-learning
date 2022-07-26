@@ -1,4 +1,5 @@
 const container = window.parent.document.getElementsByClassName("new-entry-container")[0];
+const parentBody = window.parent.document.body;
 const cancelEntryButton = document.getElementById("entry-cancel-button");
 const postEntryButton = document.getElementById("entry-post-submit");
 formTitle = document.getElementById("title");
@@ -14,9 +15,13 @@ function closeEntryWindow(triggerName="") {
         if (!formTitle.value || !formLearned.value) {
             return;
         } else {
+            parentBody.style.overflow = "visible";
+            console.log("close")
             container.style.visibility = "hidden";
         }
     } else {
+        parentBody.style.overflow = "visible";
+        console.log("close")
         container.style.visibility = "hidden";
     }
 }

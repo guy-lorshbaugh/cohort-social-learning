@@ -223,3 +223,23 @@
         {{ entry.date.strftime('%B %d %Y') }}
     {% endif %}
 {% endmacro %}
+
+{% macro process_tags(tags) %}
+    {% set tags_list = [] %}
+    {% for tag in tags %}
+        {% if tag.tag == '' %}
+            {{ pass }}
+        {% else %}
+            {{ tags_list.append(tag) or "" }}
+        {% endif %}
+    {% endfor %}
+    {% if tags_list|length == 0 %}
+        {{ pass }}
+    {% else %}
+        <div class="tags small">Tags:|
+            {% for tag in tags: %}
+                <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endmacro %}

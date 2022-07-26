@@ -18,13 +18,6 @@ function startListeners(target, event, callback, params="") {
             } else {
                 target.addEventListener(event, callback)
             }
-            // target.addEventListener(event, () => {
-            //     if (params) {
-            //         callback(params);
-            //     } else {
-            //         callback();
-            //     }
-            // }, true);
         }
     }
 }

@@ -79,6 +79,7 @@ br {
 	top: -45px;
 	right: -400px;
 	user-select: none;
+	cursor: pointer;
 }
 
 /* --- NAV MENU --- */

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% from 'macros.html' import emoji_menu, relative_time, write_comments with context %}
+{% from 'macros.html' import emoji_menu, relative_time, write_comments, process_tags with context %}
 
 {% block content %}
 
@@ -91,19 +91,14 @@
                             </div>
                             
                             <!-- TAGS -->
-
-                            <div class="tags small">Tags:|
-                                {% set tags = (models.Tags
-                                    .select()
-                                    .join(models.EntryTags)
-                                    .join(models.Entry)
-                                    .where(models.Entry.id == entry.id)
-                                    .order_by(models.Tags.id)
-                                    ) %}
-                                {% for tag in tags: %}
-                                    <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
-                                {% endfor %}
-                            </div>
+                            {% set tags = (models.Tags
+                                .select()
+                                .join(models.EntryTags)
+                                .join(models.Entry)
+                                .where(models.Entry.id == entry.id)
+                                .order_by(models.Tags.id)
+                                ) %}
+                                {{ process_tags(tags) }}
 
                             <!-- LIKE & COMMENT BUTTONS -->
 
@@ -140,7 +135,7 @@
                             <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div>
                             <div class="comment-field-container">
                                 <form method="POST" action="#">
-                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container closed" style="width: 0px; height: 0px;"></div>
+                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container closed" style="visibility: hidden"></div>
                                     <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
                                     <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
                                     <textarea placeholder="Comment" 
@@ -149,7 +144,7 @@
                                             required
                                             aria-required="true"></textarea>
                                         <input type="button" 
-                                            onclick="commentRequest('create', 'entries/{{ entry.id }}/comment/', {{ entry.id }})" 
+                                            onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
                                             value="Post" class="button button-secondary comment-post-button"
                                         >
                                     <script type="text/javascript">
@@ -177,6 +172,12 @@
         Thank you for viewing my project! If you'd like to reach out, feel free to shoot me a line at guy.lorshbaugh@gmail.com`
         )
     </script> -->
+    <script type="text/javascript">
+        const logComment = () => {
+            const contents = document.getElementsByClassName("comment-field");
+            console.log(contents[0].value);
+        }
+    </script>
     <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
     <script src="{{ url_for('static', filename='script/top-recent.js') }}"></script>
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
@@ -186,12 +187,6 @@
         src="{{ url_for('static', filename='script/get-id.js') }}">
     </script>
 
-    <script type="text/javascript">
-        const logComment = () => {
-            const contents = document.getElementsByClassName("comment-field");
-            console.log(contents[0].value)
-        }
-    </script>
 {% else %}
     {% include 'login.html' %}
 {% endif %}

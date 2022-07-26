@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% from 'macros.html' import process_tags with context %}
+
 {% block content %}
 <section>
     <div class="container">
@@ -30,12 +32,7 @@
                             {% endfor %}
                         </p>
                     {% endif %}
-                        <div class="small"><br>Tags:|
-                            {% for tag in tags: %}
-                            <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
-                            {% endfor %}
-                        </div>
-
+                    {{ process_tags(tags) }}
             </article>
         </div>
     </div>

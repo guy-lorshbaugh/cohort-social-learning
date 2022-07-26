@@ -1,3 +1,22 @@
+// USING CHANGE LISTENER TO RELOAD INDEX
+const topRecentSelect = document.getElementById("top-recent-select");
+const currentPage = window.location.host;
+
+// Change Listener
+topRecentSelect.addEventListener("change", (e) => {
+  let choice = topRecentSelect.value;
+  window.location.replace(`http://${currentPage}/entries/sortby/${choice}`)
+})
+
+// Set <select> field value per sorting option
+window.addEventListener("load", () => {
+    if (window.location.href.indexOf("top") !== -1) {
+        topRecentSelect.selectedIndex = 1;
+    } else if (window.location.href.indexOf("recent") !== -1) {
+        topRecentSelect.selectedIndex = 0;
+    }
+});
+
 
 // **  PREVIOUS SCRIPT USES A SERVER REQUEST TO RE-SORT ENTRIES, LOSING EVENT  **
 // **  LISTENERS FOR A NUMBER OF FUNCTIONS.                                    **
