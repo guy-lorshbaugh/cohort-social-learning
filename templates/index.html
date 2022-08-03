@@ -26,6 +26,23 @@
                         {% set user = models.User.get(models.User.id==entry.user_id) %}
                         <article class="entry-preview-container" id="entry-{{ entry.id }}">
                             <img class="avatar-50" src="{{ user.avatar }}">
+                            {% if entry.user_id == current_user.id %}
+                            <div class="option-button entry-options" role="button" id="entry-options-{{ entry.id }}">
+                                more_vert
+                            </div>
+                            <div class="option-menu entry-menu" id="entry-menu-{{entry.id}}" style="visibility: hidden;">
+                                <ul>
+                                    <!-- { % set entry_delete_url = url_for('delete_entry', entry = entry.id) % } -->
+                                    <li id="edit-entry-{{ entry.id }}" class="edit-entry">Edit Comment</li>
+                                    <li id="delete-entry-{{ entry.id }}" class="delete-entry">Delete Comment</li>
+                                </ul>
+                            </div>
+                            <div class="confirm-dialog" id="confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
+                                <div style="padding-bottom: 5px;">Are you sure?</div>
+                                <button name="yes" class="button button-secondary" type="button">Yes</button>
+                                <button name ="no" class="button button-secondary" type="button">No</button>
+                            </div>
+                            {% endif %}
                             <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
                             <div id="entry-preview-{{ entry.id }}" class="entry-preview">
                                 <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
@@ -135,14 +152,17 @@
                             <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div>
                             <div class="comment-field-container">
                                 <form method="POST" action="#">
-                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container closed" style="visibility: hidden"></div>
-                                    <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
-                                    <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
-                                    <textarea placeholder="Comment" 
-                                            id="comment-{{ entry.id }}"
-                                            class="comment-field"
-                                            required
-                                            aria-required="true"></textarea>
+                                    <div id="emoji-menu-{{ entry }}" 
+                                        class="emoji-menu-container closed"
+                                        style="visibility: hidden"></div>
+                                        <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
+                                        <textarea placeholder="Comment" 
+                                        id="comment-{{ entry.id }}"
+                                        class="comment-field"
+                                        required
+                                        aria-required="true"></textarea>
+                                        <div id="emoji-open-{{ entry.id }}" 
+                                            class="emoji-open" style="display: flex">sentiment_satisfied_alt</div>
                                         <input type="button" 
                                             onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
                                             value="Post" class="button button-secondary comment-post-button"
@@ -172,21 +192,14 @@
         Thank you for viewing my project! If you'd like to reach out, feel free to shoot me a line at guy.lorshbaugh@gmail.com`
         )
     </script> -->
-    <script type="text/javascript">
-        const logComment = () => {
-            const contents = document.getElementsByClassName("comment-field");
-            console.log(contents[0].value);
-        }
-    </script>
-    <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
     <script src="{{ url_for('static', filename='script/top-recent.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/option-menu.js') }}"></script>
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>
     <script src="{{ url_for('static', filename='script/new-entry.js') }}"></script>
     <script type="text/javascript" 
         src="{{ url_for('static', filename='script/get-id.js') }}">
     </script>
-
 {% else %}
     {% include 'login.html' %}
 {% endif %}

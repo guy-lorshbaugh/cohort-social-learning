@@ -13,23 +13,28 @@
 <!-- Renders HTML for emoji menu. -->
 {% macro emoji_menu(emoji) %}
     <div id="emoji-menu-prototype">
-        <div class="emoji-search" style="height: 20px; width: 115px;">
-            <div class="emoji-search-opener"><span class="material-icons">search</span><span class="search-opener-text">&nbspSearch Emoji</span></div>
-                <input type="text" id="emoji-search-input" placeholder="Search emoji" style="visibility: hidden;">
-            <div class="emoji-list-container" style="visibility: hidden;"><div class="emoji-search-results emoji-container" style="visibility: hidden;"></div></div>
+            <div class="emoji-category-nav">
+                <ul>
+                    <li name="recent-emoji">schedule</li>
+                </ul>
+            </div>
+        <div class="emoji-search">
+            <!-- <div class="emoji-search-opener"><span class="material-icons">search</span><span class="search-opener-text">&nbspSearch Emoji</span></div> -->
+                <input type="text" id="emoji-search-input" placeholder="Search Emoji">
+                <span class="material-icons emoji-search-icon">search</span>
+            </div>
+            <div class="emoji-search-container" style="display: none;">
+                <div class="emoji-search-results emoji-container">
+            </div>
         </div>
-        <div class ="tone-picker">
+        <!-- <div class ="tone-picker">
             <div class="tone-choice default" tone="default"> </div>
             <div class="tone-choice light" tone="skin-tone-1"> </div>
             <div class="tone-choice mediumlight" tone="skin-tone-2"> </div>
             <div class="tone-choice medium" tone="skin-tone-3"> </div>
             <div class="tone-choice mediumdark" tone="skin-tone-4"> </div>
             <div class="tone-choice dark" tone="skin-tone-5"> </div>
-        </div>
-        <div class="emoji-category-nav">
-            <ul>
-            </ul>
-        </div>
+        </div> -->
         <div class="kiss-selector shadow-box" style="visibility: hidden;">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
@@ -119,15 +124,20 @@
                         {% elif "skin-tone" not in name %}
                             <span class="emoji" tone="default" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
                         {% elif "skin-tone-1" in name %}
-                            <span class="emoji" tone="skin-tone-1" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {{ pass }}
+                            <!-- <span class="emoji" tone="skin-tone-1" title="{{ entry['name'] }}">{{ entry['char'] }}</span> -->
                         {% elif "skin-tone-2" in name %}
-                            <span class="emoji" tone="skin-tone-2" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {{ pass }}
+                            <!-- <span class="emoji" tone="skin-tone-2" title="{{ entry['name'] }}">{{ entry['char'] }}</span> -->
                         {% elif "skin-tone-3" in name %}
-                            <span class="emoji" tone="skin-tone-3" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {{ pass }}
+                            <!-- <span class="emoji" tone="skin-tone-3" title="{{ entry['name'] }}">{{ entry['char'] }}</span> -->
                         {% elif "skin-tone-4" in name %}
-                            <span class="emoji" tone="skin-tone-4" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {{ pass }}
+                            <!-- <span class="emoji" tone="skin-tone-4" title="{{ entry['name'] }}">{{ entry['char'] }}</span> -->
                         {% elif "skin-tone-5" in name %}
-                            <span class="emoji" tone="skin-tone-5" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
+                            {{ pass }}
+                            <!-- <span class="emoji" tone="skin-tone-5" title="{{ entry['name'] }}">{{ entry['char'] }}</span> -->
                         {% endif %}
                     {% endfor %}
                     <span class="emoji kiss-opener" id="kiss" tone="none" title="kiss-default">💏</span>
@@ -176,10 +186,10 @@
                 {{ comment.contents|safe }}
             </div>
             {% if comment.user_id == current_user.id %}
-                <div class="comment-options" role="button" id="comment-options-{{ comment.id }}">
+                <div class="option-button comment-options" role="button" id="comment-options-{{ comment.id }}">
                     more_vert
                 </div>
-                <div class="comment-menu" id="comment-menu-{{comment.id}}" style="visibility: hidden;">
+                <div class="option-menu comment-menu" id="comment-menu-{{comment.id}}" style="visibility: hidden;">
                     <ul>
                         {% set comment_delete_url = url_for('delete_comment', comment = comment.id) %}
                         <li id="edit-comment-{{ comment.id }}" class="edit-comment">Edit Comment</li>

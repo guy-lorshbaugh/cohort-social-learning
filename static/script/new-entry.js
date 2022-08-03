@@ -4,8 +4,6 @@ const entryDialog = document.getElementsByClassName("new-entry-container")[0];
 const newEntryFrame = document.getElementById("new-entry-frame").contentWindow.document;
 const entryPostButton = newEntryFrame.getElementsByClassName("button button-secondary")[0];
 
-console.log(parentContainer);
-
 startListeners(newEntryButton, "click", openEntryWindow);
 startListeners(entryPostButton, "click", getNewEntry);
 

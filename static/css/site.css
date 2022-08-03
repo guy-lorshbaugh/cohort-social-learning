@@ -194,9 +194,7 @@ footer {
 	background: aliceblue;
 }
 
-/* ==========================================================================
-Button Styles
-   ========================================================================== */
+/* --- BUTTONS --- */
 
 .button {
 	padding: 8px 10px 6px 10px;
@@ -239,6 +237,11 @@ Button Styles
 }
 .button:focus {
 	outline: 0;
+}
+.option-button {
+	font-family: "Material Icons";
+	cursor: pointer;
+	user-select: none;
 }
 
 /* ==========================================================================
@@ -309,67 +312,6 @@ p a {
 	color: royalblue;
 	z-index: 101;
 	transition: top 175ms ease-in-out;
-}
-
-/* --- Page Styles --- */
-
-.entry-list,
-.edit-entry,
-.new-entry {
-	max-width: 500px;
-	margin: 0 auto;
-	padding: 10px 0;
-}
-.new-entry {
-	padding: 10px;
-}
-.edit-entry h2,
-.new-entry h2 {
-	margin-bottom: 16px;
-}
-.entry-preview {
-	margin: 10px;
-}
-.entry-preview-container {
-	position: relative;
-	text-align: center;
-	margin-bottom: 35px;
-	padding: 10px;
-	background-color: white;
-	border-radius: 25px;
-}
-.entry-list article:last-child {
-	margin-bottom: 0;
-}
-.entry-list article h2 {
-	margin-bottom: 8px;
-}
-.entry-list.single {
-	padding-bottom: 70px;
-}
-.entry-list.single time {
-	font-size: 18px;
-}
-.entry {
-	max-width: 500px;
-	margin: 25px auto;
-	text-align: center;
-}
-.entry p {
-	margin-bottom: 40px;
-}
-.comment-count {
-	align-self: flex-end;
-}
-.edit {
-	padding-bottom: 80px;
-	text-align: center;
-	margin: 0 auto;
-}
-.edit a {
-	font-weight: 400;
-	text-transform: uppercase;
-	font-size: 18px;
 }
 
 /* --- AVATARS --- */
@@ -446,6 +388,78 @@ p a {
 #avatar {
 	display: none;
 }
+/* Convert edit-entry to buttons */
+.edit-entry {
+	padding-bottom: 80px;
+	text-align: center;
+	margin: 0 auto;
+}
+.edit-entry a {
+	font-weight: 400;
+	text-transform: uppercase;
+	font-size: 18px;
+}
+
+
+/* --- ENTRIES --- */
+
+.entry-list,
+.edit-entry,
+.new-entry {
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 10px 0;
+}
+.new-entry {
+	padding: 10px;
+}
+.edit-entry h2,
+.new-entry h2 {
+	margin-bottom: 16px;
+}
+.entry-preview {
+	margin: 10px;
+}
+.entry-preview-container {
+	position: relative;
+	text-align: center;
+	margin-bottom: 35px;
+	padding: 10px;
+	background-color: white;
+	border-radius: 25px;
+}
+.entry-list article:last-child {
+	margin-bottom: 0;
+}
+.entry-list article h2 {
+	margin-bottom: 8px;
+}
+.entry-list.single {
+	padding-bottom: 70px;
+}
+.entry-list.single time {
+	font-size: 18px;
+}
+.entry {
+	max-width: 500px;
+	margin: 25px auto;
+	text-align: center;
+}
+.entry p {
+	margin-bottom: 40px;
+}
+.comment-count {
+	align-self: flex-end;
+}
+.entry-options {
+	font-size: 24px;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	height: 25px;
+	width: 25px;
+}
+
 
 /* --- LIKES --- */
 
@@ -557,23 +571,10 @@ p a {
 	background: rgb(240, 240, 240);
 	border-radius: 15px;
 	border-top-left-radius: 0;
-	/* overflow-y: hidden; */
 }
-/* Fade-out effect on overflow-y: hidden */
-/* .comment-contents:after {
-	content: "";
-	text-align: right;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	width: 100%;
-	height: 1.2em;
-	background: linear-gradient(to bottom, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 50%);
-  } */
 .single-comment:first-child {
 	margin-top: 5px;
 	border-top: 1px solid #e1e1e1;
-	/* border-top-left-radius: 15px; */
 	border-top-right-radius: 15px;
 }
 .single-comment:last-child {
@@ -625,15 +626,12 @@ p a {
 	right: 5px;
 	height: 25px;
 	width: 25px;
-	font-family: "Material Icons";
 	font-size: 24px;
-	cursor: pointer;
-	user-select: none;
 }
 .comment-options:hover {
 	color: royalblue;
 }
-.comment-menu,
+.option-menu,
 .confirm-dialog {
 	position: absolute;
 	top: 30px;
@@ -648,7 +646,8 @@ p a {
 	cursor: default;
 	user-select: none;
 }
-.comment-menu {
+.comment-menu,
+.entry-menu {
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
@@ -658,7 +657,8 @@ p a {
 .confirm-dialog {
 	z-index: 99;
 }
-.comment-menu ul {
+.comment-menu ul,
+.entry-menu ul {
 	padding-left: 0px;
 	list-style-type: none;
 }
@@ -839,10 +839,11 @@ input[type=submit] {
 	user-select: none;
 	z-index: 99;
 }
-.emoji-list-container {
+.emoji-list-container,
+.emoji-search-container {
 	position: relative;
 	height: 250px;
-	padding: 10px;
+	padding: 0 10px;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }
@@ -876,7 +877,8 @@ input[type=submit] {
 	list-style-type: none;
 }
 .emoji-category-nav ul li,
-.emoji-open {
+.emoji-open,
+.emoji-close {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -890,7 +892,7 @@ input[type=submit] {
 .emoji-category-nav ul li,
 .emoji-category-nav ul li .active {
 	color: rgba(0 0 0 / 0.5);
-	transition: all 200ms ease-in-out;
+	/* transition: all 200ms ease-in-out; */
 }
 .emoji-category-nav ul li:hover {
 	color:rgba(0 0 0 / 0.8);
@@ -900,6 +902,12 @@ input[type=submit] {
 	right: 86px;
 	top: 15px;
 	color: rgba(0 0 0 / 0.3);
+}
+.emoji-close {
+	position: absolute;
+	right: 86px;
+	top: 15px;
+	color: royalblue !important;
 }
 .emoji-open:hover {
 	color:rgba(0 0 0 / 0.5);
@@ -914,7 +922,7 @@ input[type=submit] {
 .emoji-anchor {
 	visibility: hidden;
 	position: relative;
-	top: -5px;
+	/* top: -20px; */
 }
 .emoji-list-container h6 {
 	margin: 10px 0px;
@@ -965,36 +973,35 @@ input[type=submit] {
     transform: rotate(45deg);
 }
 .emoji-search {
-	display: flex;
-	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
-	position: absolute;
-	top: 51px;
-	left: 14px;
-	width: 115px;
-	height: 20px;
-	padding: 0px 10px;
+	/* align-items: center; */
+	text-align: left;
+	position: relative;
+	width: 100%;
+	height: 25px;
 	border-radius: 8px;
 	background-color: rgba(255 255 255 / 0.75);
 	z-index: 100;
 }
 #emoji-search-input {
-	position: absolute;
-    top: 2px;
-    margin: 0;
-    padding: 5px 13px;
-    width: 175px;
+	position: relative;
+	margin-left: 12px;
+    padding: 5px 13px 5px 20px;
     font-size: 12px;
     line-height: 1em;
 	z-index: 2;
 }
-.emoji-search-opener {
+.emoji-search-icon {
+	position: absolute;
+	top: 12px;
+    left: 17px;
+	z-index: 3;
+}
+/* .emoji-search-opener {
 	position: absolute;
 	font-size: 12px;
 	color: rgba(0 0 0 / 0.8);
 	cursor: pointer;
-}
+} */
 .emoji-search-opener .material-icons {
 	font-size: 18px;
 	font-family: "Material Icons";

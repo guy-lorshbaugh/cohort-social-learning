@@ -169,12 +169,6 @@ function editListeners(cancelCommentButton, saveButton, id) {
     })
 }
 
-function setAttributes(element, attributes) {
-    for(let key in attributes) {
-      element.setAttribute(key, attributes[key]);
-    }
-  }
-
 function confirmDelete(id) {
     commentMenu(id);
     confirmDialog = document.getElementById(`confirm-dialog-${id}`)
@@ -183,16 +177,16 @@ function confirmDelete(id) {
     buttons[0].addEventListener("click", () => {
         commentRequest("del", `/entries/comment/${id}/delete`, `${id}`);
         confirmDialog.style.visibility = "hidden";
-    })
+    }, { once: true } )
     buttons[1].addEventListener("click", () => {
         confirmDialog.style.visibility = "hidden";
-    })
+    }, { once: true } )
 }
 
 function commentMenu(target) {
     const comment = document.getElementById(`comment-${target}`);
     const button = comment.getElementsByClassName("comment-options")[0];
-    const menu = comment.getElementsByClassName("comment-menu")[0];
+    const menu = comment.getElementsByClassName("option-menu")[0];
     if (menu.style.visibility === "hidden") {
         menu.style.visibility = "visible";
         button.classList.add("active")
@@ -203,13 +197,15 @@ function commentMenu(target) {
     document.addEventListener('mousedown', function(event) {
         if (menu.style.visibility === "visible"){
             if (!menu.contains(event.target)) {
+                console.log("click")
                 commentMenu(target);
             }
             if (button.contains(event.target)) {
+                console.log("click")
                 commentMenu(target);
             }
         }
-    });
+    }, { once: true });
 }
 
 // Below is a currently non-functioning event listener to enable using 
