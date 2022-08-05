@@ -240,8 +240,22 @@ footer {
 }
 .option-button {
 	font-family: "Material Icons";
+	font-size: 24px;
+	position: absolute;
+	/* top: 5px;
+	right: 5px; */
+	height: 25px;
+	width: 25px;
 	cursor: pointer;
 	user-select: none;
+}
+.comment-options.option-button {
+	top: 5px;
+	right: 5px;
+}
+.entry-options.option-button  {
+	top: 15px;
+	right: 15px;
 }
 
 /* ==========================================================================
@@ -389,7 +403,7 @@ p a {
 	display: none;
 }
 /* Convert edit-entry to buttons */
-.edit-entry {
+/* .edit-entry {
 	padding-bottom: 80px;
 	text-align: center;
 	margin: 0 auto;
@@ -398,13 +412,13 @@ p a {
 	font-weight: 400;
 	text-transform: uppercase;
 	font-size: 18px;
-}
+} */
 
 
 /* --- ENTRIES --- */
 
 .entry-list,
-.edit-entry,
+.edit-entry-container,
 .new-entry {
 	max-width: 500px;
 	margin: 0 auto;
@@ -413,7 +427,7 @@ p a {
 .new-entry {
 	padding: 10px;
 }
-.edit-entry h2,
+.edit-entry-container h2,
 .new-entry h2 {
 	margin-bottom: 16px;
 }
@@ -427,6 +441,9 @@ p a {
 	padding: 10px;
 	background-color: white;
 	border-radius: 25px;
+}
+.entry-preview-content {
+	padding: 10px 0px;
 }
 .entry-list article:last-child {
 	margin-bottom: 0;
@@ -451,14 +468,14 @@ p a {
 .comment-count {
 	align-self: flex-end;
 }
-.entry-options {
+/* .entry-options {
 	font-size: 24px;
 	position: absolute;
 	top: 15px;
 	right: 15px;
 	height: 25px;
 	width: 25px;
-}
+} */
 
 
 /* --- LIKES --- */
@@ -586,27 +603,27 @@ p a {
 	font-size: 14px;
 	line-height: normal;
 }
-.single-comment-menu {
+.comment-like-reply {
 	grid-area: react;
 	padding-left: 58px;
 	font-size: 14px;
 	color: #9b9b9b;
 	border-top: 1px solid #e1e1e1;
 }
-.single-comment-menu ul {
+.comment-like-reply ul {
 	margin-top: 4px;
 	margin-right: auto;
 	list-style-type: none;
 	text-align: left;
 	padding-left: 0px;
 }
-.single-comment-menu ul li {
+.comment-like-reply ul li {
 	display: inline-block;
 	width: 39px;
 	height: 20px;
 	font-family: "Material Icons";
 }
-.single-comment-menu ul li.comment-date {
+.comment-like-reply ul li.comment-date {
 	font-family: Verdana, sans-serif;
 	color: #9b9b9b;
 	width: 200px;
@@ -620,22 +637,22 @@ p a {
 	top: 13px;
 	right: 26px;
 }
-.comment-options {
+/* .option-button {
 	position: absolute;
 	top: 5px;
 	right: 5px;
 	height: 25px;
 	width: 25px;
 	font-size: 24px;
-}
+} */
 .comment-options:hover {
 	color: royalblue;
 }
 .option-menu,
 .confirm-dialog {
 	position: absolute;
-	top: 30px;
-	right: 5px;
+	/* top: 30px;
+	right: 5px; */
 	width: 150px;
 	height: 65px;
 	padding: 5px;
@@ -646,29 +663,38 @@ p a {
 	cursor: default;
 	user-select: none;
 }
-.comment-menu,
-.entry-menu {
+.option-menu {
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
 	justify-content: center;
 	z-index: 98;
 }
+.option-menu.comment-menu {
+	top: 30px;
+	right: 5px;
+}
+.option-menu.entry-menu {
+	top: 40px;
+	right: 15px;
+}
 .confirm-dialog {
 	z-index: 99;
 }
-.comment-menu ul,
-.entry-menu ul {
+.option-menu ul {
 	padding-left: 0px;
 	list-style-type: none;
 }
-.comment-menu ul li {
+.option-menu ul li {
 	width: 100%;
 	font-family: Verdana, serif;
 	cursor: pointer;
 }
-.comment-menu ul li:hover {
+.option-menu ul li:hover {
 	color: royalblue;
+}
+.delete-option {
+	margin-top: 5px;
 }
 
 
@@ -719,7 +745,7 @@ select:focus {
 form input[type=text]:hover,
 form input[type=date]:hover
 form textarea:hover,
-.edit-entry form textarea:hover,
+.edit-entry-container form textarea:hover,
 .new-entry form textarea:hover,
 select:hover {
 	border-color: lightblue;

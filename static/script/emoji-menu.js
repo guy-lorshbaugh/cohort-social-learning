@@ -117,21 +117,6 @@ function addEmojiListeners(target) {
     }
 }
 
-function insertAtCursor (input, textToInsert) {
-    const isSuccess = document.execCommand("insertText", false, textToInsert);
-    // Firefox (non-standard method)
-    if (!isSuccess && typeof input.setRangeText === "function") {
-        const start = input.selectionStart;
-        input.setRangeText(textToInsert);
-        // update cursor to be at the end of insertion
-        input.selectionStart = input.selectionEnd = start + textToInsert.length;
-        // Notify any possible listeners of the change
-        const e = document.createEvent("UIEvent");
-        e.initEvent("input", true, false);
-        input.dispatchEvent(e);
-    }
-}
-
 function navScrollListener(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const emojiContainer = emojiMenu.getElementsByClassName("emoji-list-container")[0];
@@ -212,13 +197,13 @@ function emojiScroll (outerItem, target) {
 }
 
 function openSelector(selector, defaultDiv) {
-    if (selector.style.visibility === "hidden") {
-        selector.style.visibility = "visible";
+    if (selector.style.display === "none") {
+        selector.style.display = "grid";
     } else {
-        selector.style.visibility = "hidden";
+        selector.style.display = "none";
     }
     document.addEventListener('mouseup', function(event) {
-        if(selector.style.visibility === "visible"){
+        if(selector.style.display === "grid"){
             if (!selector.contains(event.target) 
                 || selector.contains(event.target)) {
                 openSelector(selector, defaultDiv);
@@ -255,48 +240,6 @@ function emojiSearchListener(target) {
             }, { once: true })
         }
     })
-}
-
-function getCaretPosition(ctrl) {
-    // IE < 9 Support 
-    if (document.selection) {
-        ctrl.focus();
-        var range = document.selection.createRange();
-        var rangelen = range.text.length;
-        range.moveStart('character', -ctrl.value.length);
-        var start = range.text.length - rangelen;
-        return {
-            'start': start,
-            'end': start + rangelen
-        };
-    } // IE >=9 and other browsers
-    else if (ctrl.selectionStart || ctrl.selectionStart == '0') {
-        return {
-            'start': ctrl.selectionStart,
-            'end': ctrl.selectionEnd
-        };
-    } else {
-        return {
-            'start': 0,
-            'end': 0
-        };
-    }
-}
-
-function setCaretPosition(ctrl, start, end) {
-    // IE >= 9 and other browsers
-    if (ctrl.setSelectionRange) {
-        ctrl.focus();
-        ctrl.setSelectionRange(start, end);
-    }
-    // IE < 9 
-    else if (ctrl.createTextRange) {
-        var range = ctrl.createTextRange();
-        range.collapse(true);
-        range.moveEnd('character', end);
-        range.moveStart('character', start);
-        range.select();
-    }
 }
 
 // function openEmojiSearch(target) {

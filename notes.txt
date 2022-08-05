@@ -1,0 +1,22 @@
+COHORT DOO DOO TO-DOO
+
+-  Menu listeners are still garbage. 
+
+-  Comment like/reply
+
+-  Reorganize stylesheet categories:
+   ** Menus
+
+-  Recent Emoji Menu - use a cookie? How do we do that??
+
+FINITO
+
+XX Entry Options needs to be restarted.
+   ** Opening the emoji menu kills the entry option listener somehow. getID()
+      throws a TypeError
+   => The for loop read // for (item of entryOptions) //, but the 'let' declaration
+      is neccesary for the value of 'item' to change.
+XX Tragically, the expansive list of fabulous notes that had been compiled
+   previously was lost in the labyrinthine hellscape that is Git. But much of 
+   what was lost has been restored.
+   ** And what's more, this file is no longer included in .gitignore!

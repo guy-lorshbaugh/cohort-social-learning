@@ -10,8 +10,12 @@ function startListeners(target, listenerEvent, callback, params="", once=false) 
                 }, { once: true });
             } else if (!item.getAttribute("openlistener")) {
                 item.setAttribute("openlistener", "true")
-                item.addEventListener(listenerEvent, function() {
-                    callback(getID(item.id));
+                item.addEventListener(listenerEvent, (e) => {
+                    if (params) {
+                        callback(getID(item.id, `${params}`));
+                    } else {
+                        callback(getID(item.id));
+                    }
                 });
             } 
         }

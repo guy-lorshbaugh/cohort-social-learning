@@ -33,8 +33,8 @@
                             <div class="option-menu entry-menu" id="entry-menu-{{entry.id}}" style="visibility: hidden;">
                                 <ul>
                                     <!-- { % set entry_delete_url = url_for('delete_entry', entry = entry.id) % } -->
-                                    <li id="edit-entry-{{ entry.id }}" class="edit-entry">Edit Comment</li>
-                                    <li id="delete-entry-{{ entry.id }}" class="delete-entry">Delete Comment</li>
+                                    <li id="edit-entry-{{ entry.id }}" class="edit-entry edit-option">Edit Entry</li>
+                                    <li id="delete-entry-{{ entry.id }}" class="delete-entry delete-option">Delete Entry</li>
                                 </ul>
                             </div>
                             <div class="confirm-dialog" id="confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
@@ -46,9 +46,11 @@
                             <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
                             <div id="entry-preview-{{ entry.id }}" class="entry-preview">
                                 <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
-                                {% for item in entry.learned.split("\n") %}
-                                    <p>{{ item }}</p>
-                                {% endfor %}
+                                <div class="entry-preview-content">
+                                    {% for item in entry.learned.split("\n") %}
+                                        <div>{{ item }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                             <div class="user-date small">
                                 By <a style="text-decoration:none; color:black;" 
@@ -192,14 +194,15 @@
         Thank you for viewing my project! If you'd like to reach out, feel free to shoot me a line at guy.lorshbaugh@gmail.com`
         )
     </script> -->
+    <script src="{{ url_for('static', filename='script/caret.js') }}"></script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/get-id.js') }}">
+    </script>
     <script src="{{ url_for('static', filename='script/top-recent.js') }}"></script>
     <script src="{{ url_for('static', filename='script/option-menu.js') }}"></script>
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>
     <script src="{{ url_for('static', filename='script/new-entry.js') }}"></script>
-    <script type="text/javascript" 
-        src="{{ url_for('static', filename='script/get-id.js') }}">
-    </script>
 {% else %}
     {% include 'login.html' %}
 {% endif %}

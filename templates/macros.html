@@ -35,7 +35,7 @@
             <div class="tone-choice mediumdark" tone="skin-tone-4"> </div>
             <div class="tone-choice dark" tone="skin-tone-5"> </div>
         </div> -->
-        <div class="kiss-selector shadow-box" style="visibility: hidden;">
+        <div class="kiss-selector shadow-box" style="display: none;">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
                and "kiss" in entry["name"]
@@ -43,7 +43,7 @@
                <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
             {% endfor %}
         </div>
-        <div class="hands-selector shadow-box" style="visibility: hidden;">
+        <div class="hands-selector shadow-box" style="display: none;">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
                and "holding hands" in entry["name"]
@@ -51,7 +51,7 @@
                <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
             {% endfor %}
         </div>
-        <div class="family-selector shadow-box" style="visibility: hidden;">
+        <div class="family-selector shadow-box" style="display: none;">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
                and "family" in entry["name"]
@@ -59,7 +59,7 @@
                <span class="emoji" tone="none" title="{{ entry['name'] }}">{{ entry['char'] }}</span>
             {% endfor %}
         </div>
-        <div class="couple-selector shadow-box" style="visibility: hidden;">
+        <div class="couple-selector shadow-box" style="display: none;">
             {% for entry in emoji 
                if "People & Body" in entry["category"]
                and "couple" in entry["name"]
@@ -193,7 +193,7 @@
                     <ul>
                         {% set comment_delete_url = url_for('delete_comment', comment = comment.id) %}
                         <li id="edit-comment-{{ comment.id }}" class="edit-comment">Edit Comment</li>
-                        <li id="delete-comment-{{ comment.id }}" class="delete-comment">Delete Comment</li>
+                        <li id="delete-comment-{{ comment.id }}" class="delete-comment delete-option">Delete Comment</li>
                     </ul>
                 </div>
                 <div class="confirm-dialog" id="confirm-dialog-{{ comment.id }}" style="visibility: hidden;">
@@ -202,7 +202,7 @@
                     <button name ="no" class="button button-secondary" type="button">No</button>
                 </div>
             {% endif %}
-            <div class="single-comment-menu">
+            <div class="comment-like-reply">
                 <ul>
                     <li>thumb_up</li>
                     <li>comment</li>
