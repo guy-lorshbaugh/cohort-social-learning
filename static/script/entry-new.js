@@ -1,6 +1,6 @@
-const newEntryButton = document.getElementsByClassName("new-entry-button")[0];
 const parentContainer = document.getElementsByClassName("container")[0];
-const entryDialog = document.getElementsByClassName("new-entry-container")[0];
+const newEntryButton = document.querySelector(".new-entry-button");
+const entryDialog = document.querySelector(".new-entry-container");
 const newEntryFrame = document.getElementById("new-entry-frame").contentWindow.document;
 const entryPostButton = newEntryFrame.getElementsByClassName("button button-secondary")[0];
 

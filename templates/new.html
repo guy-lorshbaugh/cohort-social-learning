@@ -11,7 +11,9 @@
         <section>
             <div class="container">
                 <div class="new-entry">
-                    <h2>New Entry</h2>
+                    <div class="new-entry-avatar">
+                        <img class="avatar-50" src="{{ user.avatar }}">
+                    </div>
                     {% from 'macros.html' import render_field %}
                     <form method="POST" action="" autocomplete="off" id="entry-form">
                         {{ form.hidden_tag() }}
@@ -40,11 +42,11 @@
             </div>
         </section>
     </body>
-        <script type="text/javascript">
-            autosize(document.getElementById("learned"))
-            autosize(document.getElementById("remember"))
-        </script>
-        <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
-        <script src="{{ url_for('static', filename='script/entry-listeners.js') }}"></script>
+    <script type="text/javascript">
+        autosize(document.getElementById("learned"))
+        autosize(document.getElementById("remember"))
+    </script>
+    <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/entry-listeners.js') }}"></script>
 </html>
 {% endblock %}

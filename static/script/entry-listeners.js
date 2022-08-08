@@ -2,10 +2,10 @@ const container = window.parent.document.getElementsByClassName("new-entry-conta
 const parentBody = window.parent.document.body;
 const cancelEntryButton = document.getElementById("entry-cancel-button");
 const postEntryButton = document.getElementById("entry-post-submit");
-formTitle = document.getElementById("title");
-formLearned = document.getElementById("learned");
-formRemember = document.getElementById("remember");
-formTags = document.getElementById("tags");
+const formTitle = document.getElementById("title");
+const formLearned = document.getElementById("learned");
+const formRemember = document.getElementById("remember");
+const formTags = document.getElementById("tags");
 
 // startListeners(postEntryButton, "click", closeEntryWindow, "postEntryButton");
 startListeners(cancelEntryButton, "click", closeEntryWindow);
@@ -15,14 +15,15 @@ function closeEntryWindow(triggerName="") {
         if (!formTitle.value || !formLearned.value) {
             return;
         } else {
-            parentBody.style.overflow = "visible";
-            console.log("close")
-            container.style.visibility = "hidden";
+            closer(parentBody, container)        
         }
     } else {
-        parentBody.style.overflow = "visible";
-        console.log("close")
-        container.style.visibility = "hidden";
+        closer(parentBody, container);
     }
 }
 
+function closer(parentBody, container) {
+    parentBody.style.overflow = "visible";
+    console.log("close")
+    container.style.visibility = "hidden";
+}

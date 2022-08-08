@@ -60,6 +60,7 @@ br {
 	margin-bottom: 3px;
 }
 .container {
+	height: max-content;
 	margin: 0 auto;
 	padding: 0;
 }
@@ -418,18 +419,24 @@ p a {
 /* --- ENTRIES --- */
 
 .entry-list,
-.edit-entry-container,
-.new-entry {
+.new-entry,
+.edit-entry {
 	max-width: 500px;
 	margin: 0 auto;
 	padding: 10px 0;
 }
-.new-entry {
+.new-entry,
+.edit-entry {
 	padding: 10px;
 }
-.edit-entry-container h2,
-.new-entry h2 {
-	margin-bottom: 16px;
+.new-entry,
+.edit-entry h2 {
+	margin: 15px auto;
+}
+.new-entry-avatar {
+	width: 100%;
+	height: fit-content;
+	justify-content: center;
 }
 .entry-preview {
 	margin: 10px;
@@ -495,6 +502,32 @@ p a {
 	right: 15px;
 	height: 25px;
 	width: 25px;
+} */
+
+/* --- ENTRY MENU --- */
+
+
+/* --- EDIT ENTRY PAGE --- */
+
+/* .edit-body {
+	background-color: white;
+} */
+/* .edit-frame-container {
+	position: absolute;
+	left: 0px;
+	background-color: white;
+	padding: 10px;
+	width: 100%;
+	height: 500px;
+	z-index: 5;
+} */
+/* .edit-entry-frame {
+	position: absolute;
+} */
+/* .edit-entry-container {
+} */
+/* .edit-form {
+	padding: 10px;
 } */
 
 
@@ -722,7 +755,9 @@ p a {
    Form Styles
    ========================================================================== */
 
-
+form {
+	margin-block-end: 0;
+}
 form label {
 	display: block;
 	margin-bottom: 8px;
@@ -765,7 +800,7 @@ select:focus {
 form input[type=text]:hover,
 form input[type=date]:hover
 form textarea:hover,
-.edit-entry-container form textarea:hover,
+.edit-entry form textarea:hover,
 .new-entry form textarea:hover,
 select:hover {
 	border-color: lightblue;
@@ -805,7 +840,8 @@ input[type=submit] {
 	width: 500px;
 }
 .new-entry-cancel-button,
-.comment-edit-cancel-button {
+.comment-edit-cancel-button,
+.edit-entry-cancel-button {
 	display: flex;
 	justify-content: space-around;
 	position: absolute;
@@ -1106,16 +1142,19 @@ input[type=submit] {
 
 /* --- NEW ENTRY WINDOW --- */
 
-.new-entry-container {
+.new-entry-container,
+.edit-frame-container {
 	width: 100%;
 	height: 100vh;
 	position: fixed;
 	top: 0px;
+	left: 0px;
 	background-color: rgba(65, 105, 225, 0.5);
 	visibility: hidden;
 	z-index: 102;
 }
-.new-entry-frame {
+.new-entry-frame,
+.edit-entry-frame {
 	position: absolute;
 	top: 75px;
 	left: 20%;
@@ -1147,7 +1186,8 @@ label[for=private] {
 }
 
 @media only screen and (max-width: 768px) {
-	.new-entry-frame {
+	.new-entry-frame,
+	.edit-entry-frame {
 		left: 0px;
 		width: 100%;
 	}

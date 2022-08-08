@@ -1,10 +1,17 @@
-{% extends "layout.html" %}
-
 {% block content %}
+<html>
+    <head>
+        <link rel="stylesheet" 
+              href="{{ url_for('static', filename='css/site.css') }}">
+        <script type="text/javascript"
+        src="{{ url_for('static', filename='script/autosize.min.js') }}">
+    </script>
+    </head>
+    <body class="edit-body">
         <section>
             <div class="container">
-                <div class="edit-entry-container">
-                    <h2>Edit Entry</h2>
+                <div class="edit-entry">
+                    <!-- <h2>Edit Entry</h2> -->
                     <!-- {% from 'macros.html' import render_field %} -->
                     <form method="POST" action="">
                         {{ form.hidden_tag() }}
@@ -21,10 +28,25 @@
                         <label for="Tags">Tags</label>
                         {% set process = form.tags.process_data(tags) %}
                         {{ form.tags() }}
-                        <button type="submit" id="submit">Post!</button>
-                        <a href="{{ url_for('index') }}" class="button button-secondary">Cancel</a>
+                        <div class="entry-bottom-field">
+                            <button class="button button-secondary" 
+                                    type="submit" 
+                                    id="entry-post-submit">
+                                Post!</button>
+                        <button id="edit-cancel-button"
+                                    class="button button-secondary" 
+                                    type="reset">
+                                Cancel</button>
                     </form>
                 </div>
             </div>
         </section>
+    </body>
+    <script type="text/javascript">
+        autosize(document.getElementById("learned"))
+        autosize(document.getElementById("remember"))
+    </script>
+    <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/entry-edit-listeners.js') }}"></script>
+</html>
 {% endblock %}

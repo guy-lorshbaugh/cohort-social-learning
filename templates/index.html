@@ -1,15 +1,28 @@
 {% extends "layout.html" %}
 
-{% from 'macros.html' import emoji_menu, relative_time, write_comments, process_tags with context %}
+{% from 'macros.html' import emoji_menu, relative_time, write_comments, 
+    process_tags, edit_entry with context %}
 
 {% block content %}
 
 {% if current_user.is_authenticated %}
 <section>
     <div class="new-entry-container" style="visibility: hidden;">
-        <iframe id="new-entry-frame" class="new-entry-frame 
-            shadow-box" src="{{ url_for('create')}}" frameBorder="0">
+        <iframe id="new-entry-frame" 
+        class="new-entry-frame shadow-box" 
+        src="{{ url_for('create')}}" 
+        frameBorder="0">
             <div class="new-entry-cancel-button shadow-box material-icons">cancel</div>
+        </iframe>
+    </div>
+</section>
+<section>
+    <div class="edit-frame-container" style="visibility: hidden;">
+        <iframe id="edit-entry-frame" 
+        class="edit-entry-frame shadow-box" 
+        src="" 
+        frameBorder="0">
+            <div class="edit-entry-cancel-button shadow-box material-icons">cancel</div>
         </iframe>
     </div>
 </section>
@@ -25,9 +38,13 @@
                 {% for entry in journal %}
                     {% if not entry.private %}
                         {% set user = models.User.get(models.User.id==entry.user_id) %}
+                        <!-- <article class="entry-edit-container" class="visibility: hidden;">
+                            { { edit_entry(entry, form = edit_form) } }
+                        </article> -->
                         <article class="entry-preview-container" id="entry-{{ entry.id }}">
                             <img class="avatar-50" src="{{ user.avatar }}">
                             {% if entry.user_id == current_user.id %}
+
                             <div class="option-button entry-options" role="button" id="entry-options-{{ entry.id }}">
                                 more_vert
                             </div>
@@ -201,10 +218,10 @@
         src="{{ url_for('static', filename='script/get-id.js') }}">
     </script>
     <script src="{{ url_for('static', filename='script/top-recent.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/option-menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/entry-edit.js') }}"></script>
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/new-entry.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/entry-new.js') }}"></script>
 {% else %}
     {% include 'login.html' %}
 {% endif %}

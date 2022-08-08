@@ -256,6 +256,7 @@ def index():
             .order_by(models.Entry.date.desc()).limit(10)
             )
     login_form = forms.LoginForm()
+    edit_form = forms.Post()
     emoji = process_emoji()
     if login_form.validate_on_submit():
         try:
@@ -271,7 +272,7 @@ def index():
             return redirect(url_for('index'))
         return redirect(url_for('index'))
     return render_template('index.html', journal=journal, models=models,
-                         login_form=login_form, emoji=emoji.values())
+                         login_form=login_form, edit_form=edit_form, emoji=emoji.values())
 
 
 @app.route("/entries/<id>")
@@ -284,6 +285,7 @@ def detail(id):
 @login_required
 def create():
     form = forms.Post()
+    user = current_user
     if form.validate_on_submit():
         models.Entry.create(
             title=form.title.data,
@@ -308,7 +310,7 @@ def create():
             )
         # flash("Your Entry has been created!")
         return redirect(url_for('create'))
-    return render_template('new.html', form=form)
+    return render_template('new.html', form=form, user=user)
 
 
 @app.route("/entries/<id>/edit", methods=['GET', 'POST'])
@@ -539,4 +541,4 @@ def sort_entries(choice):
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='localhost', port="8000")
+    app.run(debug=True, host='localhost', port="8001")
