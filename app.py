@@ -341,7 +341,7 @@ def edit(id):
                 tag_id=tag_data.id
             )
         flash("Your Entry has been edited!")
-        print(f"Token: {form.csrf_token()}")
+        print(f"Token: { form.csrf_token() }")
         return redirect(url_for('index'))
     return render_template("edit.html", form=form, id=id, 
                             models=models, tags=tags)
@@ -471,6 +471,7 @@ def comment(entry):
 @app.route('/entries/comment/<int:comment_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def edit_comment(comment_id):
+    """ Takes in edit data and writes it to the database """
     comment = models.Comment.get(models.Comment.id == comment_id)
     print(request.form)
     contents = request.form["contents"]

@@ -7,7 +7,8 @@
 {% if current_user.is_authenticated %}
 <section>
     <div class="new-entry-container" style="visibility: hidden;">
-        <iframe id="new-entry-frame" class="new-entry-frame shadow-box" src="{{ url_for('create')}}" frameBorder="0">
+        <iframe id="new-entry-frame" class="new-entry-frame 
+            shadow-box" src="{{ url_for('create')}}" frameBorder="0">
             <div class="new-entry-cancel-button shadow-box material-icons">cancel</div>
         </iframe>
     </div>
@@ -48,7 +49,7 @@
                                 <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
                                 <div class="entry-preview-content">
                                     {% for item in entry.learned.split("\n") %}
-                                        <div>{{ item }}</div>
+                                        <div class="entry-preview-line">{{ item }}</div>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -157,12 +158,13 @@
                                     <div id="emoji-menu-{{ entry }}" 
                                         class="emoji-menu-container closed"
                                         style="visibility: hidden"></div>
-                                        <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
+                                        <input id="token-{{ entry.id }}" 
+                                            type="hidden" value="{{ csrf_token() }}">
                                         <textarea placeholder="Comment" 
-                                        id="comment-{{ entry.id }}"
-                                        class="comment-field"
-                                        required
-                                        aria-required="true"></textarea>
+                                            id="comment-{{ entry.id }}"
+                                            class="comment-field"
+                                            required
+                                            aria-required="true"></textarea>
                                         <div id="emoji-open-{{ entry.id }}" 
                                             class="emoji-open" style="display: flex">sentiment_satisfied_alt</div>
                                         <input type="button" 

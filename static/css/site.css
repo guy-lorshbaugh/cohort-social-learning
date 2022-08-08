@@ -443,7 +443,27 @@ p a {
 	border-radius: 25px;
 }
 .entry-preview-content {
-	padding: 10px 0px;
+	padding: 10px;
+}
+.entry-preview-content div:last-child {
+	margin-bottom: 0;
+}
+.entry-preview-content.editable {
+	text-align: left;
+	border: 2px solid lightblue;
+	border-radius: 10px;
+	padding: 15px;
+	margin: 5px;
+	background-color: rgba(240, 248, 255, 0.55);
+	/* box-shadow: 0px 0px 6px rgba(0, 0, 0, 15%); */
+}
+.esc-notice {
+	font-size: 10px;
+    text-align: left;
+    margin: 0px 20px;
+}
+.entry-preview-line {
+	margin-bottom: 10px;
 }
 .entry-list article:last-child {
 	margin-bottom: 0;

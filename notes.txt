@@ -1,6 +1,16 @@
 COHORT DOO DOO TO-DOO
 
--  Menu listeners are still garbage. 
+-  So we've kinda gone about entry editing all wrong. If users want to add or 
+   remove tags, add resources to remember, or edit the title they can't. We need
+   to invoke the form, probably insert the "edit.html" form into the comment 
+   area rather than trying to use an editable DIV. This will help us deal with
+   token issues as well.
+
+-  Entry delete
+
+-  Menu listeners are still garbage. This is an issue that needs dealt with 
+   systematically. A listener class could be useful if we can figure out how
+   to make it work.
 
 -  Comment like/reply
 
@@ -20,3 +30,14 @@ XX Tragically, the expansive list of fabulous notes that had been compiled
    previously was lost in the labyrinthine hellscape that is Git. But much of 
    what was lost has been restored.
    ** And what's more, this file is no longer included in .gitignore!
+
+BINNED
+
+XX => Edit entry system wasn't sufficient to edit the whole contents.
+   Edit Entry returns only the FIRST text div. Need to add the nodes to a list
+   and return that to setCaret.
+   ** setCaret only works once. (THIS MIGHT BE FIXED, though I don't know how/if
+      I actually did it.)
+   ** div.esc-notice comes up multiple times if you cick "Edit Entry" more than
+      once. Why user might do this I don't know but it's worth preventing 
+      anyhow.

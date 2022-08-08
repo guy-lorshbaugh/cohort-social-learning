@@ -1,14 +1,28 @@
+function getTextDiv(content) {
+    var divs = [];
+
+    for (let child of content.childNodes) {
+        if (child.nodeName === "DIV") {
+            divs.push(child);
+        }
+    }
+
+    console.log(divs);
+    return divs;
+}
+
 function setCaret(container) {
-    var el = container.querySelector(".editable");
-    var range = document.createRange();
-    var sel = window.getSelection();
+    const sel = window.getSelection();
+    const range = document.createRange();
+    const content = container.querySelector(".editable");
+
+    content.focus();
     
-    console.log(el.childNodes);
-    // range.setStart(el.childNodes[2], 5)
-    // range.collapse(true)
+    range.setStart(content, content.childNodes.length);
+    range.collapse(true);
     
-    // sel.removeAllRanges()
-    // sel.addRange(range)
+    sel.removeAllRanges();
+    sel.addRange(range);
 }
 
 function insertAtCursor (input, textToInsert) {
