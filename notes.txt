@@ -1,25 +1,37 @@
 COHORT DOO DOO TO-DOO
 
--  So we've kinda gone about entry editing all wrong. If users want to add or 
-   remove tags, add resources to remember, or edit the title they can't. We need
-   to invoke the form, probably insert the "edit.html" form into the comment 
-   area rather than trying to use an editable DIV. This will help us deal with
-   token issues as well.
+-  Emoji Search as a separate system than the emoji menu. They don't coexist
+   well.
 
--  Entry delete
+-  Comment like/reply
+
+-  User Profiles
 
 -  Menu listeners are still garbage. This is an issue that needs dealt with 
    systematically. A listener class could be useful if we can figure out how
    to make it work.
-
--  Comment like/reply
 
 -  Reorganize stylesheet categories:
    ** Menus
 
 -  Recent Emoji Menu - use a cookie? How do we do that??
 
+
 FINITO
+
+XX Entry edit needs to redirect to the home page and flash "Your entry has been
+   edited"
+
+XX TO DO NOW: delete-option and edit-option need to be made entry-delete-option,
+   comment-delete-option, etc
+
+XX So we've kinda gone about entry editing all wrong. If users want to add or 
+   remove tags, add resources to remember, or edit the title they can't. We need
+   to invoke the form, probably insert the "edit.html" form into the comment 
+   area rather than trying to use an editable DIV. This will help us deal with
+   token issues as well.
+
+XX Entry delete
 
 XX Entry Options needs to be restarted.
    ** Opening the emoji menu kills the entry option listener somehow. getID()

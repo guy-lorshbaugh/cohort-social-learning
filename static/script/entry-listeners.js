@@ -7,7 +7,7 @@ const formLearned = document.getElementById("learned");
 const formRemember = document.getElementById("remember");
 const formTags = document.getElementById("tags");
 
-// startListeners(postEntryButton, "click", closeEntryWindow, "postEntryButton");
+startListeners(postEntryButton, "click", closeEntryWindow, "postEntryButton");
 startListeners(cancelEntryButton, "click", closeEntryWindow);
 
 function closeEntryWindow(triggerName="") {

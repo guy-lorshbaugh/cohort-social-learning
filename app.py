@@ -316,6 +316,7 @@ def create():
 @app.route("/entries/<id>/edit", methods=['GET', 'POST'])
 @login_required
 def edit(id):
+    user = current_user
     entry = (models.Entry
             .select()
             .where(models.Entry.id == id)
@@ -344,9 +345,9 @@ def edit(id):
             )
         flash("Your Entry has been edited!")
         print(f"Token: { form.csrf_token() }")
-        return redirect(url_for('index'))
+        # return redirect(url_for('index'))
     return render_template("edit.html", form=form, id=id, 
-                            models=models, tags=tags)
+                            models=models, tags=tags, user=user)
 
 
 @app.route("/entries/get/<path:contents>")
@@ -541,4 +542,4 @@ def sort_entries(choice):
 if __name__ == '__main__':
     models.initialize()
     start()
-    app.run(debug=True, host='localhost', port="8001")
+    app.run(debug=True, host='localhost', port="8000")

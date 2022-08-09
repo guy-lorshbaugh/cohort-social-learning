@@ -106,7 +106,7 @@ function editComment(id) {
     const contents = parseEditText(comment);
     const form = document.createElement("form");
     const textArea = document.createElement("textarea");
-    editDialog = document.createElement("div");
+    const editDialog = document.createElement("div");
     setAttributes(editDialog, {
         "class": "comment-edit-dialog shadow-box",
         "id": `comment-edit-dialog-${id}`

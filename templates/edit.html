@@ -12,6 +12,7 @@
             <div class="container">
                 <div class="edit-entry">
                     <!-- <h2>Edit Entry</h2> -->
+                    <img class="avatar-50" src="{{ user.avatar }}">
                     <!-- {% from 'macros.html' import render_field %} -->
                     <form method="POST" action="">
                         {{ form.hidden_tag() }}
@@ -31,8 +32,8 @@
                         <div class="entry-bottom-field">
                             <button class="button button-secondary" 
                                     type="submit" 
-                                    id="entry-post-submit">
-                                Post!</button>
+                                    id="entry-edit-submit">
+                                Save Changes!</button>
                         <button id="edit-cancel-button"
                                     class="button button-secondary" 
                                     type="reset">
@@ -46,7 +47,13 @@
         autosize(document.getElementById("learned"))
         autosize(document.getElementById("remember"))
     </script>
-    <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/entry-edit-listeners.js') }}"></script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/start-listeners.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/entry-edit-listeners.js') }}">
+    </script>
 </html>
 {% endblock %}

@@ -51,11 +51,11 @@
                             <div class="option-menu entry-menu" id="entry-menu-{{entry.id}}" style="visibility: hidden;">
                                 <ul>
                                     <!-- { % set entry_delete_url = url_for('delete_entry', entry = entry.id) % } -->
-                                    <li id="edit-entry-{{ entry.id }}" class="edit-entry edit-option">Edit Entry</li>
-                                    <li id="delete-entry-{{ entry.id }}" class="delete-entry delete-option">Delete Entry</li>
+                                    <li id="edit-entry-{{ entry.id }}" class="entry-edit-option">Edit Entry</li>
+                                    <li id="delete-entry-{{ entry.id }}" class="entry-delete-option">Delete Entry</li>
                                 </ul>
                             </div>
-                            <div class="confirm-dialog" id="confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
+                            <div class="entry-confirm-dialog" id="entry-confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
                                 <div style="padding-bottom: 5px;">Are you sure?</div>
                                 <button name="yes" class="button button-secondary" type="button">Yes</button>
                                 <button name ="no" class="button button-secondary" type="button">No</button>

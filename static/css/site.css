@@ -702,7 +702,9 @@ p a {
 	color: royalblue;
 }
 .option-menu,
-.confirm-dialog {
+.confirm-dialog,
+.confirm-comment-delete,
+.entry-confirm-dialog {
 	position: absolute;
 	/* top: 30px;
 	right: 5px; */
@@ -716,6 +718,10 @@ p a {
 	cursor: default;
 	user-select: none;
 }
+.confirm-comment-delete {
+	top: 30px;
+	right: 5px;
+}
 .option-menu {
 	display: flex;
 	flex-flow: column nowrap;
@@ -727,11 +733,13 @@ p a {
 	top: 30px;
 	right: 5px;
 }
-.option-menu.entry-menu {
+.option-menu.entry-menu,
+.entry-confirm-dialog {
 	top: 40px;
 	right: 15px;
 }
-.confirm-dialog {
+.confirm-dialog,
+.entry-confirm-dialog {
 	z-index: 99;
 }
 .option-menu ul {
@@ -760,7 +768,7 @@ form {
 }
 form label {
 	display: block;
-	margin-bottom: 8px;
+	/* margin-bottom: 8px; */
 }
 form input[type=text],
 form input[type=password],
@@ -1064,7 +1072,8 @@ input[type=submit] {
 	background-color: rgba(255 255 255 / 0.75);
 	z-index: 100;
 }
-#emoji-search-input {
+#emoji-search-input,
+#emoji-search-opener {
 	position: relative;
 	margin-left: 12px;
     padding: 5px 13px 5px 20px;
@@ -1159,7 +1168,8 @@ input[type=submit] {
 	top: 75px;
 	left: 20%;
 	width: 60%;
-	height: 450px;
+	min-width: 550px;
+	height: 500px;
 	border-radius: 15px;
 }
 .entry-bottom-field {

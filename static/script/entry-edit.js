@@ -1,7 +1,8 @@
 const editDialog = document.querySelector(".edit-frame-container");
 const entryOptions = document.getElementsByClassName("entry-options");
 
-startListeners("edit-option", "click", openEdit);
+startListeners("entry-edit-option", "click", openEdit);
+startListeners("entry-delete-option", "click", confirmDelete);
 
 for (let item of entryOptions) {
     item.addEventListener('click', (e) => {
@@ -38,83 +39,27 @@ function openEdit(target) {
     const button = container.querySelector(".entry-options")
     const editFrame = document.querySelector("#edit-entry-frame");
 
-    editFrame.setAttribute("src", `../entries/${target}/edit`)
+    editFrame.setAttribute("src", `../../../entries/${target}/edit`)
     menu.style.visibility = "hidden";
     button.classList.remove("active");
     document.body.style.overflow = "hidden";
     editDialog.style.visibility = "visible";
-
 }
 
-// function closeEdit(editFrame, editDialog) {
-//     editFrame.setAttribute("src", `../entries/${target}/edit`)
-//     document.body.style.overflow = "visible";
-//     editDialog.style.visibility = "hidden";
-// }
+function confirmDelete(target) {
+    const optionButton = document.querySelector(`#entry-options-${target}`);
+    const optionMenu = document.querySelector(`#entry-menu-${target}`);
+    const confirmDiv = document.querySelector(`#entry-confirm-dialog-${target}`);
+    const buttons = confirmDiv.getElementsByTagName("button");
 
-// --- OLD SHIT ---
-// // function resetContents(content, prevContents) {
-// //     content.innerHTML = prevContents;
-// // }
+    optionMenu.style.visibility = "hidden";
+    confirmDiv.style.visibility = "visible";
 
-// function cancelEdit (content, escNotice, prevContents) {
-//     content.classList.remove("editable");
-//     content.contentEditable = 'false';
-//     content.innerHTML = prevContents;
-//     // content.innerHTML = "";
-//     // setTimeout(() => {
-//     //     resetContents(content, prevContents);
-//     // }, 250);
-//     escNotice.remove();
-// }
-
-// function recycle(content, escNotice, prevContents, e) {
-//     if (e.key === "Escape") {
-//         this.removeEventListener('keyup', recycle);
-//         cancelEdit(this, escNotice, content);
-//     } else {
-//         console.log(e.key);
-//     }
-// }
-
-// class ContentObj {
-//     constructor (target) {
-//         // target as a string literal could be problematic unless there's a way
-//         // to pass a value into a clas constructor. Further research required.
-//         target = target || {};
-//         this.container = document.querySelector(`#entry-${target}`);
-//         // 
-//         this.content = this.container.querySelector(".entry-preview-content");
-//         this.prevContents = this.content.innerHTML;
-//         this.escNotice = document.createElement('div');
-//     }
-// }
-
-// function openEditDiv(target) {
-//     const container = document.querySelector(`#entry-${target}`);
-//     const preview = container.querySelector('.entry-preview');
-//     const content = container.querySelector(".entry-preview-content");
-//     const menu = document.querySelector(`#entry-menu-${target}`);
-//     const button = container.querySelector(".entry-options")
-//     const prevContents = content.innerHTML;
-
-//     menu.style.visibility = "hidden";
-//     button.classList.remove("active");
-//     content.contentEditable = "true";
-//     content.classList.add("editable");
-
-//     const escNotice = document.createElement("div");
-//     const noticeText = document.createTextNode("Hit Esc or click here to cancel");
-//     escNotice.appendChild(noticeText, preview);
-//     escNotice.classList.add("esc-notice");
-//     preview.insertBefore(escNotice, content.nextSibling);
-    
-//     setCaret(container);
-    
-//     escNotice.addEventListener("click", () => {
-//         cancelEdit(content, escNotice, prevContents);
-//     }, { once: true })
-    
-//     content.addEventListener("keydown", recycle.bind(content, prevContents,
-//                 escNotice, this.event));
-// }
+    buttons[0].addEventListener("click", (e) => {
+        window.location.href = `../entries/${target}/delete`;
+    })
+    buttons[1].addEventListener("click", (e) => {
+        optionButton.classList.remove("active");
+        confirmDiv.style.visibility = "hidden";
+    })
+}

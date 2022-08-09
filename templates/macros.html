@@ -20,7 +20,7 @@
             </div>
         <div class="emoji-search">
             <!-- <div class="emoji-search-opener"><span class="material-icons">search</span><span class="search-opener-text">&nbspSearch Emoji</span></div> -->
-                <input type="text" id="emoji-search-input" placeholder="Search Emoji">
+                <input type="text" id="emoji-search-input" disabled placeholder="Search Emoji">
                 <span class="material-icons emoji-search-icon">search</span>
             </div>
             <div class="emoji-search-container" style="display: none;">
@@ -196,7 +196,7 @@
                         <li id="delete-comment-{{ comment.id }}" class="delete-comment delete-option">Delete Comment</li>
                     </ul>
                 </div>
-                <div class="confirm-dialog" id="confirm-dialog-{{ comment.id }}" style="visibility: hidden;">
+                <div class="confirm-comment-delete" id="confirm-dialog-{{ comment.id }}" style="visibility: hidden;">
                     <div style="padding-bottom: 5px;">Are you sure?</div>
                     <button name="yes" class="button button-secondary" type="button">Yes</button>
                     <button name ="no" class="button button-secondary" type="button">No</button>
