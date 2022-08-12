@@ -11,14 +11,14 @@ function getTextDiv(content) {
     return divs;
 }
 
-function setCaret(container) {
+function setCaret(target) {
+    // sets caret in editable DIV
     const sel = window.getSelection();
     const range = document.createRange();
-    const content = container.querySelector(".editable");
 
-    content.focus();
+    target.focus();
     
-    range.setStart(content, content.childNodes.length);
+    range.setStart(target, target.childNodes.length);
     range.collapse(true);
     
     sel.removeAllRanges();

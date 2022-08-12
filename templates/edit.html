@@ -4,29 +4,44 @@
         <link rel="stylesheet" 
               href="{{ url_for('static', filename='css/site.css') }}">
         <script type="text/javascript"
-        src="{{ url_for('static', filename='script/autosize.min.js') }}">
-    </script>
+            src="{{ url_for('static', filename='script/autosize.min.js') }}">
+        </script>
     </head>
     <body class="edit-body">
         <section>
             <div class="container">
                 <div class="edit-entry">
                     <!-- <h2>Edit Entry</h2> -->
-                    <img class="avatar-50" src="{{ user.avatar }}">
+                    <img class="avatar-50" src="{{ user.avatar }}" style="margin-bottom: 10px;">
                     <!-- {% from 'macros.html' import render_field %} -->
+                    <div class="entry-edit-div-label">Title</div>
+                    <div class="entry-edit-div title-div" id="title-edit-div"
+                        contenteditable="true" aria-placeholder="Title"></div>
+                    <div class="title-char-count"></div>
+                    <div class="entry-edit-div-label">Share Thoughts, Ask Questions!</div>
+                    <div class="entry-edit-div learned-div" id="learned-edit-div"
+                        contenteditable="true" aria-placeholder="Learned"> </div>
+                    <div class="entry-edit-div-label">Links and Other Things!</div>
+                    <div class="entry-edit-div remember-div" id="remember-edit-div" 
+                        contenteditable="true" aria-placeholder="Remember"> </div>
+                    <div class="entry-edit-div-label">Tags</div>
+                    <div class="entry-edit-div tags-div" id="tags-edit-div" 
+                        contenteditable="true" aria-placeholder="Tags"> </div>
                     <form method="POST" action="">
                         {{ form.hidden_tag() }}
-                        {% set info = models.Entry.select().where(models.Entry.id==id).get() %}
-                        <label for="title">Title</label>
+                        {% set info = models.Entry.select()
+                                            .where(models.Entry.id==id)
+                                            .get() %}
+                        <!-- <label for="title">Title</label> -->
                         {% set process = form.title.process_data(info.title) %}
                         {{ form.title() }}
-                        <label for="learned">What I Learned</label>
+                        <!-- <label for="learned">What I Learned</label> -->
                         {% set process = form.learned.process_data(info.learned) %}
                         {{ form.learned() }}
-                        <label for="remember">Resources to Remember</label>
+                        <!-- <label for="remember">Resources to Remember</label> -->
                         {% set process = form.remember.process_data(info.remember) %}
                         {{ form.remember() }}
-                        <label for="Tags">Tags</label>
+                        <!-- <label for="Tags">Tags</label> -->
                         {% set process = form.tags.process_data(tags) %}
                         {{ form.tags() }}
                         <div class="entry-bottom-field">
@@ -49,11 +64,15 @@
     </script>
     <script 
         type="text/javascript" 
+        src="{{ url_for('static', filename='script/caret.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
         src="{{ url_for('static', filename='script/start-listeners.js') }}">
     </script>
     <script 
         type="text/javascript" 
-        src="{{ url_for('static', filename='script/entry-edit-listeners.js') }}">
+        src="{{ url_for('static', filename='script/entry-edit.js') }}">
     </script>
 </html>
 {% endblock %}

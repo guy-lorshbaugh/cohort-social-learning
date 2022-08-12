@@ -148,7 +148,7 @@
             {% else %}
                 <span class="emoji-anchor" name="{{ item.replace(' ', '').replace('&', '-').lower() }}"></span>
                 <h6 >{{ item }}</h6>
-                <div class="emoji-container">
+                <div class="emoji-container {{ item.lower().replace(' ', '-').replace('&', '').replace('--','-') }}">
                     {% for entry in emoji %}
                         {% if entry['group'] == item %}
                             {% if entry['name'] in exclude %}
@@ -254,7 +254,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro edit_entry(id, form) %}
+<!-- {% macro edit_entry(id, form) %}
     <div class="container">
         <div class="edit-entry-container">
             <!-- <h2>Edit Entry</h2> -->
@@ -279,4 +279,4 @@
             </form>
         </div>
     </div>
-{% endmacro %}
+{% endmacro %} -->

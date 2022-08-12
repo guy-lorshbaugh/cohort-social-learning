@@ -24,7 +24,7 @@
                     {% if id.remember != " " and id.remember != "": %}
                         <p><u>Resources to Remember:</u><br>
                             {% for item in id.remember.split('\n') %}
-                                {% if "http" in item: %}
+                                {% if "http" in item or "www" in item: %}
                                     {{ item|urlize(40, True, target="_blank") }}<br>
                                 {% else: %}
                                     {{ item }} <br>

@@ -1,11 +1,47 @@
 COHORT DOO DOO TO-DOO
 
+-  entry.js is a prototype for what will need to be refactored to handle both
+   "entry edit" and "new entry"/"entry". We'll work with the class class names that
+   already exist
+   ** A Class for the global variables could be useful. Or at least good practice.
+   ** It should be called by and "onload" listener on the body. Any number of
+      other functions can be called on load.
+   ** A "starter" function would be good to orchestrate the execution of 
+
+-  This is a site-wide edit, so lots of work, but you can use hidden form
+   fields with the editable divs and pass the div.innerHTML into the input
+   value for form submit.
+   ** KeyboardEvent.key for key ID #'s so "delete" and "backspace"* can still
+      be used after the character limit is reached, sample function below. 
+      We won't use .which, though. Sleepy, forgot the alternative to it:
+   // ******
+      function check_charcount(content_id, max, e)
+         {
+            if(e.which != 8 && $('#'+content_id).text().length > max)
+            {
+               // $('#'+content_id).text($('#'+content_id).text().substring(0, max));
+               e.preventDefault();
+            }
+         }
+   // ******
+      ** * as well as arrow keys, alt/option, ctrl, tab, Meta, Windows, fn
+
+-  The edit dialog should probbly dynamically update the ernry data instead of
+   refreshing the page. *grumble*
+   ** It should also have a confirm dialog for "Discard Changes?"
+
 -  Emoji Search as a separate system than the emoji menu. They don't coexist
    well.
 
 -  Comment like/reply
 
 -  User Profiles
+
+-  User Preferences
+   ** Start Page top/recent
+      -  We can then use this home page as the refresh for the Edit dialog and 
+         any other spots we need a home page refresh. 
+   ** Show/Hide User Info
 
 -  Menu listeners are still garbage. This is an issue that needs dealt with 
    systematically. A listener class could be useful if we can figure out how

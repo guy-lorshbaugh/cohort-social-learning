@@ -207,6 +207,7 @@ footer {
 	position: relative;
 	text-align: center;
 	font-size: 14px;
+	user-select: none;
 }
 .button.button-secondary {
 	background: #FFF;
@@ -509,28 +510,6 @@ p a {
 
 /* --- EDIT ENTRY PAGE --- */
 
-/* .edit-body {
-	background-color: white;
-} */
-/* .edit-frame-container {
-	position: absolute;
-	left: 0px;
-	background-color: white;
-	padding: 10px;
-	width: 100%;
-	height: 500px;
-	z-index: 5;
-} */
-/* .edit-entry-frame {
-	position: absolute;
-} */
-/* .edit-entry-container {
-} */
-/* .edit-form {
-	padding: 10px;
-} */
-
-
 /* --- LIKES --- */
 
 .like-comment-display {
@@ -758,10 +737,7 @@ p a {
 	margin-top: 5px;
 }
 
-
-/* ==========================================================================
-   Form Styles
-   ========================================================================== */
+/* --- FORMS --- */
 
 form {
 	margin-block-end: 0;
@@ -774,6 +750,10 @@ form input[type=text],
 form input[type=password],
 form input[type=date],
 form textarea,
+.entry-edit-div.title-div,
+.entry-edit-div.tags-div,
+.entry-edit-div.learned-div,
+.entry-edit-div.remember-div,
 select {
 	border: 2px solid #e1e1e1;
     font-size: 18px;
@@ -801,6 +781,10 @@ form input[type=text]:focus,
 form input[type=date]:focus,
 form input[type=password]:focus,
 form textarea:focus,
+.entry-edit-div.title-div:focus,
+.entry-edit-div.tags-div:focus,
+.entry-edit-div.learned-div:focus,
+.entry-edit-div.remember-div:focus,
 select:focus {
 	outline: 0;
 	border-color: lightblue;
@@ -810,6 +794,10 @@ form input[type=date]:hover
 form textarea:hover,
 .edit-entry form textarea:hover,
 .new-entry form textarea:hover,
+.entry-edit-div.title-div:hover,
+.entry-edit-div.tags-div:hover,
+.entry-edit-div.learned-div:hover,
+.entry-edit-div.remember-div:hover,
 select:hover {
 	border-color: lightblue;
 }
@@ -879,6 +867,40 @@ input[type=submit] {
 	padding: 5px 13px;
 }
 
+/* --- FORM EDITABLE DIVS --- */
+
+.entry-edit-div.title-div,
+.entry-edit-div.tags-div,
+.entry-edit-div.learned-div,
+.entry-edit-div.remember-div {
+	display: block;
+	background-color: white;
+	width: 100%;
+	margin-left: 0px;
+	margin: 2px 0px 3px 0px;
+	padding-right: 75px;
+}
+.entry-edit-div.title-div,
+.entry-edit-div.tags-div {
+	min-height: 50px;
+}
+.entry-edit-div.learned-div,
+.entry-edit-div.remember-div {
+	min-height: 84px;
+}
+.entry-edit-div-label {
+	margin: 0px 10px;
+}
+
+/* --- ENTRY EDIT WINDOW --- */
+
+.title-char-count {
+	position: absolute;
+    top: 110px;
+    right: 45px;
+	font-size: 12px;
+}
+
 /*  --- SCROLL BUTTON --- */
 
 #top-button {
@@ -929,6 +951,9 @@ input[type=submit] {
 	user-select: none;
 	z-index: 99;
 }
+/* .emoji-menu-container:last-child {
+	margin-bottom: 50px;
+} */
 .emoji-list-container,
 .emoji-search-container {
 	position: relative;
@@ -941,6 +966,9 @@ input[type=submit] {
 	display: grid;
 	grid-template-columns: repeat(9, 36px);
 	position: relative;
+}
+.emoji-container.flags {
+	margin-bottom: 50px;
 }
 .emoji {
 	display: flex;
@@ -1067,7 +1095,7 @@ input[type=submit] {
 	text-align: left;
 	position: relative;
 	width: 100%;
-	height: 25px;
+	height: 35px;
 	border-radius: 8px;
 	background-color: rgba(255 255 255 / 0.75);
 	z-index: 100;
@@ -1177,6 +1205,7 @@ input[type=submit] {
     align-items: center;
 	flex-flow: row nowrap;
     justify-content: flex-start;
+	margin-top: 10px;;
 }
 .entry-bottom-field button {
 	margin-right: 10px;

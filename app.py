@@ -376,6 +376,7 @@ def tag(tag):
 
 
 @app.route("/entries/<id>/user")
+@app.route("/entries/<id>/user/")
 def user(id):
     entries = (models.Entry
             .select()
