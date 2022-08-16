@@ -9,25 +9,43 @@
     </head>
     <body class="edit-body" function="edit">
         <section>
-            <div class="container">
+            <div class="edit-container">
                 <div class="edit-entry">
+                    <div class="discard-changes-wrap" style="visibility: hidden;">
+                        <div class="option-menu discard-changes">
+                            <div style="padding-bottom:5px;">There are unsaved changes.</div>
+                            <div style="padding-bottom:5px;">Discard?</div>
+                            <div>
+                                <button name="discard-yes" 
+                                        class="button button-secondary yes"
+                                        type="button">Yes</button>
+                                <button name ="discard-no" 
+                                        class="button button-secondary no"
+                                        type="button">No</button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- <h2>Edit Entry</h2> -->
                     <img class="avatar-50" src="{{ user.avatar }}" style="margin-bottom: 10px;">
                     <!-- {% from 'macros.html' import render_field %} -->
-                    <div class="entry-edit-div-label">Title</div>
+                    <div class="entry-edit-div-label">Title<div class="title-char-count"></div></div>
                     <div class="entry-edit-div title-div" id="title-edit-div"
-                        contenteditable="true" aria-placeholder="Title"></div>
-                    <div class="title-char-count"></div>
+                        contenteditable="true" aria-placeholder="Title"
+                        changes="false"></div>
+                    
                     <div class="entry-edit-div-label">Share Thoughts, Ask Questions!</div>
                     <div class="entry-edit-div learned-div" id="learned-edit-div"
-                        contenteditable="true" aria-placeholder="Learned"> </div>
+                        contenteditable="true" aria-placeholder="Learned"
+                        changes="false"> </div>
                     <div class="entry-edit-div-label">Links and Other Things!</div>
                     <div class="entry-edit-div remember-div" id="remember-edit-div" 
-                        contenteditable="true" aria-placeholder="Remember"> </div>
+                        contenteditable="true" aria-placeholder="Remember"
+                        changes="false"> </div>
                     <div class="entry-edit-div-label">Tags</div>
                     <div class="entry-edit-div tags-div" id="tags-edit-div" 
-                        contenteditable="true" aria-placeholder="Tags"> </div>
-                    <form method="POST" action="">
+                        contenteditable="true" aria-placeholder="Tags"
+                        changes="false"> </div>
+                    <form method="POST" id="edit-form" target="edit-frame" action="">
                         {{ form.hidden_tag() }}
                         {% set info = models.Entry.select()
                                             .where(models.Entry.id==id)
@@ -46,10 +64,10 @@
                         {{ form.tags() }}
                         <div class="entry-bottom-field">
                             <button class="button button-secondary" 
-                                    type="submit" 
-                                    id="entry-edit-submit">
+                                    type="button" 
+                                    id="entry-edit-save">
                                 Save Changes!</button>
-                        <button id="edit-cancel-button"
+                            <button id="edit-cancel-button"
                                     class="button button-secondary" 
                                     type="reset">
                                 Cancel</button>

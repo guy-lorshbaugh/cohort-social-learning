@@ -2,8 +2,8 @@ const parentBody = window.parent.window.document;
 const frameBorder = parentBody.querySelector(`.${getBodyFunc()}-entry-container`)
 const frame = parentBody.querySelector(`#${getBodyFunc()}-entry-frame`);
 
-const saveButton = document.getElementsByTagName("button")[0];
-const cancelEditButton = document.getElementsByTagName("button")[1];
+const saveButton = document.querySelector('#entry-edit-save');
+const cancelEditButton = document.querySelector('#edit-cancel-button');
 
 const currHREF = window.parent.window.location.href;
 
@@ -16,17 +16,17 @@ const titleDiv = document.querySelector(".title-div");
 const learnedDiv = document.querySelector(".learned-div");
 const rememberDiv = document.querySelector(".remember-div");
 const tagsDiv = document.querySelector(".tags-div");
+
 const charCount = document.querySelector(".title-char-count");
 
 var formFields = [ title, learned, remember, tags ];
 var formDivs = [ titleDiv, learnedDiv, rememberDiv, tagsDiv ];
-var changes = false;
 
 for (var field of formFields) {
     field.setAttribute("style", "display: none;");
     switch (field.name) {
         case ("title"):
-            titleDiv.textContent = field.value + " ";
+            titleDiv.textContent = field.value;
             break;
         case ("learned"):
             learnedDiv.innerHTML = field.textContent;
@@ -44,7 +44,12 @@ updateTitleLimit();
 setCaret(titleDiv);
 
 titleDiv.addEventListener("keyup", updateTitleLimit);
-// titleDiv.addEventListener("selectstart", getSelectLength);
+
+for (var div of formDivs) {
+    div.addEventListener("input", (e) => {
+        setChanges(e.target);
+    }, { once: true });
+}
 
 const allowedKeys = [ 'Backspace', 'ArrowUp', 'ArrowRight', 'ArrowDown', 
     'ArrowLeft','PageUp', 'PageDown', 'End', 'Home', 'Alt', 'Meta', 'Control',
@@ -67,9 +72,9 @@ titleDiv.addEventListener("keydown", (e) => {
         }
     }
 
-    if (titleLength < 200){
-        console.log(lowerKey, titleLength);
-    }
+    // if (titleLength < 200){
+    //     console.log(lowerKey, titleLength);
+    // }
 });
 
 titleDiv.addEventListener('paste', (event) => {
@@ -104,21 +109,53 @@ frameBorder.addEventListener("click", () => {
 }, { once:true })
 
 cancelEditButton.addEventListener("click", () => {
-    closeEdit(frame, frameBorder);
+    const discard = document.querySelector('.discard-changes-wrap');
+    const yesBtn = document.getElementsByName('discard-yes')[0];
+    const noBtn = document.getElementsByName('discard-no')[0];
+
+    const yesFunc = function() {
+        noBtn.removeEventListener("click", noFunc);
+        closeEdit(frame, frameBorder);
+    }
+    const noFunc = function() {
+        yesBtn.removeEventListener("click", yesFunc);
+        discard.style.visibility = "hidden";
+    }
+    
+    if (checkChanges()) {
+        discard.style.visibility = "visible";
+        noBtn.addEventListener("click", noFunc, { once: true });
+        yesBtn.addEventListener("click", yesFunc, { once: true });
+    } else {
+        closeEdit(frame, frameBorder);
+    }
 });
 
 saveButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    closeEdit(frame, frameBorder);
+    // e.preventDefault();
+    populateForm();
+    console.log(document.forms);
+    document.forms['edit-form'].submit();    
     setTimeout(() => {
+        closeEdit(frame, frameBorder);
         if (currHREF.includes("#")) {
-            // Probably wanna change this before deployment
+            // Probably wanna change this prior to deployment
             window.parent.window.location = "../../../entries";
         } else {
             window.parent.window.location.href = currHREF;
         }
-    }, 100);
+    }, 500);
 });
+
+function checkChanges() {
+    let changes = false;
+    for (div of formDivs) {
+        if (div.getAttribute("changes") === "true") {
+            changes = true;
+        }
+    }
+    return changes;
+}
 
 function closeEdit(frame, frameBorder) {
     frame.setAttribute("src", "");
@@ -142,6 +179,26 @@ function getSelectLength() {
     return selectLength;
 }
 
+function populateForm() {
+    console.log("Populating Form");
+    for (var div of formDivs) {
+        switch (div.id) {
+            case "title-edit-div":
+                title.setAttribute("value", titleDiv.textContent);
+                break;
+            case "learned-edit-div":
+                learned.textContent = learnedDiv.innerHTML;
+                break;
+            case "remember-edit-div":
+                remember.textContent = rememberDiv.innerHTML;
+                break;
+            case "tags-edit-div":
+                tags.setAttribute("value", tagsDiv.textContent);
+                break;
+        }
+    }
+}
+
 // function selectElementContents(element) {
 //     var range = document.createRange();
 //     range.selectNodeContents(element);
@@ -149,6 +206,11 @@ function getSelectLength() {
 //     sel.removeAllRanges();
 //     sel.addRange(range);
 // }
+
+function setChanges(element) {
+    element.setAttribute("changes", "true");
+    console.log(`${element.id}` + " changed");
+}
 
 function updateTitleLimit() {
     charCount.textContent = titleDiv.textContent.length + "/200";

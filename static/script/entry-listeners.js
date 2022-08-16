@@ -24,6 +24,5 @@ function closeEntryWindow(triggerName="") {
 
 function closer(parentBody, container) {
     parentBody.style.overflow = "visible";
-    console.log("close")
     container.style.visibility = "hidden";
 }

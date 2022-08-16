@@ -217,7 +217,11 @@ footer {
 .button.button-secondary:hover {
 	color: white;
 	background-color: lightblue;
-	border-color: lightblue;
+	border-color: royalblue;
+}
+.button.button-secondary.yes:hover {
+	background-color: red;
+	border-color: darkred;
 }
 .button.icon-right {
 	padding-right: 30px;
@@ -712,6 +716,28 @@ p a {
 	top: 30px;
 	right: 5px;
 }
+.option-menu.discard-changes {
+    position: absolute;
+    display: block;
+    top: 30%;
+    left: 23%;
+    width: 54%;
+    height: fit-content;
+    padding: 25px;
+    text-align: center;
+}
+.discard-changes-wrap {
+	position: absolute;
+    display: flex;
+    width: 500px;
+    height: 100vh;
+    backdrop-filter: blur(1.5px);
+    z-index: 100;
+	overflow-y: hidden;
+}
+.option-menu.discard-changes button {
+	margin-top: 5px;
+}
 .option-menu.entry-menu,
 .entry-confirm-dialog {
 	top: 40px;
@@ -891,15 +917,19 @@ input[type=submit] {
 	overflow-y: scroll;
 }
 .entry-edit-div-label {
-	margin: 0px 10px;
+	display: flex;
+    margin: 0px 10px;
+    justify-content: space-between;
 }
 
 /* --- ENTRY EDIT WINDOW --- */
 
+.edit-container {
+	width: 500px;
+	margin: 0 auto;
+}
 .title-char-count {
-	position: absolute;
-    top: 110px;
-    right: 45px;
+	margin: auto 0;
 	font-size: 12px;
 }
 

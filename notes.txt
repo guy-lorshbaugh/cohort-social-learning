@@ -1,20 +1,21 @@
 COHORT DOO DOO TO-DOO
 
+-  A dummy <input> field to open New Entry window instead of the titlebar icon.
+   ** A randomized placeholder message for the input would be fun, messages like
+      "What brings you here today?" "What're you working on?" "Anything got you
+      stuck today?" You know, cute stuff like that.
+
+-  Prevent sending empty comment.
+
 -  entry.js is a prototype for what will need to be refactored to handle both
-   "entry edit" and "new entry"/"entry". We'll work with the class class names that
-   already exist
-   ** A Class for the global variables could be useful. Or at least good practice.
+   "entry edit" and "new entry"/"entry". We'll work with the class class names
+   that already exist
    ** It should be called by and "onload" listener on the body. Any number of
       other functions can be called on load.
    ** A "starter" function would be good to orchestrate the execution
 
--  This is a site-wide edit, so lots of work, but you can use hidden form
-   fields with the editable divs and pass the div.innerHTML into the input
-   value for form submit.
-
--  The edit dialog should probbly dynamically update the ernry data instead of
+-  The edit dialog should dynamically update the entry data instead of
    refreshing the page. *grumble*
-   ** It should also have a confirm dialog for "Discard Changes?"
 
 -  Emoji Search as a separate system than the emoji menu. They don't coexist
    well.
@@ -33,10 +34,6 @@ COHORT DOO DOO TO-DOO
          any other spots we need a home page refresh. 
    ** Show/Hide User Info
 
--  Menu listeners are still garbage. This is an issue that needs dealt with 
-   systematically. A listener class could be useful if we can figure out how
-   to make it work.
-
 -  Reorganize stylesheet categories:
    ** Menus
 
@@ -46,6 +43,23 @@ COHORT DOO DOO TO-DOO
 
 
 FINITO
+
+XX ** It should also have a confirm dialog for "Discard Changes?"
+
+XX This is a site-wide edit, so lots of work, but you can use hidden form
+   fields with the editable divs and pass the div.innerHTML into the input
+   value for form submit.
+
+XX Edit "Save Changes" button call preventDefault() and submit the form after 
+   populating the form.
+
+XX A Class for the global variables could be useful. Or at least good practice.
+   ** it was decent practice but the code was too bulky for what amounted to a 
+      change of two variables
+
+XX Menu listeners are still garbage. This is an issue that needs dealt with 
+   systematically. A listener class could be useful if we can figure out how
+   to make it work.
 
 XX ** KeyboardEvent.key for key ID #'s so "delete" and "backspace"* can still
       be used after the character limit is reached, sample function below. 

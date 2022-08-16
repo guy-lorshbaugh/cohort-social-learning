@@ -20,6 +20,7 @@
     <div class="edit-entry-container" style="visibility: hidden;">
         <iframe id="edit-entry-frame" 
         class="edit-entry-frame shadow-box" 
+        name="edit-frame"
         src="" 
         frameBorder="0">
             <div class="edit-entry-cancel-button shadow-box material-icons">cancel</div>
@@ -36,6 +37,9 @@
             </select>
         </div>
         <div class="entry-list">
+
+                <!-- ENTRY PREVIEW -->
+
                 {% for entry in journal %}
                     {% if not entry.private %}
                         {% set user = models.User.get(models.User.id==entry.user_id) %}
@@ -58,7 +62,7 @@
                             </div>
                             <div class="entry-confirm-dialog" id="entry-confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
                                 <div style="padding-bottom: 5px;">Are you sure?</div>
-                                <button name="yes" class="button button-secondary" type="button">Yes</button>
+                                <button name="yes" class="button button-secondary yes" type="button">Yes</button>
                                 <button name ="no" class="button button-secondary" type="button">No</button>
                             </div>
                             {% endif %}

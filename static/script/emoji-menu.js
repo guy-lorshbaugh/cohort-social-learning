@@ -33,34 +33,40 @@ function emojiMenuStart(menu, target) {
 function emojiMenuOpen(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const button = document.getElementById(`emoji-open-${target}`);
-    // const container = document.querySelector(".container");
-    // const bg = document.getElementById('emoji-bg');
     if (!emojiMenu.classList.contains("started")) {
         emojiMenuStart(emojiMenu, target);
     }
     if (emojiMenu.style.visibility === "hidden") {
         console.log("open");
         emojiMenu.style.visibility = "visible";
+        emojiMenu.classList.add("active");
         button.classList.add("active");
         button.innerHTML = "emoji_emotions";
-        // bg.style.visibility = "visible";
-        // bg.addEventListener("click", () => {
-        //     emojiMenuOpen(target);
-        // }, { once: true });
+        document.addEventListener("mousedown", emojiCloseAll, { once: true });
     } else {
         console.log("close");
         button.removeAttribute("openlistener");
         emojiMenu.style.visibility = "hidden";
+        emojiMenu.classList.remove  ("active");
         button.classList.remove("active");
         button.innerHTML = "sentiment_satisfied_alt";
-        // bg.style.visibility = "hidden";
-        // //  focus() option isn't really working.
-        // document.getElementById(`comment-${target}`).focus();
     }
 }
 
 function emojiCloseAll() {
-
+    const container = document.getElementsByClassName("emoji-menu-container");
+    let menuCount = 0
+    for (item of Array.from(container)) {
+        if (item.classList.contains("active")){
+            emojiMenuOpen(getID(item.id));
+            menuCount += 1;
+        } 
+    }
+    if (menuCount > 0 ) {
+        console.log("All Emoji Menus Closed");
+    } else {
+        console.log("No Emoji Menus Open");
+    }
 }
 
 // function emojiCLoseListeners(menu, element, target) {

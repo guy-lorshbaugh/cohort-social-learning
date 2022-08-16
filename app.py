@@ -344,8 +344,8 @@ def edit(id):
                 tag_id=tag_data.id
             )
         flash("Your Entry has been edited!")
-        print(f"Token: { form.csrf_token() }")
-        # return redirect(url_for('index'))
+        print(form.learned.data)
+        return redirect(url_for('index'))
     return render_template("edit.html", form=form, id=id, 
                             models=models, tags=tags, user=user)
 

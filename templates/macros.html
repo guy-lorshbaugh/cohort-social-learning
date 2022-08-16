@@ -257,8 +257,8 @@
 <!-- {% macro edit_entry(id, form) %}
     <div class="container">
         <div class="edit-entry-container">
-            <!-- <h2>Edit Entry</h2> -->
-            <!-- {% from 'macros.html' import render_field %} -->
+            <h2>Edit Entry</h2>
+            {% from 'macros.html' import render_field %}
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
                 {% set info = models.Entry.select().where(models.Entry.id==id).get() %}
