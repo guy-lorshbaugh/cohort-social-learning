@@ -33,9 +33,8 @@ function emojiMenuStart(menu, target) {
 function emojiMenuOpen(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const button = document.getElementById(`emoji-open-${target}`);
-    const container = document.querySelector(".container");
-    // console.log(container);
-    // console.log(button.classList.value);
+    // const container = document.querySelector(".container");
+    // const bg = document.getElementById('emoji-bg');
     if (!emojiMenu.classList.contains("started")) {
         emojiMenuStart(emojiMenu, target);
     }
@@ -44,30 +43,35 @@ function emojiMenuOpen(target) {
         emojiMenu.style.visibility = "visible";
         button.classList.add("active");
         button.innerHTML = "emoji_emotions";
-        // emojiCLoseListeners(emojiMenu, container, target);
+        // bg.style.visibility = "visible";
+        // bg.addEventListener("click", () => {
+        //     emojiMenuOpen(target);
+        // }, { once: true });
     } else {
         console.log("close");
         button.removeAttribute("openlistener");
         emojiMenu.style.visibility = "hidden";
         button.classList.remove("active");
         button.innerHTML = "sentiment_satisfied_alt";
-        // startListeners("emoji-open", "mouseup", emojiMenuOpen, params="", once=true);
-        // setTimeout(
-        //     startListeners, 100, 
-        //     button.classList.value, "mouseup", emojiMenuOpen, params="", once=true
-        // )
+        // bg.style.visibility = "hidden";
+        // //  focus() option isn't really working.
+        // document.getElementById(`comment-${target}`).focus();
     }
 }
 
-function emojiCLoseListeners(menu, element, target) {
-    element.addEventListener('mousedown', function closeClick(e) {
-        if (menu.style.visibility === "visible") {
-            if (!menu.contains(e.target)) {
-                emojiMenuOpen(target);
-            }
-        }
-    }, { capture: true, once: true });
+function emojiCloseAll() {
+
 }
+
+// function emojiCLoseListeners(menu, element, target) {
+//     element.addEventListener('mousedown', function closeClick(e) {
+//         if (menu.style.visibility === "visible") {
+//             if (!menu.contains(e.target)) {
+//                 emojiMenuOpen(target);
+//             }
+//         }
+//     }, { capture: true, once: true });
+// }
 
 // function skinTonePicker(emojiMenu, skinTone="default") {
 //     const peopleBody = emojiMenu.getElementsByClassName("people-body")[0];

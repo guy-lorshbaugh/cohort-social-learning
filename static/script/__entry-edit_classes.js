@@ -1,6 +1,60 @@
+// I'll have to check but I'm pretty sure all these global variables can be 
+// passed into an object constructor. The functions can operate off an 
+// instance of the class based on type "entry" or "edit-entry"
+class Container {
+    constructor() {
+        this.parentBody;
+        this._frameBorder;
+        this._frame;
+    }
+    get parentBody() {
+        return window.parent.window.document;
+    }
+    get frameBorder() {
+        return this._frameBorder;
+    }
+    get frame() {
+        return this._frame;
+    }
+    set parentBody(type) {
+        this.parentBody = window.parent.window.document;
+    }
+     set frameBorder(border) {
+        if (typeof border === "string"){
+            this._frameBorder = this.parentBody.querySelector(`.${border}-entry-container`);;
+        } else {
+            console.log("Invalid Entry - FrameBorder ");
+            console.log(target);
+        }
+    }
+    set frame(frame) {
+        if (typeof frame === "string"){
+            this._frame = this.parentBody.querySelector(`#${frame}-entry-frame`);
+        } else {
+            console.log("Invalid Entry - Frame ");
+            console.log(frame);
+        }
+    }
+}
+
+
+const container = new Container();
+container.frameBorder = "edit";
+container.frame = "edit";
+console.log(container.parentBody)
+console.log(container.frameBorder)
+console.log(container.frame);
+
 const parentBody = window.parent.window.document;
-const frameBorder = parentBody.querySelector(`.${getBodyFunc()}-entry-container`)
-const frame = parentBody.querySelector(`#${getBodyFunc()}-entry-frame`);
+
+function getBodyFunc() {
+    return parentBody.getAttribute("function");
+}
+
+console.log(getBodyFunc);
+
+const frameBorder = container.frameBorder;
+const frame = parentBody.querySelector("#edit-entry-frame");
 
 const saveButton = document.getElementsByTagName("button")[0];
 const cancelEditButton = document.getElementsByTagName("button")[1];
@@ -43,6 +97,7 @@ for (var field of formFields) {
 updateTitleLimit();
 setCaret(titleDiv);
 
+
 titleDiv.addEventListener("keyup", updateTitleLimit);
 // titleDiv.addEventListener("selectstart", getSelectLength);
 
@@ -66,10 +121,12 @@ titleDiv.addEventListener("keydown", (e) => {
             e.preventDefault();
         }
     }
+    
 
     if (titleLength < 200){
         console.log(lowerKey, titleLength);
     }
+
 });
 
 titleDiv.addEventListener('paste', (event) => {
@@ -107,8 +164,7 @@ cancelEditButton.addEventListener("click", () => {
     closeEdit(frame, frameBorder);
 });
 
-saveButton.addEventListener("click", (e) => {
-    e.preventDefault();
+saveButton.addEventListener("click", () => {
     closeEdit(frame, frameBorder);
     setTimeout(() => {
         if (currHREF.includes("#")) {
@@ -124,10 +180,6 @@ function closeEdit(frame, frameBorder) {
     frame.setAttribute("src", "");
     parentBody.body.style.overflow = "visible";
     frameBorder.style.visibility = "hidden";
-}
-
-function getBodyFunc() {
-    return document.body.getAttribute("function");
 }
 
 function getSelectLength() {

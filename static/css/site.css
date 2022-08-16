@@ -887,6 +887,8 @@ input[type=submit] {
 .entry-edit-div.learned-div,
 .entry-edit-div.remember-div {
 	min-height: 84px;
+	max-height: 150px;
+	overflow-y: scroll;
 }
 .entry-edit-div-label {
 	margin: 0px 10px;
@@ -937,6 +939,17 @@ input[type=submit] {
 	height: 0px;
 	width: 0px;
 	visibility: hidden;
+}
+.emoji-menu-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 98;
+    /* background-color: white; */
+    width: 100%;
+    height: 100vh;
+    user-select: none;
+	overflow-x: hidden;
 }
 .emoji-menu-container {
 	position: absolute;
@@ -1180,7 +1193,7 @@ input[type=submit] {
 /* --- NEW ENTRY WINDOW --- */
 
 .new-entry-container,
-.edit-frame-container {
+.edit-entry-container {
 	width: 100%;
 	height: 100vh;
 	position: fixed;

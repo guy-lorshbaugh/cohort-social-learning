@@ -1,4 +1,4 @@
-const editDialog = document.querySelector(".edit-frame-container");
+const editDialog = document.querySelector(".edit-entry-container");
 const entryOptions = document.getElementsByClassName("entry-options");
 
 startListeners("entry-edit-option", "click", openEdit);

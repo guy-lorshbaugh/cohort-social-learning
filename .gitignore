@@ -11,3 +11,4 @@ static/img/avatar-svg
 jinja_dump
 static/img/noto-svg
 templates/__edit.html
+static/script/__entry-edit.js
