@@ -326,28 +326,78 @@ def edit(id):
         tags_list.append(tag.tag)
     tags = ", ".join(tags_list)
     form = forms.Post()
-    if form.validate_on_submit():
-        entry.title = form.title.data
-        entry.learned = form.learned.data
-        entry.remember = form.remember.data
-        for item in form.tags.data.split(', '):
+    # if form.validate_on_submit():
+    #     entry.title = form.title.data
+    #     entry.learned = form.learned.data
+    #     entry.remember = form.remember.data
+    #     for item in form.tags.data.split(', '):
+    #         try:
+    #             models.Tags.create(tag=item)
+    #         except:
+    #             pass
+    #     entry.save()
+    #     del_tags(id)
+    #     for tag in form.tags.data.split(', '):
+    #         tag_data = models.Tags.get(models.Tags.tag == tag)
+    #         models.EntryTags.create(
+    #             entry_id=entry.id,
+    #             tag_id=tag_data.id
+    #         )
+        # flash("Your Entry has been edited!")
+        # print(f"Token: { form.csrf_token() }")
+        # return redirect(url_for('index'))
+    return render_template("edit.html", form=form, id=id, 
+                            models=models, tags=tags, user=user)
+
+@app.route("/entries/<id>/edit/save", methods=['GET', 'POST'])
+@login_required
+def update_entry(id):
+    user = current_user
+    entry = (models.Entry
+            .select()
+            .where(models.Entry.id == id)
+            .get())
+    if request.method == 'POST':
+        form = json.loads(request.data)
+        entry.title = form['title']
+        entry.learned = form['learned']
+        entry.rememeber = form['remember']
+        entry.private = form['private']
+        for item in form['tags'].split(', '):
             try:
                 models.Tags.create(tag=item)
             except:
                 pass
         entry.save()
         del_tags(id)
-        for tag in form.tags.data.split(', '):
+        for tag in form['tags'].split(', '):
             tag_data = models.Tags.get(models.Tags.tag == tag)
             models.EntryTags.create(
                 entry_id=entry.id,
                 tag_id=tag_data.id
             )
+        tag_query = (models.Tags
+                .select()
+                .join(models.EntryTags)
+                .join(models.Entry)
+                .where(models.Entry.id == entry.id)
+                .order_by(models.Tags.id))
+        tags = []
+        for tag in tag_query:
+            tags.append(tag.tag)
+        # for item in tags_items:
+        #     tag = tags_list.append(models.Tags.get(models.Tags.id == item))
+        #     tags_list.append(tag.tag);
         flash("Your Entry has been edited!")
-        print(form.learned.data)
-        return redirect(url_for('index'))
-    return render_template("edit.html", form=form, id=id, 
-                            models=models, tags=tags, user=user)
+    return jsonify({
+        "action": "edit",
+        "id": entry.id,
+        "title": entry.title,
+        "learned": entry.learned,
+        "remember": entry.remember,
+        "tags": tags,
+        "private": entry.private
+        })
 
 
 @app.route("/entries/get/<path:contents>")
@@ -371,6 +421,7 @@ def tag(tag):
                 .join(models.EntryTags)
                 .join(models.Tags)
                 .where(models.Tags.tag == tag)
+                .order_by(models.Entry.date.desc())
     )
     return render_template("tag.html", models=models, id=query, tag=tag)
 
@@ -490,19 +541,18 @@ def edit_comment(comment_id):
 
 
 #  --- OLD MICKEY MOUSE EDIT ROUTE ---
-# 
 # @app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
 # @login_required
 # def edit_comment(comment_id, contents):
-#     comment = models.Comment.get(models.Comment.id == comment_id)
-#     comment.contents = contents
-#     comment.save()
-#     return jsonify({
-#         "action": "edit",
-#         "contents": contents,
-#         "id": comment.id,
-#         "flash": "Comment edited successfully."
-#     })
+    # comment = models.Comment.get(models.Comment.id == comment_id)
+    # comment.contents = contents
+    # comment.save()
+    # return jsonify({
+    #     "action": "edit",
+    #     "contents": contents,
+    #     "id": comment.id,
+    #     "flash": "Comment edited successfully."
+    # })
 
 
 @app.route('/entries/comment/<int:comment>/delete', methods=['GET', 'POST'])

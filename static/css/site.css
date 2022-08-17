@@ -67,7 +67,7 @@ br {
 .shadow-box {
 	background: white;
 	border-radius: 15px;
-	box-shadow: 0px 0px 8px rgba(0,0,0,0.3);	
+	box-shadow: 0px 0px 8px rgba(0,0,0,0.4);	
 	z-index: 99;
 }
 
@@ -332,6 +332,11 @@ p a {
 	color: royalblue;
 	z-index: 101;
 	transition: top 175ms ease-in-out;
+}
+.flash.error {
+	border-color: red;
+	color: red;
+	background-color: rgb(255, 210, 210);
 }
 
 /* --- AVATARS --- */
@@ -716,28 +721,6 @@ p a {
 	top: 30px;
 	right: 5px;
 }
-.option-menu.discard-changes {
-    position: absolute;
-    display: block;
-    top: 30%;
-    left: 23%;
-    width: 54%;
-    height: fit-content;
-    padding: 25px;
-    text-align: center;
-}
-.discard-changes-wrap {
-	position: absolute;
-    display: flex;
-    width: 500px;
-    height: 100vh;
-    backdrop-filter: blur(1.5px);
-    z-index: 100;
-	overflow-y: hidden;
-}
-.option-menu.discard-changes button {
-	margin-top: 5px;
-}
 .option-menu.entry-menu,
 .entry-confirm-dialog {
 	top: 40px;
@@ -780,6 +763,10 @@ form textarea,
 .entry-edit-div.tags-div,
 .entry-edit-div.learned-div,
 .entry-edit-div.remember-div,
+.entry-new-div.title-div,
+.entry-new-div.tags-div,
+.entry-new-div.learned-div,
+.entry-new-div.remember-div,
 select {
 	border: 2px solid #e1e1e1;
     font-size: 18px;
@@ -811,6 +798,10 @@ form textarea:focus,
 .entry-edit-div.tags-div:focus,
 .entry-edit-div.learned-div:focus,
 .entry-edit-div.remember-div:focus,
+.entry-new-div.title-div:focus,
+.entry-new-div.tags-div:focus,
+.entry-new-div.learned-div:focus,
+.entry-new-div.remember-div:focus,
 select:focus {
 	outline: 0;
 	border-color: lightblue;
@@ -820,10 +811,14 @@ form input[type=date]:hover
 form textarea:hover,
 .edit-entry form textarea:hover,
 .new-entry form textarea:hover,
-.entry-edit-div.title-div:hover,
-.entry-edit-div.tags-div:hover,
-.entry-edit-div.learned-div:hover,
-.entry-edit-div.remember-div:hover,
+.entry-new-div.title-div:hover,
+.entry-new-div.tags-div:hover,
+.entry-new-div.learned-div:hover,
+.entry-new-div.remember-div:hover,
+.entry-new-div.title-div:hover,
+.entry-new-div.tags-div:hover,
+.entry-new-div.learned-div:hover,
+.entry-new-div.remember-div:hover,
 select:hover {
 	border-color: lightblue;
 }
@@ -898,7 +893,11 @@ input[type=submit] {
 .entry-edit-div.title-div,
 .entry-edit-div.tags-div,
 .entry-edit-div.learned-div,
-.entry-edit-div.remember-div {
+.entry-edit-div.remember-div,
+.entry-new-div.title-div,
+.entry-new-div.tags-div,
+.entry-new-div.learned-div,
+.entry-new-div.remember-div {
 	display: block;
 	background-color: white;
 	width: 100%;
@@ -907,16 +906,21 @@ input[type=submit] {
 	padding-right: 75px;
 }
 .entry-edit-div.title-div,
-.entry-edit-div.tags-div {
+.entry-edit-div.tags-div,
+.entry-new-div.title-div,
+.entry-new-div.tags-div {
 	min-height: 50px;
 }
 .entry-edit-div.learned-div,
-.entry-edit-div.remember-div {
+.entry-edit-div.remember-div,
+.entry-new-div.learned-div,
+.entry-new-div.remember-div {
 	min-height: 84px;
 	max-height: 150px;
 	overflow-y: scroll;
 }
-.entry-edit-div-label {
+.entry-edit-div-label,
+.entry-new-div-label {
 	display: flex;
     margin: 0px 10px;
     justify-content: space-between;
@@ -928,9 +932,45 @@ input[type=submit] {
 	width: 500px;
 	margin: 0 auto;
 }
+.edit-header,
+.new-header {
+	display: flex;
+}
+.edit-header h2,
+.new-header h2 {
+	text-align: left;
+	margin: auto 15px;
+}
 .title-char-count {
 	margin: auto 0;
 	font-size: 12px;
+}
+.option-menu.discard-changes,
+.option-menu.post-save {
+    position: absolute;
+    display: block;
+    top: 30%;
+    left: 23%;
+    width: 54%;
+    height: fit-content;
+    padding: 25px;
+    text-align: center;
+}
+.discard-changes-wrap,
+.post-save-overlay {
+	position: absolute;
+    display: flex;
+    width: 500px;
+    height: 100vh;
+    backdrop-filter: blur(1.5px);
+    z-index: 100;
+	overflow-y: hidden;
+}
+.option-menu.discard-changes button {
+	margin-top: 5px;
+}
+.post-save-overlay {
+	width: 100vh;
 }
 
 /*  --- SCROLL BUTTON --- */

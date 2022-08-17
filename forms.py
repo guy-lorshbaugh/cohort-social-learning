@@ -12,15 +12,10 @@ from wtforms.validators import (DataRequired, Regexp, ValidationError,
 import models
 
 class Post(FlaskForm):
-    title = StringField(u"Title (Max. 100 characters)", validators=[
+    title = StringField(u"Title (Max. 200 characters)", validators=[
         DataRequired(),
-        Length(max=100)
+        Length(max=200)
     ])  
-    # date = HiddenField(default=datetime.datetime.now())
-    # time_spent = IntegerField(u"Time Spent (round to nearest hour)", 
-    #     validators=[
-    #                 DataRequired(),
-    #             ])
     learned = TextAreaField(u"Share a Revelation\nAsk a Question!", validators=[
                 DataRequired(),
             ])

@@ -22,7 +22,7 @@
         <header>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash" id="flash">
+                <div class="flash shadow-box" id="flash">
                     {% for message in messages %}
                         {{ message }}
                     {% endfor %}

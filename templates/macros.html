@@ -224,6 +224,8 @@
     {% elif entry.date.day == now.day and rel_time.seconds < 3600 %}
         {{ (rel_time.seconds/60)|round|int }} minutes ago
     {% elif entry.date.day == now.day and rel_time.seconds > 3600 %}
+        1 hour ago
+    {% elif entry.date.day == now.day and rel_time.seconds > 7200 %}
         {{ (rel_time.seconds/3600)|round|int }} hours ago
     {% elif now.year == entry.date.year and now.day - entry.date.day <= 1 %}
         yesterday, {{ entry.date.strftime('%I:%M %p') }}

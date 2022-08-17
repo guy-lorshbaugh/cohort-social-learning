@@ -1,9 +1,11 @@
+console.log("entry-edit 06");
 const parentBody = window.parent.window.document;
 const frameBorder = parentBody.querySelector(`.${getBodyFunc()}-entry-container`)
 const frame = parentBody.querySelector(`#${getBodyFunc()}-entry-frame`);
+const entryID = document.body.getAttribute("entry")
 
-const saveButton = document.querySelector('#entry-edit-save');
-const cancelEditButton = document.querySelector('#edit-cancel-button');
+const saveButton = document.querySelector(`#entry-${getBodyFunc()}-save`);
+const cancelEditButton = document.querySelector(`#${getBodyFunc()}-cancel-button`);
 
 const currHREF = window.parent.window.location.href;
 
@@ -20,23 +22,32 @@ const tagsDiv = document.querySelector(".tags-div");
 const charCount = document.querySelector(".title-char-count");
 
 var formFields = [ title, learned, remember, tags ];
+console.log(formFields);
 var formDivs = [ titleDiv, learnedDiv, rememberDiv, tagsDiv ];
 
-for (var field of formFields) {
-    field.setAttribute("style", "display: none;");
-    switch (field.name) {
-        case ("title"):
-            titleDiv.textContent = field.value;
-            break;
-        case ("learned"):
-            learnedDiv.innerHTML = field.textContent;
-            break;
-        case ("remember"):
-            rememberDiv.innerHTML = field.textContent;
-            break;
-        case ("tags"):
-            tagsDiv.textContent = tags.value;
-            break;
+if (getBodyFunc() === "edit") {
+    for (var field of formFields) {
+        field.setAttribute("style", "display: none;");
+        switch (field.name) {
+            case ("title"):
+                titleDiv.textContent = field.value;
+                break;
+            case ("learned"):
+                learnedDiv.innerHTML = field.textContent;
+                break;
+            case ("remember"):
+                rememberDiv.innerHTML = field.textContent;
+                break;
+            case ("tags"):
+                tagsDiv.textContent = tags.value;
+                break;
+        }
+    }
+}
+
+if (getBodyFunc() === 'new') {
+    for (var field of formFields) {
+        field.style.display = "none";
     }
 }
 
@@ -100,15 +111,51 @@ titleDiv.addEventListener('paste', (event) => {
 
 window.addEventListener("keyup", (e) => {
     if (e.key === "Escape") {
-        closeEdit(frame, frameBorder);
+        confirmDiscard();
     }
 });
 
-frameBorder.addEventListener("click", () => {
-    closeEdit(frame, frameBorder);
-}, { once:true })
+// frameBorder.addEventListener("click", () => {
+//     closeEdit(frame, frameBorder);
+// }, { once:true })
 
-cancelEditButton.addEventListener("click", () => {
+cancelEditButton.addEventListener("click", confirmDiscard);
+
+saveButton.addEventListener("click", saveEdit);
+
+function saveEdit() {
+    const overlay = document.querySelector('.post-save-overlay');
+    overlay.style.visibility = "visible";
+    populateForm();
+    entryRequest("edit", `/entries/${entryID}/edit/save`, entry=`${entryID}`)
+    // setTimeout(() => {
+    //     closeEdit(frame, frameBorder);
+    //     // if (currHREF.includes("#")) {
+    //     //     // Probably wanna change this prior to deployment
+    //     //     window.parent.window.location = "../../../entries";
+    //     // } else {
+    //     //     window.parent.window.location.href = currHREF;
+    //     // }
+    // }, 1500);
+}
+
+function checkChanges() {
+    let changes = false;
+    for (div of formDivs) {
+        if (div.getAttribute("changes") === "true") {
+            changes = true;
+        }
+    }
+    return changes;
+}
+
+function closeEdit(frame, frameBorder) {
+    frame.setAttribute("src", "");
+    parentBody.body.style.overflow = "visible";
+    frameBorder.style.visibility = "hidden";
+}
+
+function confirmDiscard() {
     const discard = document.querySelector('.discard-changes-wrap');
     const yesBtn = document.getElementsByName('discard-yes')[0];
     const noBtn = document.getElementsByName('discard-no')[0];
@@ -129,38 +176,6 @@ cancelEditButton.addEventListener("click", () => {
     } else {
         closeEdit(frame, frameBorder);
     }
-});
-
-saveButton.addEventListener("click", (e) => {
-    // e.preventDefault();
-    populateForm();
-    console.log(document.forms);
-    document.forms['edit-form'].submit();    
-    setTimeout(() => {
-        closeEdit(frame, frameBorder);
-        if (currHREF.includes("#")) {
-            // Probably wanna change this prior to deployment
-            window.parent.window.location = "../../../entries";
-        } else {
-            window.parent.window.location.href = currHREF;
-        }
-    }, 500);
-});
-
-function checkChanges() {
-    let changes = false;
-    for (div of formDivs) {
-        if (div.getAttribute("changes") === "true") {
-            changes = true;
-        }
-    }
-    return changes;
-}
-
-function closeEdit(frame, frameBorder) {
-    frame.setAttribute("src", "");
-    parentBody.body.style.overflow = "visible";
-    frameBorder.style.visibility = "hidden";
 }
 
 function getBodyFunc() {
@@ -180,7 +195,7 @@ function getSelectLength() {
 }
 
 function populateForm() {
-    console.log("Populating Form");
+    console.log("Populating Form ... ");
     for (var div of formDivs) {
         switch (div.id) {
             case "title-edit-div":

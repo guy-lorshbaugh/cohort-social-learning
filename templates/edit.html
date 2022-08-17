@@ -7,10 +7,15 @@
             src="{{ url_for('static', filename='script/autosize.min.js') }}">
         </script>
     </head>
-    <body class="edit-body" function="edit">
+    <body class="edit-body" function="edit" entry="{{ id }}">
         <section>
             <div class="edit-container">
                 <div class="edit-entry">
+                    <div class="post-save-overlay" style="visibility: hidden;">
+                        <div class="option-menu post-save">
+                            Please Wait ...
+                        </div>
+                    </div>
                     <div class="discard-changes-wrap" style="visibility: hidden;">
                         <div class="option-menu discard-changes">
                             <div style="padding-bottom:5px;">There are unsaved changes.</div>
@@ -25,8 +30,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <h2>Edit Entry</h2> -->
-                    <img class="avatar-50" src="{{ user.avatar }}" style="margin-bottom: 10px;">
+                    <div class="edit-header">
+                        <img class="avatar-50" src="{{ user.avatar }}" style="margin-bottom: 10px;">
+                        <h2>Edit Entry</h2>
+                    </div>
                     <!-- {% from 'macros.html' import render_field %} -->
                     <div class="entry-edit-div-label">Title<div class="title-char-count"></div></div>
                     <div class="entry-edit-div title-div" id="title-edit-div"
@@ -71,6 +78,9 @@
                                     class="button button-secondary" 
                                     type="reset">
                                 Cancel</button>
+                            {% for field in form if field.type == "BooleanField" %}
+                                <div id="private-option">{{ field }}{{ field.label }}</div>
+                            {% endfor %}
                     </form>
                 </div>
             </div>
@@ -91,6 +101,10 @@
     <script 
         type="text/javascript" 
         src="{{ url_for('static', filename='script/entry-edit.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/entry-request.js') }}">
     </script>
 </html>
 {% endblock %}

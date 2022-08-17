@@ -4,16 +4,53 @@
         <link rel="stylesheet" 
               href="{{ url_for('static', filename='css/site.css') }}">
         <script type="text/javascript"
-        src="{{ url_for('static', filename='script/autosize.min.js') }}">
-    </script>
+            src="{{ url_for('static', filename='script/autosize.min.js') }}">
+        </script>
     </head>
     <body function="new">
         <section>
             <div class="container">
                 <div class="new-entry">
-                    <div class="new-entry-avatar">
-                        <img class="avatar-50" src="{{ user.avatar }}">
+                    <div class="post-save-overlay" style="visibility: hidden;">
+                        <div class="option-menu post-save">
+                            Please Wait ...
+                        </div>
                     </div>
+                    <div class="discard-changes-wrap" style="visibility: hidden;">
+                        <div class="option-menu discard-changes">
+                            <div style="padding-bottom:5px;">There are unsaved changes.</div>
+                            <div style="padding-bottom:5px;">Discard?</div>
+                            <div>
+                                <button name="discard-yes" 
+                                        class="button button-secondary yes"
+                                        type="button">Yes</button>
+                                <button name ="discard-no" 
+                                        class="button button-secondary no"
+                                        type="button">No</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="new-header">
+                        <img class="avatar-50" src="{{ user.avatar }}" style="margin-bottom: 10px;">
+                        <h2>New Entry</h2>
+                    </div>
+                    <div class="entry-new-div-label">Title<div class="title-char-count"></div></div>
+                    <div class="entry-new-div title-div" id="title-new-div"
+                        contenteditable="true" aria-placeholder="Title"
+                        changes="false"></div>
+                    
+                    <div class="entry-new-div-label">Share Thoughts, Ask Questions!</div>
+                    <div class="entry-new-div learned-div" id="learned-new-div"
+                        contenteditable="true" aria-placeholder="Learned"
+                        changes="false"> </div>
+                    <div class="entry-new-div-label">Links and Other Things!</div>
+                    <div class="entry-new-div remember-div" id="remember-new-div" 
+                        contenteditable="true" aria-placeholder="Remember"
+                        changes="false"> </div>
+                    <div class="entry-new-div-label">Tags</div>
+                    <div class="entry-new-div tags-div" id="tags-new-div" 
+                        contenteditable="true" aria-placeholder="Tags"
+                        changes="false"> </div>
                     {% from 'macros.html' import render_field %}
                     <form method="POST" action="" autocomplete="off" id="entry-form">
                         {{ form.hidden_tag() }}
@@ -26,8 +63,8 @@
                         {% endfor %}
                         <div class="entry-bottom-field">
                             <button class="button button-secondary" 
-                                    type="submit" 
-                                    id="entry-post-submit">
+                                    type="button" 
+                                    id="entry-new-save">
                                 Post!</button>
                             <button id="entry-cancel-button" 
                                     class="button button-secondary" 
@@ -47,6 +84,6 @@
         autosize(document.getElementById("remember"))
     </script>
     <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/entry-listeners.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/entry-edit.js') }}"></script>
 </html>
 {% endblock %}

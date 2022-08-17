@@ -66,21 +66,19 @@
                                 <button name ="no" class="button button-secondary" type="button">No</button>
                             </div>
                             {% endif %}
-                            <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
+                            <h2 class="entry-title"><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
                             <div id="entry-preview-{{ entry.id }}" class="entry-preview">
                                 <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
                                 <div class="entry-preview-content">
                                     {% for item in entry.learned.split("\n") %}
-                                        <div class="entry-preview-line">{{ item }}</div>
+                                        <div class="entry-preview-line">{{ item|safe }}</div>
                                     {% endfor %}
-                                </div>
                             </div>
                             <div class="user-date small">
                                 By <a style="text-decoration:none; color:black;" 
                                 href="{{ url_for('user', id=entry.user_id) }}">
                                 {{ user.username }}</a>,
                                 <time>
-                                    <!-- {{ entry.date.strftime('%B %d, %Y %I:%M %p') }} -->
                                     {{ relative_time(entry) }}
                                 </time>
                             </div>

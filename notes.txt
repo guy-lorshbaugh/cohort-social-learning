@@ -14,9 +14,6 @@ COHORT DOO DOO TO-DOO
       other functions can be called on load.
    ** A "starter" function would be good to orchestrate the execution
 
--  The edit dialog should dynamically update the entry data instead of
-   refreshing the page. *grumble*
-
 -  Emoji Search as a separate system than the emoji menu. They don't coexist
    well.
 
@@ -43,6 +40,9 @@ COHORT DOO DOO TO-DOO
 
 
 FINITO
+
+XX The edit dialog should dynamically update the entry data instead of
+   refreshing the page. *grumble*
 
 XX ** It should also have a confirm dialog for "Discard Changes?"
 
