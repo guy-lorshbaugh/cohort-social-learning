@@ -36,6 +36,10 @@
                 <option value="top">Top Posts</option>
             </select>
         </div>
+        <div class="new-entry-open">
+            <img class="avatar-30" src="{{ current_user.avatar }}">
+            <input class="entry-open-dummy" type="text" placeholder="" disabled>
+        </div>
         <div class="entry-list">
 
                 <!-- ENTRY PREVIEW -->
@@ -183,11 +187,12 @@
                                         <textarea placeholder="Comment" 
                                             id="comment-{{ entry.id }}"
                                             class="comment-field"
-                                            required
+                                            type="text"
+                                            required="required"
                                             aria-required="true"></textarea>
                                         <div id="emoji-open-{{ entry.id }}" 
                                             class="emoji-open" style="display: flex">sentiment_satisfied_alt</div>
-                                        <input type="button" 
+                                        <input type="button" required="required"
                                             onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
                                             value="Post" class="button button-secondary comment-post-button"
                                         >

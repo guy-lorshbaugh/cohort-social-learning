@@ -40,14 +40,27 @@ function emojiMenuOpen(target) {
         console.log("open");
         emojiMenu.style.visibility = "visible";
         emojiMenu.classList.add("active");
+        button.classList.remove("closed");
         button.classList.add("active");
+        button.removeAttribute("listener");
         button.innerHTML = "emoji_emotions";
-        document.addEventListener("mousedown", emojiCloseAll, { once: true });
+
+        // This seems to do the trick for now:
+        if (!emojiMenu.classList.contains("closelistener")) {
+            emojiMenu.classList.add("closelistener");
+            document.addEventListener("mouseup", (e) => {
+                if (!emojiMenu.contains(e.target)
+                    && emojiMenu.classList.contains("active")) {
+                    emojiCloseAll();
+                    e.stopPropagation();
+                }
+            }, { capture: true });
+        }
     } else {
         console.log("close");
         button.removeAttribute("openlistener");
         emojiMenu.style.visibility = "hidden";
-        emojiMenu.classList.remove  ("active");
+        emojiMenu.classList.remove("active");
         button.classList.remove("active");
         button.innerHTML = "sentiment_satisfied_alt";
     }
@@ -61,11 +74,6 @@ function emojiCloseAll() {
             emojiMenuOpen(getID(item.id));
             menuCount += 1;
         } 
-    }
-    if (menuCount > 0 ) {
-        console.log("All Emoji Menus Closed");
-    } else {
-        console.log("No Emoji Menus Open");
     }
 }
 
@@ -117,8 +125,6 @@ function addEmojiListeners(target) {
     for (var choice of choices) {
         if (!exclude.includes(choice.getAttribute("title"))) {
             choice.addEventListener('mousedown', event => {
-                // console.log(event.target.outerHTML);
-                // contents = cloneElement(event.target);
                 const emoji = event.target.innerHTML;
                 insertAtCursor(commentTextarea, emoji);
                 }
@@ -233,12 +239,14 @@ function openSelector(selector, defaultDiv) {
 
 function emojiSearchListener(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
+    const searchDiv = emojiMenu.querySelector('.emoji-search');
     const emojiSearchInput = emojiMenu.getElementsByTagName("input")[0];
+    // console.log(emojiSearchInput);
     const searchContainer = emojiMenu.getElementsByClassName("emoji-search-container")[0];
     const searchIcon = emojiMenu.getElementsByClassName("emoji-search-icon")[0];
-    emojiSearchInput.addEventListener("input", () => {
-        // This'll get moved into function openEmojiSearch()
-        if (searchContainer.style.display === "none") {
+    searchDiv.addEventListener("mousedown", (e) => {
+        if (emojiSearchInput.contains(e.target)
+            && searchContainer.style.display === "none") {
             searchContainer.style.display = "block";
             searchIcon.innerHTML = "arrow_back";
             searchIcon.style.cursor = "pointer";
@@ -247,7 +255,7 @@ function emojiSearchListener(target) {
                 emojiSearchInput.value = "";
                 searchIcon.innerHTML = "search";
                 searchIcon.style.cursor = "default";
-            }, { once: true })
+            }, { capture: true, once: true })
         }
     })
 }

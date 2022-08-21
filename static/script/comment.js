@@ -41,7 +41,14 @@ function showError(entry, error) {
 
 
 function commentRequest(action, url="", entry="") {
+    const commentArea = document.getElementById(`comment-${entry}`);
+    // if (!commentArea.value) {
+    //     console.log("nothin there!")
+    //     return;
+    // };
     const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+    // const csrfToken = document.querySelector("#csrf_token").value;
+    console.log(csrfToken.value);
     const xhr = new XMLHttpRequest();
     const input = document.getElementById(`comment-${entry}`);
     xhr.open('POST', url, true);
@@ -65,6 +72,7 @@ function commentRequest(action, url="", entry="") {
                 writeComment(response.html, entry);
                 document.getElementById(`comment-${entry}`).value = ""
             } else if (response.action === "edit") {
+                console.log(response);
                 writeNewComment(response.id, response.contents);
                 flashMessage(contents=response.flash);
             } else if (response.action === "delete") {
@@ -89,7 +97,6 @@ function writeComment(contents, entry) {
     startListeners("comment-options", "click", commentMenu);
     startListeners("delete-comment", "click", confirmDelete);
     startListeners("edit-comment", "click", editComment);
-
 }
 
 function writeNewComment(id, contents) {

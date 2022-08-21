@@ -286,12 +286,14 @@ def detail(id):
 def create():
     form = forms.Post()
     user = current_user
-    if form.validate_on_submit():
+    if request.method == "POST":
+        new_form = json.loads(request.data)
+        print("Title: " + new_form['title'])
         models.Entry.create(
-            title=form.title.data,
-            date=datetime.datetime.now(),
-            learned=form.learned.data,
-            remember=form.remember.data,
+            title=new_form['title'],
+            date = datetime.datetime.now(),
+            learned=new_form['learned'],
+            remember=new_form['remember'],
             user_id=current_user.id,
             private=form.private.data
         )
@@ -309,7 +311,15 @@ def create():
                 tag_id=tag_data
             )
         # flash("Your Entry has been created!")
-        return redirect(url_for('create'))
+        response_body = jsonify({
+            "action":"new",
+            "id": entry.id,
+            "title": entry.title,
+            "learned": entry.learned,
+            "remember": entry.remember,
+            "private": entry.private
+        })
+        return response_body
     return render_template('new.html', form=form, user=user)
 
 
@@ -385,9 +395,6 @@ def update_entry(id):
         tags = []
         for tag in tag_query:
             tags.append(tag.tag)
-        # for item in tags_items:
-        #     tag = tags_list.append(models.Tags.get(models.Tags.id == item))
-        #     tags_list.append(tag.tag);
         flash("Your Entry has been edited!")
     return jsonify({
         "action": "edit",
@@ -410,9 +417,20 @@ def get_entry(contents):
             .limit(1)
             )
     entry = query.dicts().get()
+    print(contents)
     # time.sleep(5)
     return jsonify(render_template("get-entry.html", entry=entry, models=models))    
 
+@app.route("/entries/<id>/get/", methods=['GET'])
+def get_entry_by_id(id):
+    query = (models.Entry
+            .select()
+            .where(models.Entry.id == id)
+            .order_by(models.Entry.date.desc())
+            .limit(1)
+            )
+    entry = query.dicts().get()
+    return jsonify(render_template("get-entry.html", entry=entry, models=models)) 
 
 @app.route("/entries/<tag>/tag")
 def tag(tag):

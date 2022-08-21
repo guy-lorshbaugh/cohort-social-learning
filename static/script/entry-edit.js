@@ -1,13 +1,17 @@
-console.log("entry-edit 06");
+console.log("entry-edit 29");
+
+const bodyFunc = getBodyFunc();
+
 const parentBody = window.parent.window.document;
-const frameBorder = parentBody.querySelector(`.${getBodyFunc()}-entry-container`)
-const frame = parentBody.querySelector(`#${getBodyFunc()}-entry-frame`);
+const frameBorder = parentBody.querySelector(`.${bodyFunc}-entry-container`)
+const frame = parentBody.querySelector(`#${bodyFunc}-entry-frame`);
 const entryID = document.body.getAttribute("entry")
 
-const saveButton = document.querySelector(`#entry-${getBodyFunc()}-save`);
-const cancelEditButton = document.querySelector(`#${getBodyFunc()}-cancel-button`);
+const saveButton = document.querySelector(`#entry-${bodyFunc}-save`);
+const cancelEditButton = document.querySelector(`#${bodyFunc}-cancel-button`);
 
-const currHREF = window.parent.window.location.href;
+const unsavedChanges = document.querySelector('#unsaved-changes');
+const discard = document.querySelector('#discard');
 
 const title = document.querySelector("#title");
 const learned = document.querySelector("#learned");
@@ -22,10 +26,9 @@ const tagsDiv = document.querySelector(".tags-div");
 const charCount = document.querySelector(".title-char-count");
 
 var formFields = [ title, learned, remember, tags ];
-console.log(formFields);
 var formDivs = [ titleDiv, learnedDiv, rememberDiv, tagsDiv ];
 
-if (getBodyFunc() === "edit") {
+if (bodyFunc === "edit") {
     for (var field of formFields) {
         field.setAttribute("style", "display: none;");
         switch (field.name) {
@@ -45,13 +48,29 @@ if (getBodyFunc() === "edit") {
     }
 }
 
-if (getBodyFunc() === 'new') {
+if (bodyFunc === 'new') {
     for (var field of formFields) {
         field.style.display = "none";
+        switch (field.name) {
+            case "title":
+                titleDiv.setAttribute('placeholder',title.getAttribute('placeholder'));
+                break;
+            case "learned":
+                learnedDiv.setAttribute('placeholder',learned.getAttribute('placeholder'));
+                break;
+            case "remember":
+                rememberDiv.setAttribute('placeholder',remember.getAttribute('placeholder'));
+                break;
+            case "tags":
+                tagsDiv.setAttribute('placeholder',tags.getAttribute('placeholder'));
+                break;
+        }
     }
 }
 
 updateTitleLimit();
+
+titleDiv.focus({focusVisible: true});
 setCaret(titleDiv);
 
 titleDiv.addEventListener("keyup", updateTitleLimit);
@@ -115,47 +134,60 @@ window.addEventListener("keyup", (e) => {
     }
 });
 
-// frameBorder.addEventListener("click", () => {
-//     closeEdit(frame, frameBorder);
-// }, { once:true })
+frameBorder.addEventListener("click", () => {
+    confirmDiscard();
+})
 
 cancelEditButton.addEventListener("click", confirmDiscard);
+saveButton.addEventListener("click", () => {
+    checkContent(`${bodyFunc}`)
+});
 
-saveButton.addEventListener("click", saveEdit);
-
-function saveEdit() {
-    const overlay = document.querySelector('.post-save-overlay');
-    overlay.style.visibility = "visible";
-    populateForm();
-    entryRequest("edit", `/entries/${entryID}/edit/save`, entry=`${entryID}`)
-    // setTimeout(() => {
-    //     closeEdit(frame, frameBorder);
-    //     // if (currHREF.includes("#")) {
-    //     //     // Probably wanna change this prior to deployment
-    //     //     window.parent.window.location = "../../../entries";
-    //     // } else {
-    //     //     window.parent.window.location.href = currHREF;
-    //     // }
-    // }, 1500);
+function checkChanges(reset=false) {
+    if (reset) {
+        for (div of formDivs) {
+            div.setAttribute('changes','false');
+        }
+    } else {
+        let changes = false;
+        for (div of formDivs) {
+            if (div.getAttribute("changes") === "true") {
+                changes = true;
+            }
+        }
+        return changes;
+    }
 }
 
-function checkChanges() {
-    let changes = false;
-    for (div of formDivs) {
-        if (div.getAttribute("changes") === "true") {
-            changes = true;
+function checkContent(bodyFunc) {
+    if (bodyFunc === 'new') {
+        // check that title and learned have content
+        if (!titleDiv.textContent.trim() || !learnedDiv.innerHTML.trim()) {
+            contentWarning();
+        } else {
+            saveEdit();
+        }
+    } else if (bodyFunc === 'edit') {
+        // check if there are any changes
+        if (!checkChanges()) {
+            contentWarning();
+        } else {
+            saveEdit();
         }
     }
-    return changes;
 }
 
 function closeEdit(frame, frameBorder) {
-    frame.setAttribute("src", "");
+    if (bodyFunc === "edit") {
+        frame.setAttribute("src", "");
+    } else if (bodyFunc === 'new') {
+        location.reload();
+    }
     parentBody.body.style.overflow = "visible";
     frameBorder.style.visibility = "hidden";
 }
 
-function confirmDiscard() {
+function confirmDiscard(content=false) {
     const discard = document.querySelector('.discard-changes-wrap');
     const yesBtn = document.getElementsByName('discard-yes')[0];
     const noBtn = document.getElementsByName('discard-no')[0];
@@ -163,18 +195,37 @@ function confirmDiscard() {
     const yesFunc = function() {
         noBtn.removeEventListener("click", noFunc);
         closeEdit(frame, frameBorder);
+        contentWarning(reset=true);
     }
     const noFunc = function() {
         yesBtn.removeEventListener("click", yesFunc);
         discard.style.visibility = "hidden";
+        contentWarning(reset=true);
     }
     
-    if (checkChanges()) {
+    if (checkChanges() || content) {
         discard.style.visibility = "visible";
         noBtn.addEventListener("click", noFunc, { once: true });
         yesBtn.addEventListener("click", yesFunc, { once: true });
     } else {
         closeEdit(frame, frameBorder);
+    }
+}
+
+function contentWarning(reset=false) {
+    if (reset) {
+        unsavedChanges.textContent = "There are unsaved changes.";
+        discard.textContent = "Discard?";
+    } else {
+        if (bodyFunc === "new") {
+            unsavedChanges.innerHTML = "You must provide a title and share <br> some thoughts before posting."
+            discard.textContent = "Close Window?"
+            confirmDiscard(true);
+        } else if (bodyFunc === "edit") {
+            unsavedChanges.innerHTML = "There are no changes to save."
+            discard.textContent = "Exit?"
+            confirmDiscard(true);
+        }
     }
 }
 
@@ -196,21 +247,34 @@ function getSelectLength() {
 
 function populateForm() {
     console.log("Populating Form ... ");
+    // console.log(titleDiv.textContent);
+    // console.log(learnedDiv.innerHTML);
     for (var div of formDivs) {
         switch (div.id) {
-            case "title-edit-div":
+            case `title-${bodyFunc}-div`:
                 title.setAttribute("value", titleDiv.textContent);
                 break;
-            case "learned-edit-div":
+            case `learned-${bodyFunc}-div`:
                 learned.textContent = learnedDiv.innerHTML;
                 break;
-            case "remember-edit-div":
+            case `remember${bodyFunc}-div`:
                 remember.textContent = rememberDiv.innerHTML;
                 break;
-            case "tags-edit-div":
+            case `tags-${bodyFunc}-div`:
                 tags.setAttribute("value", tagsDiv.textContent);
                 break;
         }
+    }
+}
+
+function saveEdit() {
+    const overlay = document.querySelector('.post-save-overlay');
+    overlay.style.visibility = "visible";
+    populateForm();
+    if (bodyFunc === "edit") {
+        entryRequest("edit", `/entries/${entryID}/edit/save`, entry=`${entryID}`)
+    } else if (bodyFunc === "new") {
+        entryRequest("new", `/entries/new`);
     }
 }
 

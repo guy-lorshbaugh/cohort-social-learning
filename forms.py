@@ -1,18 +1,17 @@
 from wtforms import validators
-from wtforms.fields.core import SelectField
+# from wtforms.fields.core import SelectField
 import datetime
 
 from flask_wtf import FlaskForm
-from peewee import BooleanField, TextField
-from wtforms import (StringField, PasswordField, TextAreaField, 
-    DateField, IntegerField, BooleanField)
-from wtforms.fields.simple import HiddenField
+from peewee import BooleanField
+from wtforms import (StringField, PasswordField, TextAreaField, BooleanField)
+# from wtforms.fields.simple import HiddenField
 from wtforms.validators import (DataRequired, Regexp, ValidationError,
                                Length, EqualTo)
 import models
 
 class Post(FlaskForm):
-    title = StringField(u"Title (Max. 200 characters)", validators=[
+    title = StringField(u"Title (Required, max. 200 characters)", validators=[
         DataRequired(),
         Length(max=200)
     ])  

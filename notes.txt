@@ -1,18 +1,17 @@
 COHORT DOO DOO TO-DOO
 
+-  In editable DIVs and inputs submitted by event listeners rather than form 
+   buttons we need to handle "required" notifications the JS. These include:
+   ** Comment
+   ** Edit/New Entry for "Title" and "Learned."
+
 -  A dummy <input> field to open New Entry window instead of the titlebar icon.
    ** A randomized placeholder message for the input would be fun, messages like
       "What brings you here today?" "What're you working on?" "Anything got you
       stuck today?" You know, cute stuff like that.
 
--  Prevent sending empty comment.
-
--  entry.js is a prototype for what will need to be refactored to handle both
-   "entry edit" and "new entry"/"entry". We'll work with the class class names
-   that already exist
-   ** It should be called by and "onload" listener on the body. Any number of
-      other functions can be called on load.
-   ** A "starter" function would be good to orchestrate the execution
+-  "Yesterday" is broken in relative time for entries
+   ** Okay, but HOW is it broken?? I see it working with a post from yesterday
 
 -  Emoji Search as a separate system than the emoji menu. They don't coexist
    well.
@@ -36,10 +35,17 @@ COHORT DOO DOO TO-DOO
 
 -  Recent Emoji Menu - use a cookie? How do we do that??
 
--  "Yesterday" is broken in relative time for entries
-
 
 FINITO
+
+XX entry.js is a prototype for what will need to be refactored to handle both
+   "entry edit" and "new entry"/"entry". We'll work with the class class names
+   that already exist
+   ** It should be called by and "onload" listener on the body. Any number of
+      other functions can be called on load.
+   ** A "starter" function would be good to orchestrate the execution
+
+XX Prevent sending empty comment.
 
 XX The edit dialog should dynamically update the entry data instead of
    refreshing the page. *grumble*
