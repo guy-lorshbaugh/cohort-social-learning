@@ -176,7 +176,7 @@
 
                             <!-- COMMENT FORM -->
 
-                            <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div>
+                            <!-- <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div> -->
                             <div class="comment-field-container">
                                 <form method="POST" action="#">
                                     <div id="emoji-menu-{{ entry }}" 
@@ -185,16 +185,19 @@
                                         <input id="token-{{ entry.id }}" 
                                             type="hidden" value="{{ csrf_token() }}">
                                         <textarea placeholder="Comment" 
-                                            id="comment-{{ entry.id }}"
-                                            class="comment-field"
-                                            type="text"
-                                            required="required"
-                                            aria-required="true"></textarea>
+                                                  id="comment-{{ entry.id }}"
+                                                  class="comment-field"
+                                                  type="text"
+                                                  required="required"
+                                                  aria-required="true"></textarea>
+                                        <div id="comment-error-{{entry.id}}" 
+                                             class="error-bubble" 
+                                             style="visibility: hidden"></div>
                                         <div id="emoji-open-{{ entry.id }}" 
-                                            class="emoji-open" style="display: flex">sentiment_satisfied_alt</div>
-                                        <input type="button" required="required"
-                                            onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
-                                            value="Post" class="button button-secondary comment-post-button"
+                                             class="emoji-open" style="display: flex">sentiment_satisfied_alt</div>
+                                        <input type="button"
+                                               onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
+                                               value="Post" class="button button-secondary comment-post-button invalid"
                                         >
                                     <script type="text/javascript">
                                         autosize(document.getElementById("comment-{{ entry.id }}"))
@@ -226,6 +229,7 @@
         src="{{ url_for('static', filename='script/get-id.js') }}">
     </script>
     <script src="{{ url_for('static', filename='script/top-recent.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/form-error.js') }}"></script>
     <script src="{{ url_for('static', filename='script/entry-options.js') }}"></script>
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>

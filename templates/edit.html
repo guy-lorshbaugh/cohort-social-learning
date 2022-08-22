@@ -39,11 +39,16 @@
                     <div class="entry-edit-div title-div" id="title-edit-div"
                         contenteditable="true" aria-placeholder="Title"
                         changes="false"></div>
-                    
+                    <div id="title-error-bubble" 
+                         style="visibility: hidden"
+                         class="error-bubble">The Title field cannot be empty!</div>
                     <div class="entry-edit-div-label">Share Thoughts, Ask Questions!</div>
                     <div class="entry-edit-div learned-div" id="learned-edit-div"
                         contenteditable="true" aria-placeholder="Learned"
                         changes="false"> </div>
+                    <div id="learned-error-bubble" 
+                         style="visibility: hidden"
+                         class="error-bubble">The Learned field cannot be empty!</div>
                     <div class="entry-edit-div-label">Links and Other Things!</div>
                     <div class="entry-edit-div remember-div" id="remember-edit-div" 
                         contenteditable="true" aria-placeholder="Remember"
@@ -71,7 +76,7 @@
                         {% set process = form.tags.process_data(tags) %}
                         {{ form.tags() }}
                         <div class="entry-bottom-field">
-                            <button class="button button-secondary" 
+                            <button class="button button-secondary invalid" 
                                     type="button" 
                                     id="entry-edit-save">
                                 Save Changes!</button>
@@ -98,6 +103,9 @@
     <script 
         type="text/javascript" 
         src="{{ url_for('static', filename='script/start-listeners.js') }}">
+    </script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/form-error.js') }}">
     </script>
     <script 
         type="text/javascript" 

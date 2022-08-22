@@ -1,5 +1,3 @@
-console.log("entry-edit 29");
-
 const bodyFunc = getBodyFunc();
 
 const parentBody = window.parent.window.document;
@@ -11,7 +9,7 @@ const saveButton = document.querySelector(`#entry-${bodyFunc}-save`);
 const cancelEditButton = document.querySelector(`#${bodyFunc}-cancel-button`);
 
 const unsavedChanges = document.querySelector('#unsaved-changes');
-const discard = document.querySelector('#discard');
+// const discard = document.querySelector('#discard');
 
 const title = document.querySelector("#title");
 const learned = document.querySelector("#learned");
@@ -22,6 +20,9 @@ const titleDiv = document.querySelector(".title-div");
 const learnedDiv = document.querySelector(".learned-div");
 const rememberDiv = document.querySelector(".remember-div");
 const tagsDiv = document.querySelector(".tags-div");
+
+const titleBubble = document.querySelector('#title-error-bubble');
+const learnedBubble = document.querySelector('#learned-error-bubble');
 
 const charCount = document.querySelector(".title-char-count");
 
@@ -86,10 +87,11 @@ const allowedKeys = [ 'Backspace', 'ArrowUp', 'ArrowRight', 'ArrowDown',
      'Escape' ];
     
 titleDiv.addEventListener("keydown", (e) => {
-    var lowerKey = e.key.toLowerCase();
     var titleLength = titleDiv.textContent.length;
+
+    titleDiv.classList.remove('invalid');
     
-    if (lowerKey === "Enter") {
+    if (e.key === "Enter") {
         console.log(e.key);
         e.preventDefault();
     }
@@ -101,10 +103,6 @@ titleDiv.addEventListener("keydown", (e) => {
             e.preventDefault();
         }
     }
-
-    // if (titleLength < 200){
-    //     console.log(lowerKey, titleLength);
-    // }
 });
 
 titleDiv.addEventListener('paste', (event) => {
@@ -117,7 +115,6 @@ titleDiv.addEventListener('paste', (event) => {
     var paste = (event.clipboardData || window.clipboardData)
         .getData('text').replace(/\n/g,' ');
     const maxPaste = paste.slice(0, 200-titleLength);
-    console.log(maxPaste, maxPaste.length);
 
     getCaretPosition(titleDiv);
     insertAtCursor(titleDiv, maxPaste);
@@ -160,17 +157,31 @@ function checkChanges(reset=false) {
 }
 
 function checkContent(bodyFunc) {
+    console.log(checkChanges);
     if (bodyFunc === 'new') {
         // check that title and learned have content
-        if (!titleDiv.textContent.trim() || !learnedDiv.innerHTML.trim()) {
-            contentWarning();
+        if (!titleDiv.textContent.trim()) {
+            // contentWarning();
+            showError("The Title field cannot be empty!", titleDiv, titleBubble);
+            return;
+        } else if (!learnedDiv.innerHTML.trim()) {
+            showError("The Learned field cannot be empty!", learnedDiv, learnedBubble);
+            return;
         } else {
             saveEdit();
         }
     } else if (bodyFunc === 'edit') {
+        console.log(this.name);
         // check if there are any changes
         if (!checkChanges()) {
             contentWarning();
+        } else if (!titleDiv.textContent.trim()) {
+            // contentWarning();
+            showError("The Title field cannot be empty!", titleDiv, titleBubble);
+            return;
+        } else if (!learnedDiv.innerHTML.trim()) {
+            showError("The Learned field cannot be empty!", learnedDiv, learnedBubble);
+            return;
         } else {
             saveEdit();
         }
@@ -188,6 +199,7 @@ function closeEdit(frame, frameBorder) {
 }
 
 function confirmDiscard(content=false) {
+    console.log(checkChanges());
     const discard = document.querySelector('.discard-changes-wrap');
     const yesBtn = document.getElementsByName('discard-yes')[0];
     const noBtn = document.getElementsByName('discard-no')[0];
@@ -203,7 +215,8 @@ function confirmDiscard(content=false) {
         contentWarning(reset=true);
     }
     
-    if (checkChanges() || content) {
+    if (checkChanges() === true || content === true) {
+        console.log(checkChanges());
         discard.style.visibility = "visible";
         noBtn.addEventListener("click", noFunc, { once: true });
         yesBtn.addEventListener("click", yesFunc, { once: true });

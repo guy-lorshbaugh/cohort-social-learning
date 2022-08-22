@@ -12,4 +12,3 @@ jinja_dump
 static/img/noto-svg
 templates/__edit.html
 static/script/__entry-edit.js
-static/script/entry-new.js

@@ -38,11 +38,16 @@
                     <div class="entry-new-div title-div" id="title-new-div"
                         contenteditable="true" aria-placeholder="Title"
                         changes="false"></div>
-                    
+                    <div id="title-error-bubble" 
+                        style="visibility: hidden"
+                        class="error-bubble">The Title field cannot be empty!</div>
                     <!-- <div class="entry-new-div-label">Share Thoughts, Ask Questions!<span class="small">(Required)</span></div> -->
                     <div class="entry-new-div learned-div" id="learned-new-div"
                         contenteditable="true" aria-placeholder="Learned"
                         changes="false"></div>
+                    <div id="learned-error-bubble" 
+                         style="visibility: hidden"
+                         class="error-bubble">The Learned field cannot be empty!</div>
                     <!-- <div class="entry-new-div-label">Links and Other Things!</div> -->
                     <div class="entry-new-div remember-div" id="remember-new-div" 
                         contenteditable="true" aria-placeholder="Remember"
@@ -62,7 +67,7 @@
                             {% endif %}
                         {% endfor %}
                         <div class="entry-bottom-field">
-                            <button class="button button-secondary" 
+                            <button class="button button-secondary invalid" 
                                     type="button" 
                                     id="entry-new-save">
                                 Post!</button>
@@ -89,6 +94,9 @@
     </script>
     <script type="text/javascript" 
         src="{{ url_for('static', filename='script/start-listeners.js') }}">
+    </script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/form-error.js') }}">
     </script>
     <script type="text/javascript" 
         src="{{ url_for('static', filename='script/entry-edit.js') }}">

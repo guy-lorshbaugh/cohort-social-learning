@@ -1,4 +1,3 @@
-console.log("entry-request 32");
 function entryRequest(action, url="", entry="") {
     const csrfToken = document.querySelector("#csrf_token").value;
     const xhr = new XMLHttpRequest();

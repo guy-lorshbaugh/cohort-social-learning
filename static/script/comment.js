@@ -2,6 +2,21 @@ startListeners("comment-options", "click", commentMenu);
 startListeners("delete-comment", "click", confirmDelete);
 startListeners("edit-comment", "click", editComment);
 
+
+
+const commentFields = document.getElementsByClassName("comment-field")
+for (let fieldEl of commentFields) {
+    fieldEl.addEventListener("input", () => {
+        const parentEl = fieldEl.parentElement;
+        let button = parentEl.querySelector('.button');
+        if (fieldEl.value !== "") {
+            enableForm(button, fieldEl);
+        } else {
+            enableForm(button, fieldEl, true)
+        }
+    })
+}
+
 function formatPost(string) {
     const newString = string.split('\n');
     let contents = "";
@@ -16,7 +31,10 @@ function formatPost(string) {
 }
 
 function replaceCharacters(string) {
-    const newString = string.replaceAll("&", "&amp;").replaceAll("?", "&quest;").split('\n');
+    const newString = string
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("?", "&quest;")
+                    .split('\n');
     let contents = "";
     for (item of newString) {
         contents = contents + `\<p\>${item}\<\/p\>`;
@@ -24,31 +42,17 @@ function replaceCharacters(string) {
     return contents;
 }
 
-function showError(entry, error) {
-    const errorDiv = document.getElementById(`comment-form-error-${entry}`);
-    if (errorDiv.style.visibility = "hidden") {
-        errorDiv.style.visibility = "visible";
-        errorDiv.textContent = error;
-        const close = setTimeout(function() {
-            errorDiv.style.visibility = "hidden";
-        }, 2000)
-    } else {
-        errorDiv.style.height = "0px";
-        errorDiv.style.visibility = "hidden";
-        errorDiv.style.borderWidth = "0px";
-    }
-}
-
-
 function commentRequest(action, url="", entry="") {
     const commentArea = document.getElementById(`comment-${entry}`);
-    // if (!commentArea.value) {
-    //     console.log("nothin there!")
-    //     return;
-    // };
-    const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+    const errorDiv = document.getElementById(`comment-error-${entry}`);
+    if (action !== "del" && !commentArea.value) {
+        showError("You cannot post an empty comment", commentArea, errorDiv);
+        return;
+    };
+    const csrfToken = document
+        .querySelector("meta[name='csrf-token']")
+        .getAttribute("content");
     // const csrfToken = document.querySelector("#csrf_token").value;
-    console.log(csrfToken.value);
     const xhr = new XMLHttpRequest();
     const input = document.getElementById(`comment-${entry}`);
     xhr.open('POST', url, true);
@@ -57,6 +61,7 @@ function commentRequest(action, url="", entry="") {
     if (action === "create"){
         const contents = formatPost(input.value);
         xhr.send("contents=" + contents);
+        errorDiv.parentElement.querySelector('.button').classList.add('invalid');
     } else if (action === "edit") {
         const input = document.getElementById(`comment-edit-${entry}`).value;
         const contents = formatPost(input)
