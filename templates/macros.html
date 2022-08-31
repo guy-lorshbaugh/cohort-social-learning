@@ -13,19 +13,15 @@
 <!-- Renders HTML for emoji menu. -->
 {% macro emoji_menu(emoji) %}
     <div id="emoji-menu-prototype">
-            <div class="emoji-category-nav">
-                <ul>
-                    <li name="recent-emoji">schedule</li>
-                </ul>
-            </div>
+        <div class="emoji-category-nav">
+            <ul>
+                <li name="recent-emoji">schedule</li>
+            </ul>
+        </div>
         <div class="emoji-search">
             <!-- <div class="emoji-search-opener"><span class="material-icons">search</span><span class="search-opener-text">&nbspSearch Emoji</span></div> -->
-                <input type="text" id="emoji-search-input" disabled placeholder="Search Emoji">
-                <span class="material-icons emoji-search-icon">search</span>
-            </div>
-            <div class="emoji-search-container" style="display: none;">
-                <div class="emoji-search-results emoji-container">
-            </div>
+            <input type="text" id="emoji-search-input" disabled placeholder="Search Emoji">
+            <span class="material-icons emoji-search-icon">search</span>
         </div>
         <!-- <div class ="tone-picker">
             <div class="tone-choice default" tone="default"> </div>
@@ -71,7 +67,7 @@
         {% set categories = [] %}
         {% set exclude = [ 'face in clouds', 'face with spiral eyes',
             'face exhaling', 'heart on fire', 'mending heart',
-            'eye in speech bubble', 'man: beard', 'woman: beard', 'man in tuxedo', 
+            'eye in speech bubble', 'man: beard', 'woman: beard', 'man in tuxedo',
             'woman in tuxedo', 'man with veil', 'woman with veil',
             'woman feeding baby', 'man feeding baby', 'person feeding baby',
             'man golfing', 'woman golfing', 'woman bouncing ball',
@@ -211,6 +207,25 @@
                     <li>share</li> -->
                 </ul>
             </div>
+            <div class="comment-edit-dialog shadow-box" 
+                 id="comment-edit-dialog-{{comment.id}}"
+                 style="visibility: hidden;">
+                <form>
+                    <textarea class="comment-field" 
+                              id="comment-edit-{{comment.id}}" 
+                              style="overflow-wrap: break-word; 
+                                    height: 50px;"></textarea>
+                    <input type="button" 
+                           value="Save" 
+                           class="button button-secondary comment-post-button">
+                        <div class="shadow-box comment-edit-cancel-button material-icons"
+                             id="cancel-button-{{comment.id}}">cancel</div>
+                </form>
+                <div id="comment-edit-error-{{comment.id}}" 
+                     class="error-bubble" 
+                     style="visibility: hidden"></div>
+                <script type="text/javascript">autosize(document.getElementById("comment-edit-{{comment.id}}"))</script>
+            </div>
         </div>
     {% endfor %}
 {% endmacro %}
@@ -223,9 +238,9 @@
         A moment ago
     {% elif entry.date.day == now.day and rel_time.seconds < 3600 %}
         {{ (rel_time.seconds/60)|round|int }} minutes ago
-    {% elif entry.date.day == now.day and rel_time.seconds > 3600 %}
+    {% elif entry.date == now.date and rel_time.seconds > 3600 %}
         1 hour ago
-    {% elif entry.date.day == now.day and rel_time.seconds > 7200 %}
+    {% elif entry.date == now.date and rel_time.seconds > 7200 %}
         {{ (rel_time.seconds/3600)|round|int }} hours ago
     {% elif now.year == entry.date.year and now.day - entry.date.day <= 1 %}
         yesterday, {{ entry.date.strftime('%I:%M %p') }}

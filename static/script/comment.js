@@ -2,19 +2,26 @@ startListeners("comment-options", "click", commentMenu);
 startListeners("delete-comment", "click", confirmDelete);
 startListeners("edit-comment", "click", editComment);
 
-
-
-const commentFields = document.getElementsByClassName("comment-field")
+const commentFields = document.getElementsByClassName("comment-field");
 for (let fieldEl of commentFields) {
-    fieldEl.addEventListener("input", () => {
-        const parentEl = fieldEl.parentElement;
-        let button = parentEl.querySelector('.button');
-        if (fieldEl.value !== "") {
-            enableForm(button, fieldEl);
-        } else {
-            enableForm(button, fieldEl, true)
-        }
-    })
+    enableSubmit(fieldEl);
+}
+
+function enableSubmit(field) {
+    if (!field.getAttribute('listener')) {
+        field.setAttribute('listener','true');
+        field.addEventListener("input", () => {
+            const parentEl = field.parentElement;
+            let button = parentEl.querySelector('.button');
+            if (field.value !== "") {
+                enableForm(button, field);
+            } else {
+                disableForm(button);
+            }
+        })
+    } else {
+        return;
+    }
 }
 
 function formatPost(string) {
@@ -43,12 +50,20 @@ function replaceCharacters(string) {
 }
 
 function commentRequest(action, url="", entry="") {
-    const commentArea = document.getElementById(`comment-${entry}`);
-    const errorDiv = document.getElementById(`comment-error-${entry}`);
-    if (action !== "del" && !commentArea.value) {
-        showError("You cannot post an empty comment", commentArea, errorDiv);
+    const newCommArea = document.getElementById(`comment-${entry}`);
+    const newCommErr = document.getElementById(`comment-error-${entry}`);
+    const editCommArea = document.getElementById(`comment-edit-${entry}`);
+    const editCommErr = document.getElementById(`comment-edit-error-${entry}`);
+
+    if (action === "create" && !newCommArea.value) {
+        showError("You cannot post an empty comment", newCommArea, newCommErr);
+        newCommArea.parentElement.querySelector('.emoji-open')
+                   .textContent = 'sentiment_dissatisfied';
         return;
-    };
+    } else if (action === 'edit' && !editCommArea.value) {
+        showError('You cannot post an empty comment', editCommArea, editCommErr);
+        return;
+    }
     const csrfToken = document
         .querySelector("meta[name='csrf-token']")
         .getAttribute("content");
@@ -64,7 +79,7 @@ function commentRequest(action, url="", entry="") {
         errorDiv.parentElement.querySelector('.button').classList.add('invalid');
     } else if (action === "edit") {
         const input = document.getElementById(`comment-edit-${entry}`).value;
-        const contents = formatPost(input)
+        const contents = formatPost(input);
         xhr.send("contents=" + contents);
     } else {
         xhr.send(null);
@@ -116,41 +131,56 @@ function editComment(id) {
     commentMenu(id);
     const comment = document.getElementById(`comment-${id}`);
     const contents = parseEditText(comment);
-    const form = document.createElement("form");
-    const textArea = document.createElement("textarea");
-    const editDialog = document.createElement("div");
-    setAttributes(editDialog, {
-        "class": "comment-edit-dialog shadow-box",
-        "id": `comment-edit-dialog-${id}`
-    });
+    const editDialog = document.querySelector(`#comment-edit-dialog-${id}`)
+    const textArea = editDialog.querySelector(`#comment-edit-${id}`);
+    const saveButton = editDialog.querySelector('.button');
+    const cancelEdit = editDialog.querySelector(`#cancel-button-${id}`);
+
     textArea.value = contents.replaceAll("&amp;", "&");
-    setAttributes(textArea, {
-        "class": "comment-field",
-        "id": `comment-edit-${id}`
-    });
-    const saveButton = document.createElement("input");
-    setAttributes(saveButton, {
-        "type": "button",
-        "value": "Save",
-        "class": "button button-secondary comment-post-button"
-    });
-    const cancelCommentButton = document.createElement("div");
-    cancelCommentButton.textContent = "cancel"
-    setAttributes(cancelCommentButton, {
-        "class": "shadow-box comment-edit-cancel-button material-icons",
-        "id": `cancel-button-${id}`
-    })
-    const autoResize = document.createElement("script");
-    autoResize.type = "text/javascript",
-    autoResize.textContent = `autosize(document.getElementById("${textArea.id}"))`;
-    form.appendChild(textArea);
-    form.appendChild(saveButton);
-    form.appendChild(cancelCommentButton);
-    editDialog.appendChild(form);
-    editDialog.appendChild(autoResize);
-    comment.appendChild(editDialog);
-    editListeners(cancelCommentButton, saveButton, id);
+    editDialog.style.visibility = "visible";
+    // we have conflicting "listener" checks in the following two function calls.
+    editListeners(cancelEdit, saveButton, id);
+    enableSubmit(editDialog);
 }
+// function editComment(id) {
+//     commentMenu(id);
+//     const comment = document.getElementById(`comment-${id}`);
+//     const contents = parseEditText(comment);
+//     const form = document.createElement("form");
+//     const textArea = document.createElement("textarea");
+//     const editDialog = document.createElement("div");
+//     setAttributes(editDialog, {
+//         "class": "comment-edit-dialog shadow-box",
+//         "id": `comment-edit-dialog-${id}`
+//     });
+//     textArea.value = contents.replaceAll("&amp;", "&");
+//     setAttributes(textArea, {
+//         "class": "comment-field",
+//         "id": `comment-edit-${id}`
+//     });
+//     const saveButton = document.createElement("input");
+//     setAttributes(saveButton, {
+//         "type": "button",
+//         "value": "Save",
+//         "class": "button button-secondary comment-post-button"
+//     });
+//     const cancelCommentButton = document.createElement("div");
+//     cancelCommentButton.textContent = "cancel"
+//     setAttributes(cancelCommentButton, {
+//         "class": "shadow-box comment-edit-cancel-button material-icons",
+//         "id": `cancel-button-${id}`
+//     })
+//     const autoResize = document.createElement("script");
+//     autoResize.type = "text/javascript",
+//     autoResize.textContent = `autosize(document.getElementById("${textArea.id}"))`;
+//     form.appendChild(textArea);
+//     form.appendChild(saveButton);
+//     form.appendChild(cancelCommentButton);
+//     editDialog.appendChild(form);
+//     editDialog.appendChild(autoResize);
+//     comment.appendChild(editDialog);
+//     editListeners(cancelCommentButton, saveButton, id);
+// }
 
 function parseEditText(comment) {
     let prevContents = comment.getElementsByTagName("p");
@@ -170,15 +200,21 @@ function parseEditText(comment) {
     return contents;
 }
 
-function editListeners(cancelCommentButton, saveButton, id) {
+function editListeners(cancelButton, saveButton, id) {
     const dialog = document.getElementById(`comment-edit-dialog-${id}`)
-    cancelCommentButton.addEventListener('mousedown', () => {
-        dialog.remove();
-    });
-    saveButton.addEventListener("mousedown", () => {
-        commentRequest("edit", `/entries/comment/${id}/edit/`, id);
-        dialog.remove();
-    })
+    if (!dialog.getAttribute('listener')) {
+        dialog.setAttribute('listener','true')
+        cancelButton.addEventListener('mouseup', () => {
+            dialog.getElementsByTagName('textarea')[0].style.height = "50px";
+            dialog.style.visibility = "hidden";
+        });
+        saveButton.addEventListener("mouseup", () => {
+            commentRequest("edit", `/entries/comment/${id}/edit/`, id);
+            if (!saveButton.classList.contains('invalid')) {
+                dialog.style.visibility = "hidden";
+            }
+        })
+    }
 }
 
 function confirmDelete(id) {

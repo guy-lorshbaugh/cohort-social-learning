@@ -277,6 +277,9 @@ footer {
 	cursor: pointer;
 	user-select: none;
 }
+.option-button:hover {
+	color: royalblue;
+}
 
 /* ==========================================================================
    Typography
@@ -805,11 +808,13 @@ select {
 }
 textarea.comment-field {
 	height: 50px;
+	max-height: 125px;
 	font: 400 14px/20px Verdana, sans-serif, "Noto Color Emoji", "apple color emoji","windows emoji","windows symbol";
 	font-size: 13px;
 	padding-right: 95px;
-	padding-top: 14px;
+	padding-top: 12px;
 	resize: none;
+	overflow-y: scroll;
 }
 textarea.comment-field:hover {
 	border-color: lightblue;
@@ -856,7 +861,7 @@ select:hover {
 .entry-new-div.tags-div:empty::before,
 .entry-new-div.remember-div:empty::before {
 	content: attr(placeholder);
-    color: #555; 
+    color: #888; 
 }
 input[type=submit] {
 	margin-right: 5px;
@@ -868,6 +873,9 @@ input.entry-open-dummy {
 	width: 90%;
 	margin: 5px;
 	cursor: text;
+}
+input::placeholder {
+	color: #888;
 }
 .comment-field-container {
 	position: relative;
@@ -1101,7 +1109,8 @@ input.entry-open-dummy {
     user-select: none;
 	overflow-x: hidden;
 }
-.emoji-menu-container {
+.emoji-menu-container,
+.emoji-search-container {
 	position: absolute;
 	right: 0px;
 	top: -300px;
@@ -1117,8 +1126,7 @@ input.entry-open-dummy {
 /* .emoji-menu-container:last-child {
 	margin-bottom: 50px;
 } */
-.emoji-list-container,
-.emoji-search-container {
+.emoji-list-container {
 	position: relative;
 	height: 250px;
 	padding: 0 10px;

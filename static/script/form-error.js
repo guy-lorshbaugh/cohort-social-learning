@@ -7,7 +7,12 @@ function showError(error, inputElement, errorElement) {
         inputElement.classList.add('invalid');
 
         document.addEventListener("mousedown", () => {
+            if (inputElement.classList.contains('comment-field')) {
+                inputElement.parentElement.querySelector('.emoji-open')
+                            .textContent = 'sentiment_satisfied_alt';
+            }
             errorElement.style.visibility = "hidden";
+            inputElement.classList.remove('invalid');
         }, { once: true })
         
     } else {
@@ -19,7 +24,7 @@ function showError(error, inputElement, errorElement) {
     }
 }
 
-function enableForm(button, inputElement, reset=false) {
+function enableForm(button="", inputElement="", reset=false) {
     if (button) {
         button.classList.remove('invalid')
     }
@@ -27,8 +32,20 @@ function enableForm(button, inputElement, reset=false) {
         inputElement.classList.remove('invalid');
     }
     if (reset) {
+        disableForm(button, inputElement);
+    }
+}
+
+function disableForm(button="", inputElement="") {
+    if (button) {
         button.classList.add('invalid')
     }
+    if (inputElement) {
+        inputElement.classList.add('invalid');
+    }
+    // if (reset) {
+    //     button.classList.add('invalid')
+    // }
 }
 
 // function toggleInvalid(elements=[]) {

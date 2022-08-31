@@ -80,7 +80,7 @@
                             </div>
                             <div class="user-date small">
                                 By <a style="text-decoration:none; color:black;" 
-                                href="{{ url_for('user', id=entry.user_id) }}">
+                                      href="{{ url_for('user', id=entry.user_id) }}">
                                 {{ user.username }}</a>,
                                 <time>
                                     {{ relative_time(entry) }}
@@ -182,6 +182,9 @@
                                     <div id="emoji-menu-{{ entry }}" 
                                         class="emoji-menu-container closed"
                                         style="visibility: hidden"></div>
+                                    <div id="emoji-search-{{ entry }}" 
+                                        class="emoji-search-container closed"
+                                        style="display: none"></div>
                                         <input id="token-{{ entry.id }}" 
                                             type="hidden" value="{{ csrf_token() }}">
                                         <textarea placeholder="Comment" 

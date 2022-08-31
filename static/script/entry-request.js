@@ -66,7 +66,6 @@ function processTags(document, response) {
 }
 
 function updateEntry(response) {
-    // console.log(typeof response.tags);
     const parentDoc = window.parent.window.document;
     const entryPreview = parentDoc.getElementById(`entry-${response.id}`);
     const entryH2 = entryPreview.querySelector('h2');
@@ -78,7 +77,9 @@ function updateEntry(response) {
     entryTitle.textContent = response.title;
     entryLearned.innerHTML = response.learned;
 
-    entryTags.replaceWith(processTags(parentDoc, response));
+    if (entryTags) {
+        entryTags.replaceWith(processTags(parentDoc, response));
+    }
 
     closeEdit(frame, frameBorder);
 }
@@ -89,24 +90,21 @@ function getNewEntry(response) {
     xhr.open('GET', url, true);
     xhr.setRequestHeader('SameSite', 'Strict');
 
-    console.log(response.id)
-
-    xhr.onload = function() {
+    xhr.onload = () => {
         console.log("readystatechange");
         if (xhr.readyState === 4
                 && xhr.status === 200) {
             console.log("200");
-            let response = JSON.parse(xhr.responseText);
-            console.log("Response: " + response);
+            let respHTML = JSON.parse(xhr.responseText);
 
-            writeNewEntry(response);
+            writeNewEntry(respHTML);
 
             setTimeout(() => {
                 closeEdit(frame, frameBorder);
             }, 500);
         }
     }
-    xhr.onerror = function (e) {
+    xhr.onerror = function () {
         console.error(xhr.statusText);
     };
     xhr.send(null); 

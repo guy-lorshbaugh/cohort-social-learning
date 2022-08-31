@@ -27,7 +27,6 @@ function commentEntryOpen(target, type) {
                 e.stopPropagation();
             }
         }, { capture: true, once: true });
-
     } else {
         console.log("close")
         menu.style.visibility = "hidden";

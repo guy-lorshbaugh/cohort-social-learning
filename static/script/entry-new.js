@@ -31,7 +31,8 @@ function openDivMessage() {
         "Got something you'd like to brag about?",
         "Create a new post!" ];
     var random = Math.round(Math.random() * (messages.length - 1));
-    var newMessage = random <= (messages.length - 1) ? messages[random] : messages[0];
+    var newMessage = random <= (messages.length - 1) 
+                               ? messages[random] : messages[0];
     // console.log(messages.length, random, newMessage);
     newEntryInput.setAttribute('placeholder', newMessage);
     setTimeout(() => {

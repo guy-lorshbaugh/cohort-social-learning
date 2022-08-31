@@ -80,6 +80,14 @@ for (var div of formDivs) {
     div.addEventListener("input", (e) => {
         setChanges(e.target);
     }, { once: true });
+
+    div.addEventListener('input', () => {
+        if (titleDiv.textContent === "" || learnedDiv.textContent === "") {
+            disableForm(saveButton);
+        } else {
+            enableForm(saveButton);
+        }
+    })
 }
 
 const allowedKeys = [ 'Backspace', 'ArrowUp', 'ArrowRight', 'ArrowDown', 
@@ -140,14 +148,15 @@ saveButton.addEventListener("click", () => {
     checkContent(`${bodyFunc}`)
 });
 
-function checkChanges(reset=false) {
+function checkChanges(formArray, reset=false) {
+    // formArray must be an array
     if (reset) {
-        for (div of formDivs) {
+        for (div of formArray) {
             div.setAttribute('changes','false');
         }
     } else {
         let changes = false;
-        for (div of formDivs) {
+        for (div of formArray) {
             if (div.getAttribute("changes") === "true") {
                 changes = true;
             }
@@ -157,7 +166,6 @@ function checkChanges(reset=false) {
 }
 
 function checkContent(bodyFunc) {
-    console.log(checkChanges);
     if (bodyFunc === 'new') {
         // check that title and learned have content
         if (!titleDiv.textContent.trim()) {
@@ -171,9 +179,8 @@ function checkContent(bodyFunc) {
             saveEdit();
         }
     } else if (bodyFunc === 'edit') {
-        console.log(this.name);
         // check if there are any changes
-        if (!checkChanges()) {
+        if (!checkChanges(formDivs)) {
             contentWarning();
         } else if (!titleDiv.textContent.trim()) {
             // contentWarning();
@@ -199,7 +206,6 @@ function closeEdit(frame, frameBorder) {
 }
 
 function confirmDiscard(content=false) {
-    console.log(checkChanges());
     const discard = document.querySelector('.discard-changes-wrap');
     const yesBtn = document.getElementsByName('discard-yes')[0];
     const noBtn = document.getElementsByName('discard-no')[0];
@@ -215,8 +221,7 @@ function confirmDiscard(content=false) {
         contentWarning(reset=true);
     }
     
-    if (checkChanges() === true || content === true) {
-        console.log(checkChanges());
+    if (checkChanges(formDivs) === true || content === true) {
         discard.style.visibility = "visible";
         noBtn.addEventListener("click", noFunc, { once: true });
         yesBtn.addEventListener("click", yesFunc, { once: true });
@@ -254,14 +259,11 @@ function getSelectLength() {
         if (selectLength < 0) {
             selectLength *= -1;
         }
-        console.log(selectLength);
     return selectLength;
 }
 
 function populateForm() {
     console.log("Populating Form ... ");
-    // console.log(titleDiv.textContent);
-    // console.log(learnedDiv.innerHTML);
     for (var div of formDivs) {
         switch (div.id) {
             case `title-${bodyFunc}-div`:

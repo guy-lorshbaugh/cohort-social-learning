@@ -241,21 +241,24 @@ function emojiSearchListener(target) {
     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
     const searchDiv = emojiMenu.querySelector('.emoji-search');
     const emojiSearchInput = emojiMenu.getElementsByTagName("input")[0];
-    // console.log(emojiSearchInput);
-    const searchContainer = emojiMenu.getElementsByClassName("emoji-search-container")[0];
+
+    const searchContainer = document.querySelector(`#emoji-search-${target}`);
     const searchIcon = emojiMenu.getElementsByClassName("emoji-search-icon")[0];
+
     searchDiv.addEventListener("mousedown", (e) => {
+        console.log(searchContainer);
         if (emojiSearchInput.contains(e.target)
             && searchContainer.style.display === "none") {
-            searchContainer.style.display = "block";
-            searchIcon.innerHTML = "arrow_back";
-            searchIcon.style.cursor = "pointer";
-            searchIcon.addEventListener("click", () => {
-                searchContainer.style.display = "none";
-                emojiSearchInput.value = "";
-                searchIcon.innerHTML = "search";
-                searchIcon.style.cursor = "default";
-            }, { capture: true, once: true })
+                emojiCloseAll();
+                searchContainer.style.display = "block";
+                searchIcon.innerHTML = "arrow_back";
+                searchIcon.style.cursor = "pointer";
+                searchIcon.addEventListener("click", () => {
+                    searchContainer.style.display = "none";
+                    emojiSearchInput.value = "";
+                    searchIcon.innerHTML = "search";
+                    searchIcon.style.cursor = "default";
+                }, { capture: true, once: true })
         }
     })
 }
@@ -301,6 +304,7 @@ function emojiSearchListener(target) {
 //         searchResults.innerHTML = "";
 //     }
 // }
+
 
 // function emojiSearch(emojiMenu, searchInput, target, caret) {
 //     const commentTextarea = document.getElementById(`comment-${target}`);
