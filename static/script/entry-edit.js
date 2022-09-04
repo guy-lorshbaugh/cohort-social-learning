@@ -71,7 +71,7 @@ if (bodyFunc === 'new') {
 
 updateTitleLimit();
 
-titleDiv.focus({focusVisible: true});
+// titleDiv.focus();
 setCaret(titleDiv);
 
 titleDiv.addEventListener("keyup", updateTitleLimit);

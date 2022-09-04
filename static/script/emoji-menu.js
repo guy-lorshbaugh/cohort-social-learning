@@ -11,15 +11,15 @@ function typeOpener(menu, typeArray) {
     }
 }
 
-function emojiMenuStart(menu, target) {
+function emojiMenuStart(menuDiv, target) {
     const menuContents = document.getElementById("emoji-menu-prototype").innerHTML;
     // const tone_choices = menu.getElementsByClassName("tone-choice");
-    menu.innerHTML = menuContents;
+    menuDiv.innerHTML = menuContents;
     addEmojiListeners(target);
     addNavMenu(target);
     navScrollListener(target);
-    typeOpener(menu, [ "kiss", "hands", "family", "couple" ])
-    emojiSearchListener(target);
+    typeOpener(menuDiv, [ "kiss", "hands", "family", "couple" ])
+    emojiSearchListener(target, menuDiv);
     // for (let item of tone_choices) {
     //     let tone = item.getAttribute("tone");
     //     item.addEventListener("click", () => {
@@ -27,7 +27,33 @@ function emojiMenuStart(menu, target) {
     //     })
     // }
     // skinTonePicker(menu);
-    menu.classList.add("started");
+    menuDiv.classList.add("started");
+}
+
+function buttonChange(button) {
+    if (button.classList.contains('active')) {
+        button.classList.remove("active");
+        button.innerHTML = "sentiment_satisfied_alt";
+    } else {
+        button.classList.add("active");
+        button.removeAttribute("listener");
+        button.innerHTML = "emoji_emotions";
+    }
+}
+
+function buttonSwap(menuButton, searchButton) {
+    // swaps the emoji menu opener icon with the emoji search closer icon.
+    if (menuButton.classList.contains('active')) {
+        // buttonChange(menuButton);
+        menuButton.style.visibility = 'hidden';
+        searchButton.classList.add('active');
+        searchButton.style.visibility = 'visible';
+    } else if (searchButton.classList.contains('active')) {
+        // buttonChange(menuButton);
+        menuButton.style.visibility = 'visible';
+        searchButton.classList.remove('active');
+        searchButton.style.visibility = 'hidden';
+    }
 }
 
 function emojiMenuOpen(target) {
@@ -40,10 +66,7 @@ function emojiMenuOpen(target) {
         console.log("open");
         emojiMenu.style.visibility = "visible";
         emojiMenu.classList.add("active");
-        button.classList.remove("closed");
-        button.classList.add("active");
-        button.removeAttribute("listener");
-        button.innerHTML = "emoji_emotions";
+        buttonChange(button);
 
         // This seems to do the trick for now:
         if (!emojiMenu.classList.contains("closelistener")) {
@@ -51,7 +74,7 @@ function emojiMenuOpen(target) {
             document.addEventListener("mouseup", (e) => {
                 if (!emojiMenu.contains(e.target)
                     && emojiMenu.classList.contains("active")) {
-                    emojiCloseAll();
+                    emojiCloseAll('menu');
                     e.stopPropagation();
                 }
             }, { capture: true });
@@ -61,31 +84,26 @@ function emojiMenuOpen(target) {
         button.removeAttribute("openlistener");
         emojiMenu.style.visibility = "hidden";
         emojiMenu.classList.remove("active");
-        button.classList.remove("active");
-        button.innerHTML = "sentiment_satisfied_alt";
+        buttonChange(button);
     }
 }
 
-function emojiCloseAll() {
-    const container = document.getElementsByClassName("emoji-menu-container");
+function emojiCloseAll(type) {
+    const container = document.getElementsByClassName(`emoji-${type}-container`);
     let menuCount = 0
     for (item of Array.from(container)) {
-        if (item.classList.contains("active")){
-            emojiMenuOpen(getID(item.id));
-            menuCount += 1;
-        } 
+        if (type === 'menu') {
+            if (item.classList.contains("active")){
+                emojiMenuOpen(getID(item.id));
+                menuCount += 1;
+            }
+        } else if (type === 'search') {
+            if (item.style.visibility = 'visible') {
+                item.style.visibility = 'hidden';
+            }
+        }
     }
 }
-
-// function emojiCLoseListeners(menu, element, target) {
-//     element.addEventListener('mousedown', function closeClick(e) {
-//         if (menu.style.visibility === "visible") {
-//             if (!menu.contains(e.target)) {
-//                 emojiMenuOpen(target);
-//             }
-//         }
-//     }, { capture: true, once: true });
-// }
 
 // function skinTonePicker(emojiMenu, skinTone="default") {
 //     const peopleBody = emojiMenu.getElementsByClassName("people-body")[0];
@@ -127,8 +145,7 @@ function addEmojiListeners(target) {
             choice.addEventListener('mousedown', event => {
                 const emoji = event.target.innerHTML;
                 insertAtCursor(commentTextarea, emoji);
-                }
-            )
+            });
         }
     }
 }
@@ -158,6 +175,8 @@ function navScrollListener(target) {
 
 function navLabel(expr) {
     switch (expr) {
+        case "recent-emoji":
+            return "schedule";
         case "smileys-emoticon":
             return "emoji_emotions";
         case "people-body":
@@ -228,125 +247,168 @@ function openSelector(selector, defaultDiv) {
     });
 }
 
-// function emojiSearchListener(target) {
-//     // console.log("listening");
-//     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-//     const emojiSearchOpener = emojiMenu.getElementsByClassName("emoji-search-opener")[0];
-//     emojiSearchOpener.addEventListener("mousedown", () => {
-//         openEmojiSearch(target);
-//     })
-// }
-
-function emojiSearchListener(target) {
-    const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-    const searchDiv = emojiMenu.querySelector('.emoji-search');
-    const emojiSearchInput = emojiMenu.getElementsByTagName("input")[0];
-
+function emojiSearchListener(target, emojiMenu) {
+    const openerDiv = emojiMenu.querySelector('.emoji-search-dummy');    
     const searchContainer = document.querySelector(`#emoji-search-${target}`);
-    const searchIcon = emojiMenu.getElementsByClassName("emoji-search-icon")[0];
+    const emojiSearchInput = searchContainer.querySelector('#emoji-search-input');
+    const searchResults = searchContainer.getElementsByClassName("emoji-search-results")[0];
+    const emojiButton = document.getElementById(`emoji-open-${target}`);
+    const emojiSearchBtn = document.getElementById(`emoji-search-open-${target}`);
+    const commentTextarea = document.getElementById(`comment-${target}`);
 
-    searchDiv.addEventListener("mousedown", (e) => {
-        console.log(searchContainer);
-        if (emojiSearchInput.contains(e.target)
-            && searchContainer.style.display === "none") {
-                emojiCloseAll();
-                searchContainer.style.display = "block";
-                searchIcon.innerHTML = "arrow_back";
-                searchIcon.style.cursor = "pointer";
-                searchIcon.addEventListener("click", () => {
-                    searchContainer.style.display = "none";
-                    emojiSearchInput.value = "";
-                    searchIcon.innerHTML = "search";
-                    searchIcon.style.cursor = "default";
-                }, { capture: true, once: true })
+    openerDiv.addEventListener("mouseup", (e) => {
+        const emoji = emojiMenu.getElementsByClassName("emoji");
+        if (searchContainer.style.visibility === "hidden") {
+            buttonSwap(emojiButton, emojiSearchBtn);
+            emojiCloseAll('menu');
+            searchContainer.style.visibility = "visible";
+            document.addEventListener('mouseup', (e) => {
+                if (!searchContainer.contains(e.target)) {
+                    console.log("search close listener");
+                    buttonSwap(emojiButton, emojiSearchBtn);
+                    emojiSearchInput.value = '';
+                    searchResults.innerHTML = '';
+                    emojiCloseAll('search');
+                    e.stopPropagation()
+                }
+            }, { capture: true, once: true });
+            emojiSearchInput.focus();
+            emojiSearchInput.select();
+            emojiSearch(searchContainer, emoji, emojiSearchInput, target,
+                             getCaretPosition(commentTextarea));
         }
     })
 }
 
-// function openEmojiSearch(target) {
+function emojiSearch(searchMenu, emoji, searchInput, target, caret) {
+    const commentTextarea = document.getElementById(`comment-${target}`);
+    const searchResults = searchMenu.getElementsByClassName("emoji-search-results")[0];
+    
+    searchInput.addEventListener("input", () => {
+        searchResults.innerHTML = "";
+        if (searchInput.value.length === 0) {
+            searchResults.innerHTML = '';
+        }
+        else {
+            for (var i = 0; i < emoji.length; i++) {
+                if (emoji[i].getAttribute("title").includes(searchInput.value) 
+                && !emoji[i].getAttribute("title").includes("skin-tone")) {
+                    let searchItem = emoji[i].cloneNode(true)
+                    searchItem.addEventListener('mousedown', (e) => {
+                        let emoji = e.target.innerHTML;
+                        let caretPosition = 
+                            getCaretPosition(commentTextarea).start;
+                        if (caret.start === caretPosition) {
+                            setCaretPosition(commentTextarea, caretPosition,
+                                                caretPosition);
+                            insertAtCursor(commentTextarea, emoji);
+                        } else {
+                            setCaretPosition(commentTextarea, caretPosition, caretPosition);
+                            insertAtCursor(commentTextarea, emoji);
+                        }
+                    })
+                    searchResults.appendChild(searchItem);
+                }
+            }
+        }
+    })
+}
+
+// Below is a rather verbose attempt to keep the search close listener alive 
+// through two major changes:
+//      1. Populating the search results div with the full complement of emoji
+//         with 'display: none', then search results would get 'display: flex'
+//      2. Constructing a searchCloseListener function in order to replicate 
+//         the close listener with every typed change.
+// It didn't work. The close listener disappears when you click an emoji to 
+// place it in the textarea.
+// Why does that break the listener?
+// function emojiSearchListener(target, emojiMenu) {
+//     const openerDiv = emojiMenu.querySelector('.emoji-search-dummy');    
+//     const searchContainer = document.querySelector(`#emoji-search-${target}`);
+//     const emojiSearchInput = searchContainer.querySelector('#emoji-search-input');
+//     const searchResults = searchContainer.getElementsByClassName("emoji-search-results")[0];
+//     const emojiButton = document.getElementById(`emoji-open-${target}`);
+//     const emojiSearchBtn = document.getElementById(`emoji-search-open-${target}`);
 //     const commentTextarea = document.getElementById(`comment-${target}`);
-//     const caretPosition = getCaretPosition(commentTextarea);
-//     const emojiMenu = document.getElementById(`emoji-menu-${target}`);
-//     const emojiSearchOpener = emojiMenu.getElementsByClassName("emoji-search-opener")[0];
-//     const searchDiv = emojiMenu.getElementsByClassName("emoji-search")[0];
-//     const searchInput = emojiMenu.getElementsByTagName("input")[0];
-//     const searchResults =emojiMenu.getElementsByClassName("emoji-search-results")[0];
-//     const tonePicker = emojiMenu.getElementsByClassName("tone-picker")[0];
-//     // console.log(tonePicker[0]);
-//     if (searchInput.style.visibility === "hidden") {
-//         searchInput.style.visibility = "visible";
-//         searchDiv.style.width = "355px";
-//         searchDiv.style.height = "250px";
-//         searchDiv.style.left = "0px";
-//         searchDiv.style.zIndex = 1;
-//         emojiSearch(emojiMenu, searchInput, target, caretPosition);
-//         // emojiSearchOpener.classList.add("material-icons"),
-//         // emojiSearchOpener.innerHTML = "<span class='material-icons'>cancel</span>";
-//         // emojiSearchOpener.style.right = "5px";
-//         // emojiSearchOpener.style.top = "1px";
-//         emojiSearchOpener.classList.add("active");
-//         searchResults.style.visibility = "visible";
-//         // tonePicker.style.visibility = "hidden";
-//     } else {
-//         searchInput.style.visibility = "hidden";
-//         searchInput.value = "";
-//         searchDiv.style.width = "115px";
-//         searchDiv.style.height = "20px";
-//         searchDiv.style.left = "14px";
-//         searchDiv.style.backgroundColor = "rgba(255 255 255 / 0.75)";
-//         // emojiSearchOpener.classList.remove("material-icons"),
-//         // emojiSearchOpener.innerHTML = "<span class='material-icons'>search</span><span class='search-opener-text'>&nbspSearch Emoji</span>";
-//         // emojiSearchOpener.style.right = "0px";
-//         // emojiSearchOpener.style.top = "0px";
-//         emojiSearchOpener.classList.remove("active");
-//         searchResults.style.visibility = "hidden";
-//         // tonePicker.style.visibility = "visible";
-//         searchResults.innerHTML = "";
+//     const sclParams = {
+//         'btnE': emojiButton,
+//         'btnS': emojiSearchBtn,
+//         'container': searchContainer,
+//         'input': emojiSearchInput,
+//         'results': searchResults
 //     }
+//     searchCloseListener(sclParams);
+//     openerDiv.addEventListener("mouseup", (e) => {
+//         const emoji = emojiMenu.getElementsByClassName("emoji");
+//         if (searchContainer.style.visibility === "hidden") {
+//             buttonSwap(emojiButton, emojiSearchBtn);
+//             emojiCloseAll('menu');
+//             searchContainer.style.visibility = "visible";
+//             searchCloseListener(sclParams);
+//             emojiSearchInput.focus();
+//             emojiSearchInput.select();
+//             emojiSearch(searchContainer, emoji, emojiSearchInput, target,
+//                              getCaretPosition(commentTextarea), sclParams);
+//         }
+//     })
 // }
 
+// function searchCloseListener(params) {
+//     // console.log(params.btnE, params.btnS);
+//     document.addEventListener('mousedown', (e) => {
+//         if (!params.container.contains(e.target)) {
+//             console.log("search close listener");
+//             buttonSwap(params.btnE, params.btnS);
+//             params.input.value = '';
+//             params.results.innerHTML = '';
+//             emojiCloseAll('search');
+//             e.stopPropagation()
+//         }
+//     }, { capture: true, once: true });
+// }
 
-// function emojiSearch(emojiMenu, searchInput, target, caret) {
+// function emojiSearch(searchMenu, emoji, searchInput, target, caret, sclParams) {
 //     const commentTextarea = document.getElementById(`comment-${target}`);
-//     const emoji = emojiMenu.getElementsByClassName("emoji");
-//     const searchResults = emojiMenu.getElementsByClassName("emoji-search-results")[0];
+//     const searchResults = searchMenu.getElementsByClassName("emoji-search-results")[0];
+//     for (item of emoji) {
+//         if (!item.getAttribute('id')) {
+//             let clone = item.cloneNode(true)
+//             clone.style.display = 'none';
+//             searchResults.append(clone);
+//         }
+//     }
+//     const searchEmoji = searchResults.getElementsByClassName('emoji');
+    
 //     searchInput.addEventListener("input", () => {
-//         let results = [];
-//         searchResults.innerHTML = "";
-//         const result = document.createElement("span");
-//         result.classList.add("emoji");
-//         // if (searchInput.value) {
-//         if (searchInput.value.length >= 2) {
-//             for (var i = 0; i < emoji.length; i++) {
-//                 if (emoji[i].getAttribute("title").includes(searchInput.value) 
-//                 && !emoji[i].getAttribute("title").includes("skin-tone")) {
-//                     if (!results.includes(emoji[i])){
-//                         results.push(emoji[i]);
+//         for (item of searchEmoji) {
+//             item.style.display = 'none';
+//         }
+//         if (searchInput.value.length !== 0) {
+//             for (el of searchEmoji) {
+//                 if (el.title.toLowerCase().includes(searchInput.value) 
+//                 && !el.title.toLowerCase().includes("skin-tone")) {
+//                     console.log(el.title);
+//                     if (!el.getAttribute('listener')) {
+//                         el.setAttribute('listener','true');
+//                         el.addEventListener('mousedown', (e) => {
+//                             let emoji = e.target.innerHTML;
+//                             let caretPosition = 
+//                                 getCaretPosition(commentTextarea).start;
+//                             if (caret.start === caretPosition) {
+//                                 setCaretPosition(commentTextarea, caretPosition,
+//                                                     caretPosition);
+//                                 insertAtCursor(commentTextarea, emoji);
+//                             } else {
+//                                 setCaretPosition(commentTextarea, caretPosition, caretPosition);
+//                                 insertAtCursor(commentTextarea, emoji);
+//                             }
+//                         })
 //                     }
+//                     el.style.display = 'flex';
 //                 }
 //             }
-//             for (var item of results) {
-//                 result.setAttribute("title", `${item.title}`)
-//                 result.innerHTML = item.innerHTML;
-//                 searchResults.innerHTML += result.outerHTML;
-//             }
-//             const resultSpans = searchResults.getElementsByTagName("span")
-//             for (var item of resultSpans) {
-//                 // Adds emoji to end of current inout (can't use cursor to insert)
-//                 item.addEventListener('mousedown', event => {
-//                     const emoji = event.target.innerHTML;
-//                     const caretPosition = getCaretPosition(commentTextarea).start;
-//                     if (caret.start === caretPosition) {
-//                         setCaretPosition(commentTextarea, caretPosition, caretPosition);
-//                         insertAtCursor(commentTextarea, emoji);
-//                     } else {
-//                         setCaretPosition(commentTextarea, caretPosition, caretPosition);
-//                         insertAtCursor(commentTextarea, emoji);
-//                     }
-//                 })
-//             }
-//         } else {
-//             results = [];
 //         }
+//         searchCloseListener(sclParams);
 //     })
 // }

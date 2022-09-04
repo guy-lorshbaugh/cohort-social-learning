@@ -456,6 +456,7 @@ p a {
 .new-entry,
 .edit-entry {
 	padding: 10px;
+	margin-bottom: 60px;
 }
 .new-entry-open {
 	display: flex;
@@ -1121,12 +1122,15 @@ input::placeholder {
 	box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
 	overflow: hidden;
 	user-select: none;
+}
+.emoji-menu-container {
 	z-index: 99;
 }
-/* .emoji-menu-container:last-child {
-	margin-bottom: 50px;
-} */
-.emoji-list-container {
+.emoji-search-container {
+	z-index: 98;
+}
+.emoji-list-container,
+.emoji-search-results {
 	position: relative;
 	height: 250px;
 	padding: 0 10px;
@@ -1134,9 +1138,10 @@ input::placeholder {
 	overflow-y: scroll;
 }
 .emoji-container {
+	position: relative;
 	display: grid;
 	grid-template-columns: repeat(9, 36px);
-	position: relative;
+	grid-template-rows: 36px;
 }
 .emoji-container.flags {
 	margin-bottom: 50px;
@@ -1147,7 +1152,8 @@ input::placeholder {
 	justify-content: center;
 	width: 36px;
 	height: 36px;
-	font-family: "Noto Color Emoji", "Apple Color Emoji", "Android Emoji", "EmojiOne Mozilla", "Twemoji Mozilla";
+	font-family: "Noto Color Emoji", "Apple Color Emoji", "Android Emoji",
+		"EmojiOne Mozilla", "Twemoji Mozilla";
 	font-size: 24px;
 	cursor: pointer;
 }
@@ -1164,10 +1170,12 @@ input::placeholder {
 	padding: 10px;
 	border-bottom: 1px solid rgba(0 0 0 / 0.2);
 	list-style-type: none;
+	z-index: 100;
 }
 .emoji-category-nav ul li,
 .emoji-open,
-.emoji-close {
+.emoji-close,
+.emoji-search-open {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1186,7 +1194,8 @@ input::placeholder {
 .emoji-category-nav ul li:hover {
 	color:rgba(0 0 0 / 0.8);
 }
-.emoji-open {
+.emoji-open,
+.emoji-search-open {
 	position: absolute;
 	right: 86px;
 	top: 15px;
@@ -1198,7 +1207,8 @@ input::placeholder {
 	top: 15px;
 	color: royalblue !important;
 }
-.emoji-open:hover {
+.emoji-open:hover,
+.emoji-search-open:hover {
 	color:rgba(0 0 0 / 0.5);
 }
 .active,
@@ -1261,7 +1271,8 @@ input::placeholder {
     color: royalblue;
     transform: rotate(45deg);
 }
-.emoji-search {
+.emoji-search,
+.emoji-search-dummy {
 	/* align-items: center; */
 	text-align: left;
 	position: relative;
@@ -1271,6 +1282,9 @@ input::placeholder {
 	background-color: rgba(255 255 255 / 0.75);
 	z-index: 100;
 }
+.emoji-search {
+	margin: 10px auto;
+}
 #emoji-search-input,
 #emoji-search-opener {
 	position: relative;
@@ -1279,20 +1293,19 @@ input::placeholder {
     font-size: 12px;
     line-height: 1em;
 	cursor: text;
-	z-index: 2;
+}
+#emoji-search-input {
+	z-index: 96;
+}
+#emoji-search-opener {
+	z-index: 100;
 }
 .emoji-search-icon {
 	position: absolute;
 	top: 12px;
     left: 17px;
-	z-index: 3;
+	z-index: 100;
 }
-/* .emoji-search-opener {
-	position: absolute;
-	font-size: 12px;
-	color: rgba(0 0 0 / 0.8);
-	cursor: pointer;
-} */
 .emoji-search-opener .material-icons {
 	font-size: 18px;
 	font-family: "Material Icons";
@@ -1301,14 +1314,13 @@ input::placeholder {
 .emoji-search-opener .search-opener-text {
 	vertical-align: super;
 }
-.emoji-search-results {
+/* .emoji-search-results {
 	width: 355px;
 	height: auto;
 	top: 25px;
 	left: -10px;
-	/* border: 1px solid lime; */
 	overflow-y: scroll;
-}
+} */
 .tone-picker {
 	display: flex;
 	flex-flow: row nowrap;
@@ -1373,11 +1385,18 @@ input::placeholder {
 	border-radius: 15px;
 }
 .entry-bottom-field {
+	position: fixed;
+    left: 0px;
+    bottom: 0px;
     display: flex;
+    flex-flow: row nowrap;
+	justify-content: center;
+    width: 100%;
     align-items: center;
-	flex-flow: row nowrap;
-    justify-content: flex-start;
-	margin-top: 10px;;
+    padding: 10px 35px;
+    background-color: rgba(240, 248, 255, 0.65);
+	/* border-top: 2px solid #e1e1e1; */
+    z-index: 100;
 }
 .entry-bottom-field button {
 	margin-right: 10px;

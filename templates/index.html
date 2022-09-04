@@ -179,29 +179,37 @@
                             <!-- <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div> -->
                             <div class="comment-field-container">
                                 <form method="POST" action="#">
-                                    <div id="emoji-menu-{{ entry }}" 
-                                        class="emoji-menu-container closed"
-                                        style="visibility: hidden"></div>
                                     <div id="emoji-search-{{ entry }}" 
-                                        class="emoji-search-container closed"
-                                        style="display: none"></div>
-                                        <input id="token-{{ entry.id }}" 
-                                            type="hidden" value="{{ csrf_token() }}">
-                                        <textarea placeholder="Comment" 
-                                                  id="comment-{{ entry.id }}"
-                                                  class="comment-field"
-                                                  type="text"
-                                                  required="required"
-                                                  aria-required="true"></textarea>
-                                        <div id="comment-error-{{entry.id}}" 
-                                             class="error-bubble" 
-                                             style="visibility: hidden"></div>
-                                        <div id="emoji-open-{{ entry.id }}" 
-                                             class="emoji-open" style="display: flex">sentiment_satisfied_alt</div>
-                                        <input type="button"
-                                               onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
-                                               value="Post" class="button button-secondary comment-post-button invalid"
-                                        >
+                                        class="emoji-search-container"
+                                        style="visibility: hidden">
+                                        <div class="emoji-search">
+                                            <input type="text" id="emoji-search-input" placeholder="Search Emoji">
+                                            <span class="material-icons emoji-search-icon">search</span>
+                                        </div>
+                                        <div class="emoji-search-results emoji-container"></div>
+                                    </div>
+                                    <div id="emoji-menu-{{ entry }}" 
+                                        class="emoji-menu-container"
+                                        style="visibility: hidden"></div>
+                                    <input id="token-{{ entry.id }}" 
+                                        type="hidden" value="{{ csrf_token() }}">
+                                    <textarea placeholder="Comment" 
+                                                id="comment-{{ entry.id }}"
+                                                class="comment-field"
+                                                type="text"
+                                                required="required"
+                                                aria-required="true"></textarea>
+                                    <div id="comment-error-{{entry.id}}" 
+                                            class="error-bubble" 
+                                            style="visibility: hidden"></div>
+                                    <div id="emoji-open-{{ entry.id }}" 
+                                            class="emoji-open" style="visibility: visible">sentiment_satisfied_alt</div>
+                                    <div id="emoji-search-open-{{ entry.id }}" 
+                                            class="emoji-search-open" style="visibility: hidden">emoji_emotions</div>
+                                    <input type="button"
+                                            onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
+                                            value="Post" class="button button-secondary comment-post-button invalid"
+                                    >
                                     <script type="text/javascript">
                                         autosize(document.getElementById("comment-{{ entry.id }}"))
                                     </script>

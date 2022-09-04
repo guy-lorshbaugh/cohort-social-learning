@@ -76,7 +76,7 @@ function commentRequest(action, url="", entry="") {
     if (action === "create"){
         const contents = formatPost(input.value);
         xhr.send("contents=" + contents);
-        errorDiv.parentElement.querySelector('.button').classList.add('invalid');
+        // errorDiv.parentElement.querySelector('.button').classList.add('invalid');
     } else if (action === "edit") {
         const input = document.getElementById(`comment-edit-${entry}`).value;
         const contents = formatPost(input);
