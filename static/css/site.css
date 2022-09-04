@@ -1141,7 +1141,7 @@ input::placeholder {
 	position: relative;
 	display: grid;
 	grid-template-columns: repeat(9, 36px);
-	grid-template-rows: 36px;
+	grid-template-rows: repeat(6, 36px);
 }
 .emoji-container.flags {
 	margin-bottom: 50px;

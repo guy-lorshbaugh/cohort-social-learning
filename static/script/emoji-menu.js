@@ -251,7 +251,7 @@ function emojiSearchListener(target, emojiMenu) {
     const openerDiv = emojiMenu.querySelector('.emoji-search-dummy');    
     const searchContainer = document.querySelector(`#emoji-search-${target}`);
     const emojiSearchInput = searchContainer.querySelector('#emoji-search-input');
-    const searchResults = searchContainer.getElementsByClassName("emoji-search-results")[0];
+    const searchResults = searchContainer.querySelector(".emoji-search-results");
     const emojiButton = document.getElementById(`emoji-open-${target}`);
     const emojiSearchBtn = document.getElementById(`emoji-search-open-${target}`);
     const commentTextarea = document.getElementById(`comment-${target}`);
@@ -262,16 +262,19 @@ function emojiSearchListener(target, emojiMenu) {
             buttonSwap(emojiButton, emojiSearchBtn);
             emojiCloseAll('menu');
             searchContainer.style.visibility = "visible";
-            document.addEventListener('mouseup', (e) => {
-                if (!searchContainer.contains(e.target)) {
-                    console.log("search close listener");
-                    buttonSwap(emojiButton, emojiSearchBtn);
-                    emojiSearchInput.value = '';
-                    searchResults.innerHTML = '';
-                    emojiCloseAll('search');
-                    e.stopPropagation()
-                }
-            }, { capture: true, once: true });
+            if (!emojiSearchBtn.getAttribute('listener')) {
+                emojiSearchBtn.setAttribute('listener','true');
+                document.addEventListener('mouseup', (e) => {
+                    if (!searchContainer.contains(e.target)
+                        && searchContainer.style.visibility === "visible") {
+                        e.stopPropagation();
+                        buttonSwap(emojiButton, emojiSearchBtn);
+                        emojiSearchInput.value = '';
+                        searchResults.innerHTML = '';
+                        emojiCloseAll('search');
+                    }
+                }, { capture: true });
+            }
             emojiSearchInput.focus();
             emojiSearchInput.select();
             emojiSearch(searchContainer, emoji, emojiSearchInput, target,
@@ -290,10 +293,10 @@ function emojiSearch(searchMenu, emoji, searchInput, target, caret) {
             searchResults.innerHTML = '';
         }
         else {
-            for (var i = 0; i < emoji.length; i++) {
-                if (emoji[i].getAttribute("title").includes(searchInput.value) 
-                && !emoji[i].getAttribute("title").includes("skin-tone")) {
-                    let searchItem = emoji[i].cloneNode(true)
+            for (item of emoji) {
+                if (item.getAttribute("title").includes(searchInput.value) 
+                && !item.getAttribute("title").includes("skin-tone")) {
+                    let searchItem = item.cloneNode(true)
                     searchItem.addEventListener('mousedown', (e) => {
                         let emoji = e.target.innerHTML;
                         let caretPosition = 
@@ -314,12 +317,21 @@ function emojiSearch(searchMenu, emoji, searchInput, target, caret) {
     })
 }
 
+// **** DOCUMENT MUTATION OBSERVER ****
+// const observer = new MutationObserver(callback);
+// const moConfig = { attributes: true, childList: true, subtree: true };
+// function callback(mutationList, observer) {
+//   console.log(mutationList);
+// };
+// observer.observe(document, moConfig)
+
 // Below is a rather verbose attempt to keep the search close listener alive 
 // through two major changes:
 //      1. Populating the search results div with the full complement of emoji
 //         with 'display: none', then search results would get 'display: flex'
 //      2. Constructing a searchCloseListener function in order to replicate 
-//         the close listener with every typed change.
+//         the close listener with every typed change. (It was clunky and 
+//         required a lot of parameters that I passed via an object.)
 // It didn't work. The close listener disappears when you click an emoji to 
 // place it in the textarea.
 // Why does that break the listener?
