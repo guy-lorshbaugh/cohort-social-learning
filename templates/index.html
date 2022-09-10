@@ -51,42 +51,53 @@
                             { { edit_entry(entry, form = edit_form) } }
                         </article> -->
                         <article class="entry-preview-container" id="entry-{{ entry.id }}">
-                            <img class="avatar-50" src="{{ user.avatar }}">
+                            <div class="entry-title-bar">
+                                <div class="entry-title-avatar">
+                                    <img class="avatar-25" src="{{ user.avatar }}">
+                                </div>
+                                <div class="user-date small">
+                                    By <a style="text-decoration:none; color:black;" 
+                                        href="{{ url_for('user', id=entry.user_id) }}">
+                                    {{ user.username }}</a>,
+                                    <time>
+                                        {{ relative_time(entry) }}
+                                    </time>
+                                </div>
+                                <div class="entry-title"><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></div>
+                            </div>
+                            
                             {% if entry.user_id == current_user.id %}
-
-                            <div class="option-button entry-options" role="button" id="entry-options-{{ entry.id }}">
-                                more_vert
-                            </div>
-                            <div class="option-menu entry-menu" id="entry-menu-{{entry.id}}" style="visibility: hidden;">
-                                <ul>
-                                    <!-- { % set entry_delete_url = url_for('delete_entry', entry = entry.id) % } -->
-                                    <li id="edit-entry-{{ entry.id }}" class="entry-edit-option">Edit Entry</li>
-                                    <li id="delete-entry-{{ entry.id }}" class="entry-delete-option">Delete Entry</li>
-                                </ul>
-                            </div>
-                            <div class="entry-confirm-dialog" id="entry-confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
-                                <div style="padding-bottom: 5px;">Are you sure?</div>
-                                <button name="yes" class="button button-secondary yes" type="button">Yes</button>
-                                <button name ="no" class="button button-secondary" type="button">No</button>
-                            </div>
+                                <div class="option-button entry-options" 
+                                     role="button" 
+                                     id="entry-options-{{ entry.id }}">
+                                    more_vert
+                                </div>
+                                <div class="option-menu entry-menu" 
+                                     id="entry-menu-{{entry.id}}" 
+                                     style="visibility: hidden;">
+                                    <ul>
+                                        <!-- { % set entry_delete_url = url_for('delete_entry', entry = entry.id) % } -->
+                                        <li id="edit-entry-{{ entry.id }}"
+                                            class="entry-edit-option">Edit Entry</li>
+                                        <li id="delete-entry-{{ entry.id }}" 
+                                            class="entry-delete-option">Delete Entry</li>
+                                    </ul>
+                                </div>
+                                <div class="entry-confirm-dialog" id="entry-confirm-dialog-{{ entry.id }}" style="visibility: hidden;">
+                                    <div style="padding-bottom: 5px;">Are you sure?</div>
+                                    <button name="yes" class="button button-secondary yes" type="button">Yes</button>
+                                    <button name ="no" class="button button-secondary" type="button">No</button>
+                                </div>
                             {% endif %}
-                            <h2 class="entry-title"><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
                             <div id="entry-preview-{{ entry.id }}" class="entry-preview">
-                                <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
+                                <!-- { { entry.learned|truncate(length=140, killwords=True, end='...') } } -->
                                 <div class="entry-preview-content">
                                     {% for item in entry.learned.split("\n") %}
                                         <div class="entry-preview-line">{{ item|safe }}</div>
                                     {% endfor %}
+                                </div>
                             </div>
-                            <div class="user-date small">
-                                By <a style="text-decoration:none; color:black;" 
-                                      href="{{ url_for('user', id=entry.user_id) }}">
-                                {{ user.username }}</a>,
-                                <time>
-                                    {{ relative_time(entry) }}
-                                </time>
-                            </div>
-                            <div class="like-comment-display">
+                            <!-- <div class="like-comment-display"> -->
                                 {% set likes = (
                                     models.Entry
                                     .select()
@@ -101,38 +112,35 @@
                                     .order_by(models.Comment.id)
                                 ) %}
 
-                                <!-- LIKERS HOVER DISPLAY -->
-
-                                <div class="likers likers-{{ entry.id }} shadow-box">
-                                    <dl>
-                                        {% set likers = (
-                                            models.User
-                                            .select()
-                                            .join(models.EntryLikes)
-                                            .join(models.Entry)
-                                            .where(models.Entry.id == entry.id)
-                                            .order_by(models.User.username)
-                                        ) %}
-                                    {% for liker in likers %}
-                                        <dt><img class="avatar-15" src="{{ liker.avatar }}">&nbsp;{{ liker.username }}</dt>
-                                    {% endfor %}
-                                    </dl>
-                                </div>
                                 
                                 <!-- LIKE & COMMENT COUNT DISPLAY -->
                                 
-                                <div class="like-count small" onmouseover="likerDisplay('likers likers-{{ entry.id }}')">
-                                <!-- <div class="like-count small"> -->
-                                    {% if likes.count() > 0 %}
-                                        Likes: {{ likes.count() }}
-                                    {% endif %}
-                                </div>
-                                <div class="comment-count small">
-                                    {% if comments.count() > 0 %}
-                                        Comments: {{ comments.count() }}
-                                    {% endif %}    
-                                </div>
-                            </div>
+                                
+                                    
+                                    <!-- LIKERS HOVER DISPLAY -->
+                                    <div class="likers likers-{{ entry.id }} shadow-box">
+                                        <dl>
+                                            {% set likers = (
+                                                models.User
+                                                .select()
+                                                .join(models.EntryLikes)
+                                                .join(models.Entry)
+                                                .where(models.Entry.id == entry.id)
+                                                .order_by(models.User.username)
+                                            ) %}
+                                        {% for liker in likers %}
+                                            {% if liker.username == current_user.username %}
+                                                <dt><img class="avatar-15" 
+                                                         src="{{ liker.avatar }}">&nbsp;You!</dt>
+                                            {% else %}
+                                                <dt><img 
+                                                        class="avatar-15" 
+                                                        src="{{ liker.avatar }}">&nbsp;{{ liker.username }}</dt>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </dl>
+                                    </div>
+                            <!-- </div> -->
                             
                             <!-- TAGS -->
                             {% set tags = (models.Tags
@@ -147,10 +155,22 @@
                             <!-- LIKE & COMMENT BUTTONS -->
 
                             <div class="like-button-container">
+                                {% if likes.count() > 0 %}
+                                    <div class="like-count" onmouseover="likerDisplay('likers likers-{{ entry.id }}')">
+                                        <div class="like-number">
+                                            {{ likes.count() }}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if comments.count() > 0 %}
+                                    <div class="comment-count">
+                                        {{ comments.count() }}
+                                    </div>
+                                {% endif %}    
                                 {% if current_user.is_authenticated %}
                                     <span class="like" 
-                                        role="button"
-                                        onclick="likeRequest('{{ url_for("like", entry=entry.id) }}', '{{ entry.id }}')">
+                                          role="button"
+                                          onclick="likeRequest('{{ url_for("like", entry=entry.id) }}', '{{ entry.id }}')">
                                         {% if (
                                             models.EntryLikes
                                             .select()
@@ -205,7 +225,7 @@
                                     <div id="emoji-open-{{ entry.id }}" 
                                             class="emoji-open" style="visibility: visible">sentiment_satisfied_alt</div>
                                     <div id="emoji-search-open-{{ entry.id }}" 
-                                            class="emoji-search-open" style="visibility: hidden">emoji_emotions</div>
+                                            class="emoji-search-open" style="visibility: hidden">search</div>
                                     <input type="button"
                                             onclick="commentRequest('create', '/entries/{{ entry.id }}/comment/', {{ entry.id }})" 
                                             value="Post" class="button button-secondary comment-post-button invalid"

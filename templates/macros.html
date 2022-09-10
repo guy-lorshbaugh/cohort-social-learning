@@ -176,10 +176,10 @@
         ) %}
         <div class="single-comment emoji-span" id="comment-{{ comment.id }}">
             <div class="comment-avatar">
-                <img class="avatar-30" src="{{ comment_user.avatar }}">
+                <img class="avatar-25" src="{{ comment_user.avatar }}">
             </div>
             <div class="comment-username">
-                {{ comment_user.username }}
+                {{ comment_user.username }}, <span class="comment-date">{{ relative_time(comment) }}</span>
             </div>
             <div class="comment-contents" id="comment-contents-{{ comment.id }}">
                 {{ comment.contents|safe }}
@@ -203,10 +203,10 @@
             {% endif %}
             <div class="comment-like-reply">
                 <ul>
-                    <li>thumb_up</li>
-                    <li>comment</li>
-                    <li class="comment-date small">{{ relative_time(comment) }}</li>
-                    <!-- <li>file_upload</li>
+                    <li class="comment-like">thumb_up</li>
+                    <li class="comment-reply">comment</li>
+                    <!-- <li class="comment-date small">{ { relative_time(comment) } }</li>
+                    <li>file_upload</li>
                     <li>share</li> -->
                 </ul>
             </div>
@@ -214,7 +214,7 @@
                  id="comment-edit-dialog-{{comment.id}}"
                  style="visibility: hidden;">
                 <form>
-                    <textarea class="comment-field" 
+                    <textarea class="comment-field comment-edit" 
                               id="comment-edit-{{comment.id}}" 
                               style="overflow-wrap: break-word; 
                                     height: 50px;"></textarea>
@@ -224,6 +224,8 @@
                         <div class="shadow-box comment-edit-cancel-button material-icons"
                              id="cancel-button-{{comment.id}}">cancel</div>
                 </form>
+                <!-- Below will be filled by Javascript to show either ⌘ or Ctrl -->
+                <div class="cmd-enter small"></div>
                 <div id="comment-edit-error-{{comment.id}}" 
                      class="error-bubble" 
                      style="visibility: hidden"></div>
@@ -232,7 +234,6 @@
         </div>
     {% endfor %}
 {% endmacro %}
-
 
 {% macro relative_time(entry) %}
     {% set now = insert_now %}
@@ -243,12 +244,20 @@
         {{ (rel_time.seconds/60)|round|int }} minutes ago
     {% elif entry.date == now.date and rel_time.seconds > 3600 %}
         1 hour ago
-    {% elif entry.date == now.date and rel_time.seconds > 7200 %}
+    {% elif entry.date.day == now.day and rel_time.seconds > 5400
+                                      and rel_time.seconds < 21600 %}
         {{ (rel_time.seconds/3600)|round|int }} hours ago
+    {% elif entry.date.day == now.day 
+            and rel_time.seconds > 21600
+            and rel_time.days == 0 %}
+        today, {{ entry.date.strftime('%I:%M %p') }}
+
     <!-- Old "yesterday" condition -->
-    <!-- { % elif now.year == entry.date.year and now.day - entry.date.day <= 1 % } -->
-    <!-- 2022.09.04 "yesterday" fix -->
-    {% elif now.year == entry.date.year and rel_time.days <= 1 %}
+    <!-- { % elif now.year == entry.date.year and rel_time.days <= 1 % } -->
+    <!-- 2022.09.05 "yesterday" fix -->
+    {% elif now.year == entry.date.year 
+                        and now.month == entry.date.month 
+                        and rel_time.days == 1 %}
         yesterday, {{ entry.date.strftime('%I:%M %p') }}
     {% elif now.year == entry.date.year %}
         {{ entry.date.strftime('%B %d') }}

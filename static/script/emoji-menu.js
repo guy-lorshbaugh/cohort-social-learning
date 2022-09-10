@@ -293,11 +293,12 @@ function emojiSearch(searchMenu, emoji, searchInput, target, caret) {
             searchResults.innerHTML = '';
         }
         else {
-            for (item of emoji) {
+            for (let item of emoji) {
                 if (item.getAttribute("title").includes(searchInput.value) 
                 && !item.getAttribute("title").includes("skin-tone")) {
                     let searchItem = item.cloneNode(true)
                     searchItem.addEventListener('mousedown', (e) => {
+                        console.log(item);
                         let emoji = e.target.innerHTML;
                         let caretPosition = 
                             getCaretPosition(commentTextarea).start;
@@ -324,6 +325,7 @@ function emojiSearch(searchMenu, emoji, searchInput, target, caret) {
 //   console.log(mutationList);
 // };
 // observer.observe(document, moConfig)
+// ************************************
 
 // Below is a rather verbose attempt to keep the search close listener alive 
 // through two major changes:

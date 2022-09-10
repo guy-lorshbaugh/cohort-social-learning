@@ -260,7 +260,7 @@ def index():
     emoji = process_emoji()
     if login_form.validate_on_submit():
         try:
-            user = models.User.get(models.User.username == login_form.username.data)
+            user = models.User.get(models.User.username == login_form.username.data.lower())
         except:
             flash("User name or password incorrect")
             return redirect(url_for('index'))

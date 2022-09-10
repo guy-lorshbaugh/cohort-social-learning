@@ -67,12 +67,12 @@ function commentRequest(action, url="", entry="") {
     const csrfToken = document
         .querySelector("meta[name='csrf-token']")
         .getAttribute("content");
-    // const csrfToken = document.querySelector("#csrf_token").value;
     const xhr = new XMLHttpRequest();
     const input = document.getElementById(`comment-${entry}`);
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader("X-CSRFToken", csrfToken);
+
     if (action === "create"){
         const contents = formatPost(input.value);
         xhr.send("contents=" + contents);
@@ -84,6 +84,7 @@ function commentRequest(action, url="", entry="") {
     } else {
         xhr.send(null);
     }
+
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4
                 && xhr.status === 200) {
@@ -138,6 +139,7 @@ function editComment(id) {
 
     textArea.value = contents.replaceAll("&amp;", "&");
     editDialog.style.visibility = "visible";
+    textArea.focus();
     // we have conflicting "listener" checks in the following two function calls.
     editListeners(cancelEdit, saveButton, id);
     enableSubmit(editDialog);
@@ -214,6 +216,19 @@ function editListeners(cancelButton, saveButton, id) {
                 dialog.style.visibility = "hidden";
             }
         })
+        dialog.addEventListener('keydown', (e) => {
+            if (e.metaKey || e.ctrlKey) {
+                if (e.key === 'Enter') {
+                    commentRequest("edit", `/entries/comment/${id}/edit/`, id);
+                    if (!saveButton.classList.contains('invalid')) {
+                        dialog.style.visibility = "hidden";
+                    }
+                }
+            }
+            if (e.key === 'Escape') {
+                dialog.style.visibility = "hidden";
+            }
+        });
     }
 }
 
