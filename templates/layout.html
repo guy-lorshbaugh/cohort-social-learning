@@ -8,15 +8,31 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
         <meta content="{{ csrf_token() }}" name="csrf-token">
         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
+        <script 
+            type="text/javascript" 
+            src="{{ url_for('static', filename='script/globals.js') }}">
+        </script>
         <script type="text/javascript"
             src="{{ url_for('static', filename='script/autosize.min.js') }}">
+        </script>
+        <!-- <script type="text/javascript"
+                src="{{ url_for('static', filename='script/colors.js') }}">
+        </script>
+        <script type="text/javascript"
+                src="{{ url_for('static', filename='script/random-color.js') }}">
+        </script> -->
+        <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/start-listeners.js') }}">
+        </script>
+        <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/set-attributes.js') }}">
         </script>
     </head>
     <body>
         <header>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash" id="flash">
+                <div class="flash shadow-box" id="flash">
                     {% for message in messages %}
                         {{ message }}
                     {% endfor %}
@@ -45,8 +61,8 @@
                                     Log Out
                                 </a>
                             </li>
-                            <!-- <li>
-                                <a href="#">
+                            <li>
+                                <a href="../../../entries/{{ current_user.id }}/user">
                                     <span class="user-menu-icon">person</span>
                                     Profile
                                 </a>
@@ -56,7 +72,7 @@
                                     <span class="user-menu-icon">settings</span>
                                     Settings
                                 </a>
-                            </li> -->
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -83,7 +99,7 @@
                         }
                     });
                 </script> -->
-                <li class="new-entry-button logo-box"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></li>
+                <!-- <li class="new-entry-button logo-box"><span style="font-size: 1rem">New Entry</span><span class="material-icons" style="font-size: 40px;">note_add</span></li> -->
             </ul>
             {% endif %}
         </header>
@@ -102,6 +118,9 @@
     </body>
     <script type="text/javascript"
             src="{{ url_for('static', filename='script/emoji-menu.js') }}">
+    </script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='script/tags.js') }}">
     </script>
     <script type="text/javascript" 
             src="{{ url_for('static', filename='script/scroll-btn.js') }}">

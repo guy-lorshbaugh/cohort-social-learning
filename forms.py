@@ -1,27 +1,21 @@
 from wtforms import validators
-from wtforms.fields.core import SelectField
+# from wtforms.fields.core import SelectField
 import datetime
 
 from flask_wtf import FlaskForm
-from peewee import BooleanField, TextField
-from wtforms import (StringField, PasswordField, TextAreaField, 
-    DateField, IntegerField, BooleanField)
-from wtforms.fields.simple import HiddenField
+from peewee import BooleanField
+from wtforms import (StringField, PasswordField, TextAreaField, BooleanField)
+# from wtforms.fields.simple import HiddenField
 from wtforms.validators import (DataRequired, Regexp, ValidationError,
                                Length, EqualTo)
 import models
 
 class Post(FlaskForm):
-    title = StringField(u"Title (Max. 100 characters)", validators=[
+    title = StringField(u"Title (Required)", validators=[
         DataRequired(),
-        Length(max=100)
+        Length(max=200)
     ])  
-    # date = HiddenField(default=datetime.datetime.now())
-    # time_spent = IntegerField(u"Time Spent (round to nearest hour)", 
-    #     validators=[
-    #                 DataRequired(),
-    #             ])
-    learned = TextAreaField(u"Share a Revelation\nAsk a Question!", validators=[
+    learned = TextAreaField(u"Share a Revelation! Ask a Question! (Required)", validators=[
                 DataRequired(),
             ])
     remember = TextAreaField(u"Links and other things to remember\n(Optional)")

@@ -1,18 +1,34 @@
 {% extends "layout.html" %}
 
-{% from 'macros.html' import emoji_menu, relative_time, write_comments with context %}
+{% from 'macros.html' import emoji_menu, relative_time, write_comments, 
+    process_tags, edit_entry, write_entry with context %}
 
 {% block content %}
 
 {% if current_user.is_authenticated %}
 <section>
     <div class="new-entry-container" style="visibility: hidden;">
-        <iframe id="new-entry-frame" class="new-entry-frame shadow-box" src="{{ url_for('create')}}" frameBorder="0">
+        <iframe id="new-entry-frame" 
+        class="new-entry-frame shadow-box" 
+        src="{{ url_for('create')}}" 
+        frameBorder="0">
             <div class="new-entry-cancel-button shadow-box material-icons">cancel</div>
         </iframe>
     </div>
 </section>
 <section>
+    <div class="edit-entry-container" style="visibility: hidden;">
+        <iframe id="edit-entry-frame" 
+        class="edit-entry-frame shadow-box" 
+        name="edit-frame"
+        src="" 
+        frameBorder="0">
+            <div class="edit-entry-cancel-button shadow-box material-icons">cancel</div>
+        </iframe>
+    </div>
+</section>
+<section>
+    <!-- <div id="emoji-bg" class="emoji-menu-bg" style="visibility: hidden"></div> -->
     <div class="container">
         <div class="top-recent">
             <select id="top-recent-select">
@@ -20,145 +36,16 @@
                 <option value="top">Top Posts</option>
             </select>
         </div>
+        <div class="new-entry-open">
+            <img class="avatar-30" src="{{ current_user.avatar }}">
+            <input class="entry-open-dummy" type="text" placeholder="" disabled>
+        </div>
         <div class="entry-list">
+
+                <!-- ENTRY PREVIEW -->
+
                 {% for entry in journal %}
-                    {% if not entry.private %}
-                        {% set user = models.User.get(models.User.id==entry.user_id) %}
-                        <article class="entry-preview-container" id="entry-{{ entry.id }}">
-                            <img class="avatar-50" src="{{ user.avatar }}">
-                            <h2><a href="{{ url_for('detail', id=entry.id) }}">{{ entry.title }}</a></h2>
-                            <div id="entry-preview-{{ entry.id }}" class="entry-preview">
-                                <!-- {{ entry.learned|truncate(length=140, killwords=True, end='...') }} -->
-                                {% for item in entry.learned.split("\n") %}
-                                    <p>{{ item }}</p>
-                                {% endfor %}
-                            </div>
-                            <div class="user-date small">
-                                By <a style="text-decoration:none; color:black;" 
-                                href="{{ url_for('user', id=entry.user_id) }}">
-                                {{ user.username }}</a>,
-                                <time>
-                                    <!-- {{ entry.date.strftime('%B %d, %Y %I:%M %p') }} -->
-                                    {{ relative_time(entry) }}
-                                </time>
-                            </div>
-                            <div class="like-comment-display">
-                                {% set likes = (
-                                    models.Entry
-                                    .select()
-                                    .join(models.EntryLikes)
-                                    .join(models.User)
-                                    .where(models.Entry.id == entry.id)
-                                    .order_by(models.User.username)
-                                ) %}
-                                {% set comments = (models.Comment
-                                    .select()
-                                    .where(models.Comment.entry_id == entry.id)
-                                    .order_by(models.Comment.id)
-                                ) %}
-
-                                <!-- LIKERS HOVER DISPLAY -->
-
-                                <div class="likers likers-{{ entry.id }} shadow-box">
-                                    <dl>
-                                        {% set likers = (
-                                            models.User
-                                            .select()
-                                            .join(models.EntryLikes)
-                                            .join(models.Entry)
-                                            .where(models.Entry.id == entry.id)
-                                            .order_by(models.User.username)
-                                        ) %}
-                                    {% for liker in likers %}
-                                        <dt><img class="avatar-15" src="{{ liker.avatar }}">&nbsp;{{ liker.username }}</dt>
-                                    {% endfor %}
-                                    </dl>
-                                </div>
-                                
-                                <!-- LIKE & COMMENT COUNT DISPLAY -->
-                                
-                                <div class="like-count small" onmouseover="likerDisplay('likers likers-{{ entry.id }}')">
-                                <!-- <div class="like-count small"> -->
-                                    {% if likes.count() > 0 %}
-                                        Likes: {{ likes.count() }}
-                                    {% endif %}
-                                </div>
-                                <div class="comment-count small">
-                                    {% if comments.count() > 0 %}
-                                        Comments: {{ comments.count() }}
-                                    {% endif %}    
-                                </div>
-                            </div>
-                            
-                            <!-- TAGS -->
-
-                            <div class="tags small">Tags:|
-                                {% set tags = (models.Tags
-                                    .select()
-                                    .join(models.EntryTags)
-                                    .join(models.Entry)
-                                    .where(models.Entry.id == entry.id)
-                                    .order_by(models.Tags.id)
-                                    ) %}
-                                {% for tag in tags: %}
-                                    <a class="small" style="text-decoration:none;" href="{{ url_for('tag', tag=tag.tag) }}">{{ tag.tag }} |</a>
-                                {% endfor %}
-                            </div>
-
-                            <!-- LIKE & COMMENT BUTTONS -->
-
-                            <div class="like-button-container">
-                                {% if current_user.is_authenticated %}
-                                    <span class="like" 
-                                        role="button"
-                                        onclick="likeRequest('{{ url_for("like", entry=entry.id) }}', '{{ entry.id }}')">
-                                        {% if (
-                                            models.EntryLikes
-                                            .select()
-                                            .join(models.Entry)
-                                            .where(models.EntryLikes.user_id == current_user.id,
-                                                models.EntryLikes.entry_id == entry.id)
-                                            .exists()
-                                        ) %}
-                                            Unlike
-                                        {% else %}
-                                            Like
-                                        {% endif %}
-                                    </span>
-                                    <label class="comment-button" role="button" for="comment-{{ entry.id }}">Comment</label>
-                                {% endif %}
-                            </div>
-
-                            <!--  COMMENTS -->
-
-                            <div class="comments-container  {{ entry.id }}">
-                                {{ write_comments(comments, models, current_user) }}
-                            </div>
-
-                            <!-- COMMENT FORM -->
-
-                            <div id="comment-form-error-{{ entry.id }}" class="comment-form-error"></div>
-                            <div class="comment-field-container">
-                                <form method="POST" action="#">
-                                    <div id="emoji-menu-{{ entry }}" class="emoji-menu-container" style="width: 0px; height: 0px;"></div>
-                                    <div id="emoji-open-{{ entry.id }}" class="emoji-open">emoji_emotions</div>
-                                    <input id="token-{{ entry.id }}" type="hidden" value="{{ csrf_token() }}">
-                                    <textarea placeholder="Comment" 
-                                            id="comment-{{ entry.id }}"
-                                            class="comment-field"
-                                            required
-                                            aria-required="true"></textarea>
-                                        <input type="button" 
-                                            onclick="commentRequest('create', 'entries/{{ entry.id }}/comment/', {{ entry.id }})" 
-                                            value="Post" class="button button-secondary comment-post-button"
-                                        >
-                                    <script type="text/javascript">
-                                        autosize(document.getElementById("comment-{{ entry.id }}"))
-                                    </script>
-                                </form>
-                            </div>
-                        </article>
-                    {% endif %}
+                    {{ write_entry(entry) }}
                 {% endfor %}
                 
             </div>
@@ -177,17 +64,17 @@
         Thank you for viewing my project! If you'd like to reach out, feel free to shoot me a line at guy.lorshbaugh@gmail.com`
         )
     </script> -->
-    <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/caret.js') }}"></script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/get-id.js') }}">
+    </script>
+    <script src="{{ url_for('static', filename='script/entry-tags.js') }}"></script>
     <script src="{{ url_for('static', filename='script/top-recent.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/form-error.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/entry-options.js') }}"></script>
     <script src="{{ url_for('static', filename='script/comment.js') }}"></script>
     <script src="{{ url_for('static', filename='script/like.js') }}"></script>
-    <script src="{{ url_for('static', filename='script/new-entry.js') }}"></script>
-    <script type="text/javascript">
-        const logComment = () => {
-            const contents = document.getElementsByClassName("comment-field");
-            console.log(contents[0].value)
-        }
-    </script>
+    <script src="{{ url_for('static', filename='script/entry-new.js') }}"></script>
 {% else %}
     {% include 'login.html' %}
 {% endif %}

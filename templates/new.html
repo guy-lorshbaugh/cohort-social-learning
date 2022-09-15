@@ -4,16 +4,71 @@
         <link rel="stylesheet" 
               href="{{ url_for('static', filename='css/site.css') }}">
         <script type="text/javascript"
-        src="{{ url_for('static', filename='script/autosize.min.js') }}">
-    </script>
+            src="{{ url_for('static', filename='script/autosize.min.js') }}">
+        </script>
     </head>
-    <body>
+    <body function="new">
         <section>
             <div class="container">
                 <div class="new-entry">
-                    <h2>New Entry</h2>
+                    <div class="post-save-overlay" style="visibility: hidden;">
+                        <div class="option-menu post-save">
+                            Please Wait ...
+                        </div>
+                    </div>
+                    <div class="discard-changes-wrap" style="visibility: hidden;">
+                        <div class="option-menu discard-changes">
+                            <div id="unsaved-changes" style="padding-bottom:10px;">There are unsaved changes.</div>
+                            <div id="discard" style="padding-bottom:5px;">Discard?</div>
+                            <div>
+                                <button name="discard-yes" 
+                                        class="button button-secondary yes"
+                                        type="button">Yes</button>
+                                <button name ="discard-no" 
+                                        class="button button-secondary no"
+                                        type="button">No</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="new-header">
+                        <img class="avatar-50" src="{{ user.avatar }}" style="margin-bottom: 10px;">
+                        <h2>New Entry</h2>
+                    </div>
+                    <div class="title-char-count new-char-count"></div>
+                    <div class="entry-new-div title-div" id="title-new-div"
+                        contenteditable="true" aria-placeholder="Title"
+                        changes="false"></div>
+                    <div id="title-error-bubble" 
+                        style="visibility: hidden"
+                        class="error-bubble">The Title field cannot be empty!</div>
+                    <!-- <div class="entry-new-div-label">Share Thoughts, Ask Questions!<span class="small">(Required)</span></div> -->
+                    <div class="entry-new-div learned-div" id="learned-new-div"
+                        contenteditable="true" aria-placeholder="Learned"
+                        changes="false"><div><br></div></div>
+                    <div id="learned-error-bubble" 
+                         style="visibility: hidden"
+                         class="error-bubble">The Learned field cannot be empty!</div>
+                    <!-- <div class="entry-new-div-label">Links and Other Things!</div> -->
+                    <!-- <div class="entry-new-div remember-div" id="remember-new-div" 
+                        contenteditable="true" aria-placeholder="Remember"
+                        changes="false"></div> -->
+                    <!-- <div class="entry-new-div-label">Tags</div> -->
+                    <div class="tag-display">
+                        <div class="tag-bubble-container"></div>
+                        <div class="tag-count">0/5</div>
+                    </div>
+                    <div class="tag-remove-tip shadow-box" style="opacity: 0">
+                        Click a tag to remove
+                    </div>
+                    <div class="entry-new-div tags-div" id="tags-new-div" 
+                         aria-placeholder="Tags"
+                         changes="false"
+                         contenteditable="true"></div>
+                    <div id="tags-error-bubble" 
+                         style="visibility: hidden"
+                         class="error-bubble">The Learned field cannot be empty!</div>
                     {% from 'macros.html' import render_field %}
-                    <form method="POST" action="" autocomplete="off" id="entry-form">
+                    <form method="POST" action="" autocomplete="off" id="new-form">
                         {{ form.hidden_tag() }}
                         {% for field in form %}
                             {% if field.type == "BooleanField" %}
@@ -23,11 +78,11 @@
                             {% endif %}
                         {% endfor %}
                         <div class="entry-bottom-field">
-                            <button class="button button-secondary" 
-                                    type="submit" 
-                                    id="entry-post-submit">
+                            <button class="button button-secondary invalid" 
+                                    type="button" 
+                                    id="entry-new-save">
                                 Post!</button>
-                            <button id="entry-cancel-button" 
+                            <button id="new-cancel-button" 
                                     class="button button-secondary" 
                                     type="reset">
                                 Cancel</button>
@@ -40,11 +95,34 @@
             </div>
         </section>
     </body>
-        <script type="text/javascript">
-            autosize(document.getElementById("learned"))
-            autosize(document.getElementById("remember"))
-        </script>
-        <script src="{{ url_for('static', filename='script/start-listeners.js') }}"></script>
-        <script src="{{ url_for('static', filename='script/entry-listeners.js') }}"></script>
+    <script type="text/javascript">
+        autosize(document.getElementById("learned"))
+        autosize(document.getElementById("remember"))
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/caret.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/globals.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/tags.js') }}">
+    </script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/start-listeners.js') }}">
+    </script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/form-error.js') }}">
+    </script>
+    <script type="text/javascript" 
+        src="{{ url_for('static', filename='script/entry-edit.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/entry-request.js') }}">
+    </script>
 </html>
 {% endblock %}

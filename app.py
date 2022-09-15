@@ -91,6 +91,13 @@ def get_tags(id):
         .where(models.Entry.id == id)
         .order_by(models.Tags.id)
         )
+    tag_list = []
+    for tag in tags:
+        if tag.tag == '':
+            print("Empty tag skipped")
+            # pass
+        else:
+            tag_list.append(tag)
     return tags
     
 
@@ -238,6 +245,7 @@ def register():
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/entries", methods=['GET', 'POST'])
+@app.route("/entries/", methods=['GET', 'POST'])
 def index():
     # journal = (models.Entry.select()
     #         .where(models.Entry.private==False)
@@ -248,10 +256,11 @@ def index():
             .order_by(models.Entry.date.desc()).limit(10)
             )
     login_form = forms.LoginForm()
+    edit_form = forms.Post()
     emoji = process_emoji()
     if login_form.validate_on_submit():
         try:
-            user = models.User.get(models.User.username == login_form.username.data)
+            user = models.User.get(models.User.username == login_form.username.data.lower())
         except:
             flash("User name or password incorrect")
             return redirect(url_for('index'))
@@ -263,7 +272,7 @@ def index():
             return redirect(url_for('index'))
         return redirect(url_for('index'))
     return render_template('index.html', journal=journal, models=models,
-                         login_form=login_form, emoji=emoji.values())
+                         login_form=login_form, edit_form=edit_form, emoji=emoji.values())
 
 
 @app.route("/entries/<id>")
@@ -276,16 +285,19 @@ def detail(id):
 @login_required
 def create():
     form = forms.Post()
-    if form.validate_on_submit():
+    user = current_user
+    if request.method == "POST":
+        new_form = json.loads(request.data)
+        print("Title: " + new_form['title'])
         models.Entry.create(
-            title=form.title.data,
-            date=datetime.datetime.now(),
-            learned=form.learned.data,
-            remember=form.remember.data,
+            title=new_form['title'],
+            date = datetime.datetime.now(),
+            learned=new_form['learned'],
+            remember=new_form['remember'],
             user_id=current_user.id,
             private=form.private.data
         )
-        tags_list = form.tags.data.split(', ')
+        tags_list = new_form['tags']
         entry = models.Entry.get(models.Entry.title == form.title.data)
         for item in tags_list:
             try:
@@ -299,13 +311,22 @@ def create():
                 tag_id=tag_data
             )
         # flash("Your Entry has been created!")
-        return redirect(url_for('create'))
-    return render_template('new.html', form=form)
+        response_body = jsonify({
+            "action":"new",
+            "id": entry.id,
+            "title": entry.title,
+            "learned": entry.learned,
+            "remember": entry.remember,
+            "private": entry.private
+        })
+        return response_body
+    return render_template('new.html', form=form, user=user)
 
 
 @app.route("/entries/<id>/edit", methods=['GET', 'POST'])
 @login_required
 def edit(id):
+    user = current_user
     entry = (models.Entry
             .select()
             .where(models.Entry.id == id)
@@ -313,30 +334,59 @@ def edit(id):
     tags_list = []
     for tag in get_tags(id):
         tags_list.append(tag.tag)
-    tags = ", ".join(tags_list)
+    tags = json.dumps(tags_list)
     form = forms.Post()
-    if form.validate_on_submit():
-        entry.title = form.title.data
-        entry.learned = form.learned.data
-        entry.remember = form.remember.data
-        for item in form.tags.data.split(', '):
+    print(form.tags)
+    return render_template("edit.html", form=form, id=id, 
+                            models=models, tags=tags, user=user)
+
+@app.route("/entries/<id>/edit/save", methods=['GET', 'POST'])
+@login_required
+def update_entry(id):
+    # user = current_user
+    entry = (models.Entry
+            .select()
+            .where(models.Entry.id == id)
+            .get())
+    if request.method == 'POST':
+        form = json.loads(request.data)
+        entry.title = form['title']
+        entry.learned = form['learned']
+        entry.rememeber = form['remember']
+        entry.private = form['private']
+        for item in form['tags']:
+            print(item)
             try:
                 models.Tags.create(tag=item)
             except:
                 pass
         entry.save()
         del_tags(id)
-        for tag in form.tags.data.split(', '):
+        for tag in form['tags']:
             tag_data = models.Tags.get(models.Tags.tag == tag)
             models.EntryTags.create(
                 entry_id=entry.id,
                 tag_id=tag_data.id
             )
+        tag_query = (models.Tags
+                .select()
+                .join(models.EntryTags)
+                .join(models.Entry)
+                .where(models.Entry.id == entry.id)
+                .order_by(models.Tags.id))
+        tags = []
+        for tag in tag_query:
+            tags.append(tag.tag)
         flash("Your Entry has been edited!")
-        print(f"Token: {form.csrf_token()}")
-        return redirect(url_for('index'))
-    return render_template("edit.html", form=form, id=id, 
-                            models=models, tags=tags)
+    return jsonify({
+        "action": "edit",
+        "id": entry.id,
+        "title": entry.title,
+        "learned": entry.learned,
+        "remember": entry.remember,
+        "tags": tags,
+        "private": entry.private
+        })
 
 
 @app.route("/entries/get/<path:contents>")
@@ -349,9 +399,20 @@ def get_entry(contents):
             .limit(1)
             )
     entry = query.dicts().get()
+    print(contents)
     # time.sleep(5)
     return jsonify(render_template("get-entry.html", entry=entry, models=models))    
 
+@app.route("/entries/<id>/get/", methods=['GET'])
+def get_entry_by_id(id):
+    query = (models.Entry
+            .select()
+            .where(models.Entry.id == id)
+            .order_by(models.Entry.date.desc())
+            .limit(1)
+            )
+    entry = query.dicts().get()
+    return jsonify(render_template("get-entry.html", entry=entry, models=models)) 
 
 @app.route("/entries/<tag>/tag")
 def tag(tag):
@@ -360,11 +421,13 @@ def tag(tag):
                 .join(models.EntryTags)
                 .join(models.Tags)
                 .where(models.Tags.tag == tag)
+                .order_by(models.Entry.date.desc())
     )
     return render_template("tag.html", models=models, id=query, tag=tag)
 
 
 @app.route("/entries/<id>/user")
+@app.route("/entries/<id>/user/")
 def user(id):
     entries = (models.Entry
             .select()
@@ -463,6 +526,7 @@ def comment(entry):
 @app.route('/entries/comment/<int:comment_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def edit_comment(comment_id):
+    """ Takes in edit data and writes it to the database """
     comment = models.Comment.get(models.Comment.id == comment_id)
     print(request.form)
     contents = request.form["contents"]
@@ -477,19 +541,18 @@ def edit_comment(comment_id):
 
 
 #  --- OLD MICKEY MOUSE EDIT ROUTE ---
-# 
 # @app.route('/entries/comment/<int:comment_id>/edit/<path:contents>/', methods=['GET', 'POST'])
 # @login_required
 # def edit_comment(comment_id, contents):
-#     comment = models.Comment.get(models.Comment.id == comment_id)
-#     comment.contents = contents
-#     comment.save()
-#     return jsonify({
-#         "action": "edit",
-#         "contents": contents,
-#         "id": comment.id,
-#         "flash": "Comment edited successfully."
-#     })
+    # comment = models.Comment.get(models.Comment.id == comment_id)
+    # comment.contents = contents
+    # comment.save()
+    # return jsonify({
+    #     "action": "edit",
+    #     "contents": contents,
+    #     "id": comment.id,
+    #     "flash": "Comment edited successfully."
+    # })
 
 
 @app.route('/entries/comment/<int:comment>/delete', methods=['GET', 'POST'])
@@ -510,7 +573,7 @@ def delete_comment(comment):
 @app.route('/entries/sortby/<string:choice>/')
 def sort_entries(choice):
     journal = models.Entry.select().where(models.Entry.private==False)
-    if choice == "top":
+    if choice == "top" or choice == "":
         journal = ( journal
                     .order_by(models.Entry.entry_score.desc())
                     .limit(10)
@@ -523,8 +586,8 @@ def sort_entries(choice):
                 )
     login_form = forms.LoginForm()
     emoji = process_emoji()
-    return jsonify(render_template('sort.html', journal=journal, models=models,
-                    login_form=login_form, emoji=emoji.values()))
+    return render_template('index.html', journal=journal, models=models,
+                    login_form=login_form, emoji=emoji.values())
 
 
 if __name__ == '__main__':
