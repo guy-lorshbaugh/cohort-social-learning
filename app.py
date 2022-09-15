@@ -297,7 +297,7 @@ def create():
             user_id=current_user.id,
             private=form.private.data
         )
-        tags_list = form.tags.data.split(', ')
+        tags_list = new_form['tags']
         entry = models.Entry.get(models.Entry.title == form.title.data)
         for item in tags_list:
             try:
@@ -334,35 +334,16 @@ def edit(id):
     tags_list = []
     for tag in get_tags(id):
         tags_list.append(tag.tag)
-    tags = ", ".join(tags_list)
+    tags = json.dumps(tags_list)
     form = forms.Post()
-    # if form.validate_on_submit():
-    #     entry.title = form.title.data
-    #     entry.learned = form.learned.data
-    #     entry.remember = form.remember.data
-    #     for item in form.tags.data.split(', '):
-    #         try:
-    #             models.Tags.create(tag=item)
-    #         except:
-    #             pass
-    #     entry.save()
-    #     del_tags(id)
-    #     for tag in form.tags.data.split(', '):
-    #         tag_data = models.Tags.get(models.Tags.tag == tag)
-    #         models.EntryTags.create(
-    #             entry_id=entry.id,
-    #             tag_id=tag_data.id
-    #         )
-        # flash("Your Entry has been edited!")
-        # print(f"Token: { form.csrf_token() }")
-        # return redirect(url_for('index'))
+    print(form.tags)
     return render_template("edit.html", form=form, id=id, 
                             models=models, tags=tags, user=user)
 
 @app.route("/entries/<id>/edit/save", methods=['GET', 'POST'])
 @login_required
 def update_entry(id):
-    user = current_user
+    # user = current_user
     entry = (models.Entry
             .select()
             .where(models.Entry.id == id)
@@ -373,14 +354,15 @@ def update_entry(id):
         entry.learned = form['learned']
         entry.rememeber = form['remember']
         entry.private = form['private']
-        for item in form['tags'].split(', '):
+        for item in form['tags']:
+            print(item)
             try:
                 models.Tags.create(tag=item)
             except:
                 pass
         entry.save()
         del_tags(id)
-        for tag in form['tags'].split(', '):
+        for tag in form['tags']:
             tag_data = models.Tags.get(models.Tags.tag == tag)
             models.EntryTags.create(
                 entry_id=entry.id,

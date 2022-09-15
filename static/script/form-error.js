@@ -1,4 +1,4 @@
-function showError(error, inputElement, errorElement) {
+function showError(error, inputElement, errorElement, timeout=false) {
     if (errorElement.style.visibility = "hidden") {
         errorElement.style.visibility = "visible";
         errorElement.style.opacity = 1;
@@ -6,14 +6,16 @@ function showError(error, inputElement, errorElement) {
         errorElement.textContent = error;
         inputElement.classList.add('invalid');
 
-        document.addEventListener("mousedown", () => {
-            if (inputElement.classList.contains('comment-field')) {
-                inputElement.parentElement.querySelector('.emoji-open')
-                            .textContent = 'sentiment_satisfied_alt';
-            }
-            errorElement.style.visibility = "hidden";
-            inputElement.classList.remove('invalid');
-        }, { once: true })
+        if (!timeout) {
+            document.addEventListener("mousedown", () => {
+                if (inputElement.classList.contains('comment-field')) {
+                    inputElement.parentElement.querySelector('.emoji-open')
+                                .textContent = 'sentiment_satisfied_alt';
+                }
+                errorElement.style.visibility = "hidden";
+                inputElement.classList.remove('invalid');
+            }, { once: true })
+        }
         
     } else {
         errorElement.style.height = "0px";
@@ -21,6 +23,11 @@ function showError(error, inputElement, errorElement) {
         // errorElement.style.borderWidth = "0px";
         errorElement.style.opacity = 0;
         inputElement.classList.remove('invalid');
+    }
+    if (timeout) {
+        setTimeout(() => {
+            errorElement.style.visibility = "hidden";
+        }, 2500);
     }
 }
 

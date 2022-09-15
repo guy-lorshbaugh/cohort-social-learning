@@ -44,18 +44,29 @@
                     <!-- <div class="entry-new-div-label">Share Thoughts, Ask Questions!<span class="small">(Required)</span></div> -->
                     <div class="entry-new-div learned-div" id="learned-new-div"
                         contenteditable="true" aria-placeholder="Learned"
-                        changes="false"></div>
+                        changes="false"><div><br></div></div>
                     <div id="learned-error-bubble" 
                          style="visibility: hidden"
                          class="error-bubble">The Learned field cannot be empty!</div>
                     <!-- <div class="entry-new-div-label">Links and Other Things!</div> -->
-                    <div class="entry-new-div remember-div" id="remember-new-div" 
+                    <!-- <div class="entry-new-div remember-div" id="remember-new-div" 
                         contenteditable="true" aria-placeholder="Remember"
-                        changes="false"></div>
+                        changes="false"></div> -->
                     <!-- <div class="entry-new-div-label">Tags</div> -->
+                    <div class="tag-display">
+                        <div class="tag-bubble-container"></div>
+                        <div class="tag-count">0/5</div>
+                    </div>
+                    <div class="tag-remove-tip shadow-box" style="opacity: 0">
+                        Click a tag to remove
+                    </div>
                     <div class="entry-new-div tags-div" id="tags-new-div" 
-                        contenteditable="true" aria-placeholder="Tags"
-                        changes="false"></div>
+                         aria-placeholder="Tags"
+                         changes="false"
+                         contenteditable="true"></div>
+                    <div id="tags-error-bubble" 
+                         style="visibility: hidden"
+                         class="error-bubble">The Learned field cannot be empty!</div>
                     {% from 'macros.html' import render_field %}
                     <form method="POST" action="" autocomplete="off" id="new-form">
                         {{ form.hidden_tag() }}
@@ -91,6 +102,14 @@
     <script 
         type="text/javascript" 
         src="{{ url_for('static', filename='script/caret.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/globals.js') }}">
+    </script>
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='script/tags.js') }}">
     </script>
     <script type="text/javascript" 
         src="{{ url_for('static', filename='script/start-listeners.js') }}">

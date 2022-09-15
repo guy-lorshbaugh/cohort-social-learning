@@ -207,7 +207,7 @@ function editListeners(cancelButton, saveButton, id) {
     if (!dialog.getAttribute('listener')) {
         dialog.setAttribute('listener','true')
         cancelButton.addEventListener('mouseup', () => {
-            dialog.getElementsByTagName('textarea')[0].style.height = "50px";
+            // dialog.getElementsByTagName('textarea')[0].style.height = "50px";
             dialog.style.visibility = "hidden";
         });
         saveButton.addEventListener("mouseup", () => {

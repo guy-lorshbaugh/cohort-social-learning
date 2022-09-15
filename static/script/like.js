@@ -19,12 +19,19 @@ function likeRequest(url, entry) {
 
 function likerDisplay(div) {
   const reveal = document.getElementsByClassName(div)[0];
+  const likeCount = reveal.parentElement.querySelector('.like-count');
+
   reveal.style.visibility = "visible";
   reveal.style.opacity = "1";
-  document.addEventListener("mouseout", () => {
+
+  likeCount.addEventListener("mouseout", () => {
     reveal.style.opacity = "0";
-    reveal.style.visibility = "hidden";
-  })
+    setTimeout(() => {
+      if (reveal.style.opacity === '0') {
+        reveal.style.visibility = "hidden";
+      }
+    }, 275);
+  }, { capture: true, once: true })
 }
 
 function processLike(response, entry) {
@@ -43,8 +50,9 @@ function processLike(response, entry) {
     likeNumber.classList.add('like-number')
     likeCount.append(likeNumber);
     container.append(likeCount);
+    numberScroll(likeNumber, response);
   } else if (response.count > 0) {
-    numberScroll(likeNumber, response)
+    numberScroll(likeNumber, response);
   } else {
     likeCount.remove();
   }

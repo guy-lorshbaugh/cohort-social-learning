@@ -11,11 +11,11 @@ from wtforms.validators import (DataRequired, Regexp, ValidationError,
 import models
 
 class Post(FlaskForm):
-    title = StringField(u"Title (Required, max. 200 characters)", validators=[
+    title = StringField(u"Title (Required)", validators=[
         DataRequired(),
         Length(max=200)
     ])  
-    learned = TextAreaField(u"Share a Revelation\nAsk a Question!", validators=[
+    learned = TextAreaField(u"Share a Revelation! Ask a Question! (Required)", validators=[
                 DataRequired(),
             ])
     remember = TextAreaField(u"Links and other things to remember\n(Optional)")

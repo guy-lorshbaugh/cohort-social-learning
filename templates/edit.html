@@ -4,9 +4,12 @@
         <link rel="stylesheet" 
               href="{{ url_for('static', filename='css/site.css') }}">
         <script type="text/javascript"
-            src="{{ url_for('static', filename='script/autosize.min.js') }}">
+                src="{{ url_for('static', filename='script/autosize.min.js') }}">
         </script>
-    </head>
+        <script type="text/javascript" 
+                src="{{ url_for('static', filename='script/globals.js') }}">
+        </script>
+</head>
     <body class="edit-body" function="edit" entry="{{ id }}">
         <section>
             <div class="edit-container">
@@ -37,26 +40,32 @@
                     <div class="entry-edit-div-label title">Title <span class="small" style="padding-left: 5px">(Required)</span>
                         <div class="title-char-count"></div></div>
                     <div class="entry-edit-div title-div" id="title-edit-div"
-                        contenteditable="true" aria-placeholder="Title"
-                        changes="false"></div>
+                         contenteditable="true" aria-placeholder="Title"
+                         changes="false"></div>
                     <div id="title-error-bubble" 
                          style="visibility: hidden"
                          class="error-bubble">The Title field cannot be empty!</div>
                     <div class="entry-edit-div-label">Share Thoughts, Ask Questions!</div>
                     <div class="entry-edit-div learned-div" id="learned-edit-div"
-                        contenteditable="true" aria-placeholder="Learned"
-                        changes="false"> </div>
+                         contenteditable="true" aria-placeholder="Learned"
+                         changes="false"> </div>
                     <div id="learned-error-bubble" 
                          style="visibility: hidden"
                          class="error-bubble">The Learned field cannot be empty!</div>
-                    <div class="entry-edit-div-label">Links and Other Things!</div>
-                    <div class="entry-edit-div remember-div" id="remember-edit-div" 
+                    <!-- <div class="entry-edit-div-label">Links and Other Things!</div> -->
+                    <!-- <div class="entry-edit-div remember-div" id="remember-edit-div" 
                         contenteditable="true" aria-placeholder="Remember"
-                        changes="false"> </div>
-                    <div class="entry-edit-div-label">Tags</div>
+                        changes="false"> </div> -->
+                    <div class="tag-display">
+                        <div class="tag-bubble-container"></div>
+                        <div class="tag-count">0/5</div>
+                    </div>
+                    <div class="tag-remove-tip shadow-box" style="opacity: 0">
+                        Click a tag to remove
+                    </div>
                     <div class="entry-edit-div tags-div" id="tags-edit-div" 
-                        contenteditable="true" aria-placeholder="Tags"
-                        changes="false"> </div>
+                         contenteditable="true" aria-placeholder="Tags"
+                         changes="false"></div>
                     <!-- {% from 'macros.html' import render_field %} -->
                     <form method="POST" id="edit-form" target="edit-frame" action="">
                         {{ form.hidden_tag() }}
@@ -96,24 +105,23 @@
         autosize(document.getElementById("learned"))
         autosize(document.getElementById("remember"))
     </script>
-    <script 
-        type="text/javascript" 
-        src="{{ url_for('static', filename='script/caret.js') }}">
-    </script>
-    <script 
-        type="text/javascript" 
-        src="{{ url_for('static', filename='script/start-listeners.js') }}">
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/caret.js') }}">
     </script>
     <script type="text/javascript" 
-        src="{{ url_for('static', filename='script/form-error.js') }}">
+            src="{{ url_for('static', filename='script/tags.js') }}">
     </script>
-    <script 
-        type="text/javascript" 
-        src="{{ url_for('static', filename='script/entry-edit.js') }}">
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/start-listeners.js') }}">
     </script>
-    <script 
-        type="text/javascript" 
-        src="{{ url_for('static', filename='script/entry-request.js') }}">
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/form-error.js') }}">
+    </script>
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/entry-edit.js') }}">
+    </script>
+    <script type="text/javascript" 
+            src="{{ url_for('static', filename='script/entry-request.js') }}">
     </script>
 </html>
 {% endblock %}

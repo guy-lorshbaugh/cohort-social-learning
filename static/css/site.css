@@ -253,6 +253,11 @@ footer {
     top: 8px;
     right: 40px;
 }
+.comment-edit-post-button {
+	position: absolute;
+    top: 18px;
+    right: 19px;
+}
 .comment-post-button.invalid,
 .comment-post-button.invalid:hover,
 .button.button-secondary.invalid,
@@ -460,7 +465,7 @@ p a {
 .new-entry,
 .edit-entry {
 	padding: 10px;
-	margin-bottom: 60px;
+	margin-bottom: 40px;
 }
 .new-entry-open {
 	display: flex;
@@ -539,9 +544,9 @@ p a {
 	grid-column: span 2;
 }
 .entry-title a,
-			 a:active,
-			 a:visited,
-			 a:hover {
+.entry-title a:active,
+.entry-title a:visited,
+.entry-title a:hover {
 	color: royalblue;
 	font-family: 'IBM Plex Sans', Verdana, Arial, sans-serif;
 	font-size: 18px;
@@ -568,15 +573,76 @@ p a {
 /* .comment-count {
 	align-self: flex-end;
 } */
-.tags a,
-.tags a:active,
-.tags a:hover,
-.tags a:visited {
-	font-size: 12px;
-	color: black;
-}
-/* --- ENTRY MENU --- */
 
+/* --- TAGS --- */
+
+.tag-bubble {
+	display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    height: 25px;
+    border-radius: 8px;
+    padding: 3px 5px;
+    margin-right: 3px;
+    color: white;
+    user-select: none;
+    transition: all 0.3s ease;
+}
+/* .tag-bubble a,
+.tag-bubble a:active,
+.tag-bubble a:hover,
+.tag-bubble a:visited {
+	font-size: 12px;
+	text-decoration: none;
+	letter-spacing: normal;
+} */
+.tag-bubble-closer {
+	width: 5px;
+	height: 5px;
+}
+.tag-bubble-container {
+	position: relative;
+	height: 29px;
+	padding: 2px;
+	/* border: 2px solid lightblue; */
+	/* border-radius: 8px; */
+	/* background-color: rgb(248, 248, 248); */
+	white-space: nowrap;
+	overflow-x: scroll;
+}
+.tag-bubble-container .tag-bubble {
+	cursor: pointer !important;
+}
+.tag-count {
+	width: 30px;
+	font-size: 12px;
+	user-select: none;
+}
+.tag-display {
+	display: grid;
+	grid-template-areas: "tag-bubble-container tag-count";
+	grid-template-columns: auto 30px;
+	column-gap: 5px;
+	align-items: center;
+	width: 100%;
+	height: 29px;
+}
+.tag-editable {
+	display: inline-block;
+	min-width: 150px;
+	cursor: text;
+}
+.tag-remove-tip {
+	display: flex;
+    position: absolute;
+    bottom: 140px;
+    left: 190px;
+    align-items: center;
+    padding: 10px;
+    transition: opacity 0.2s ease 0s;
+}
+
+/* --- ENTRY MENU --- */
 
 /* --- EDIT ENTRY PAGE --- */
 
@@ -862,6 +928,7 @@ select {
     width: calc(100% - 32px);
     font-family: Verdana, sans-serif;
     font-size: 14px;
+	color: #404a49;
     line-height: 1.8em;
     border-radius: 8px;
     white-space: pre-wrap;
@@ -872,7 +939,7 @@ textarea.comment-field {
 	height: 50px;
 	max-height: 125px;
 	font: 400 14px/20px Verdana, sans-serif, "Noto Color Emoji", "apple color emoji","windows emoji","windows symbol";
-	font-size: 13px;
+	/* font-size: 13px; */
 	padding-right: 95px;
 	padding-top: 12px;
 	margin: 0 auto;
@@ -880,7 +947,9 @@ textarea.comment-field {
 	overflow-y: scroll;
 }
 textarea.comment-field.comment-edit {
-	margin-bottom: 0px;
+	width: 480px;
+	height: fit-content;
+    margin: 10px 10px 3px;;
 }
 textarea.comment-field:hover {
 	border-color: lightblue;
@@ -904,6 +973,7 @@ form textarea:focus,
 select:focus {
 	outline: 0;
 	border-color: lightblue;
+	cursor: text;
 }
 form input[type=text]:hover,
 form input[type=date]:hover
@@ -925,9 +995,11 @@ select:hover {
 .entry-new-div.title-div:empty::before,
 .entry-new-div.learned-div:empty::before,
 .entry-new-div.tags-div:empty::before,
+.entry-edit-div.tags-div:empty::before,
+.tag-editable:empty::before,
 .entry-new-div.remember-div:empty::before {
 	content: attr(placeholder);
-    color: #888; 
+    color: #888;
 }
 input[type=submit] {
 	margin-right: 5px;
@@ -948,27 +1020,6 @@ input::placeholder {
     margin-left: 25px;
     margin-top: 5px;
 }
-/* .comment-form-error {
-	z-index: 99;
-    box-sizing: content-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    bottom: 68px;
-    left: 100px;
-    visibility: hidden;
-    width: fit-content;
-    height: 25px;
-    margin: 0 auto;
-    margin-top: 5px;
-    padding: 0px 5px;
-    background: white;
-    border: 2px solid coral;
-    border-radius: 8px;
-    color: coral;
-    overflow: hidden;
-} */
 .error-bubble {
 	position: absolute;
 	max-width: 30em;	
@@ -980,6 +1031,7 @@ input::placeholder {
 	user-select: none;
 	opacity: 1;
 	transition: opacity ease-in-out 0.7s; 
+	z-index: 99;
 }
 .error-bubble::before {
 	content: '';
@@ -1009,7 +1061,6 @@ input::placeholder {
 	position: absolute;
 	top: -10px;
 	right: -10px;
-	/* padding-left: 1px; */
 	font-size: 26px;
 	background: white;
 	color: crimson;
@@ -1065,9 +1116,11 @@ input::placeholder {
 .entry-edit-div.remember-div,
 .entry-new-div.learned-div,
 .entry-new-div.remember-div {
-	min-height: 84px;
-	max-height: 150px;
+	height: 250px;
 	overflow-y: scroll;
+}
+.entry-new-div.learned-div {
+	height: 270px;
 }
 .entry-edit-div-label,
 .entry-new-div-label {
@@ -1080,6 +1133,11 @@ input::placeholder {
     grid-template-columns: 1fr 1fr 11fr;
     justify-items: end;
     align-items: center;
+}
+.entry-edit-div.tags-div,
+.entry-new-div.tags-div {
+	overflow-x: scroll;
+	white-space: nowrap;
 }
 
 /* --- ENTRY EDIT WINDOW --- */
@@ -1100,6 +1158,7 @@ input::placeholder {
 .title-char-count {
 	margin: auto 0;
 	font-size: 12px;
+	user-select: none;
 }
 .title-char-count.new-char-count {
 	text-align: end;
@@ -1109,7 +1168,6 @@ input::placeholder {
     position: relative;
     display: block;
     top: 30%;
-    /* left: 23%; */
     width: fit-content;
     height: fit-content;
     padding: 25px;
@@ -1452,7 +1510,7 @@ input::placeholder {
 	left: 20%;
 	width: 60%;
 	min-width: 550px;
-	height: 500px;
+	height: 550px;
 	border-radius: 15px;
 }
 .entry-bottom-field {
@@ -1464,10 +1522,10 @@ input::placeholder {
 	justify-content: center;
     width: 100%;
     align-items: center;
-    padding: 10px 35px;
+    padding: 0px 35px 10px;
     background-color: rgba(240, 248, 255, 0.65);
 	/* border-top: 2px solid #e1e1e1; */
-    z-index: 100;
+    z-index: 98;
 }
 .entry-bottom-field button {
 	margin-right: 10px;

@@ -8,9 +8,19 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
         <meta content="{{ csrf_token() }}" name="csrf-token">
         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}"> -->
+        <script 
+            type="text/javascript" 
+            src="{{ url_for('static', filename='script/globals.js') }}">
+        </script>
         <script type="text/javascript"
             src="{{ url_for('static', filename='script/autosize.min.js') }}">
         </script>
+        <!-- <script type="text/javascript"
+                src="{{ url_for('static', filename='script/colors.js') }}">
+        </script>
+        <script type="text/javascript"
+                src="{{ url_for('static', filename='script/random-color.js') }}">
+        </script> -->
         <script type="text/javascript" 
             src="{{ url_for('static', filename='script/start-listeners.js') }}">
         </script>
@@ -108,6 +118,9 @@
     </body>
     <script type="text/javascript"
             src="{{ url_for('static', filename='script/emoji-menu.js') }}">
+    </script>
+    <script type="text/javascript"
+            src="{{ url_for('static', filename='script/tags.js') }}">
     </script>
     <script type="text/javascript" 
             src="{{ url_for('static', filename='script/scroll-btn.js') }}">

@@ -18,8 +18,8 @@ const tags = document.querySelector("#tags");
 
 const titleDiv = document.querySelector(".title-div");
 const learnedDiv = document.querySelector(".learned-div");
-const rememberDiv = document.querySelector(".remember-div");
-const tagsDiv = document.querySelector(".tags-div");
+// const rememberDiv = document.querySelector(".remember-div");
+const tagsDiv = document.querySelector(`#tags-${bodyFunc}-div`);
 
 const titleBubble = document.querySelector('#title-error-bubble');
 const learnedBubble = document.querySelector('#learned-error-bubble');
@@ -27,11 +27,13 @@ const learnedBubble = document.querySelector('#learned-error-bubble');
 const charCount = document.querySelector(".title-char-count");
 
 var formFields = [ title, learned, remember, tags ];
-var formDivs = [ titleDiv, learnedDiv, rememberDiv, tagsDiv ];
+// var formDivs = [ titleDiv, learnedDiv, rememberDiv, tagsDiv ];
+// var formFields = [ title, learned, tags ];
+var formDivs = [ titleDiv, learnedDiv, tagsDiv ];
 
 if (bodyFunc === "edit") {
     for (var field of formFields) {
-        field.setAttribute("style", "display: none;");
+        field.style.display = "none";
         switch (field.name) {
             case ("title"):
                 titleDiv.textContent = field.value;
@@ -39,13 +41,20 @@ if (bodyFunc === "edit") {
             case ("learned"):
                 learnedDiv.innerHTML = field.textContent;
                 break;
-            case ("remember"):
-                rememberDiv.innerHTML = field.textContent;
-                break;
+            // case ("remember"):
+            //     rememberDiv.innerHTML = field.textContent;
+            //     break;
             case ("tags"):
-                tagsDiv.textContent = tags.value;
+                tagsDiv.setAttribute('placeholder', 'Add tags, separated by a comma.');
+                // tagsDiv.textContent = tags.value;
                 break;
         }
+    }
+    
+    console.log(typeof tags.value);
+
+    for (item of JSON.parse(tags.value)) {
+        writeTag(item);
     }
 }
 
@@ -59,9 +68,9 @@ if (bodyFunc === 'new') {
             case "learned":
                 learnedDiv.setAttribute('placeholder',learned.getAttribute('placeholder'));
                 break;
-            case "remember":
-                rememberDiv.setAttribute('placeholder',remember.getAttribute('placeholder'));
-                break;
+            // case "remember":
+            //     rememberDiv.setAttribute('placeholder',remember.getAttribute('placeholder'));
+            //     break;
             case "tags":
                 tagsDiv.setAttribute('placeholder',tags.getAttribute('placeholder'));
                 break;
@@ -69,10 +78,9 @@ if (bodyFunc === 'new') {
     }
 }
 
-updateTitleLimit();
-
-titleDiv.focus();
 setCaret(titleDiv);
+tagListener(document.querySelector(`#tags-${bodyFunc}-div`));
+updateTitleLimit();
 
 titleDiv.addEventListener("keyup", updateTitleLimit);
 
@@ -94,7 +102,7 @@ const allowedKeys = [ 'Backspace', 'ArrowUp', 'ArrowRight', 'ArrowDown',
     'ArrowLeft','PageUp', 'PageDown', 'End', 'Home', 'Alt', 'Meta', 'Control',
      'Escape' ];
     
-titleDiv.addEventListener("keydown", (e) => {
+titleDiv.addEventListener("keyup", (e) => {
     var titleLength = titleDiv.textContent.length;
 
     titleDiv.classList.remove('invalid');
@@ -132,6 +140,13 @@ titleDiv.addEventListener('paste', (event) => {
     // selection.deleteFromDocument();
     // selection.getRangeAt(1).insertNode(document.createTextNode(maxPaste));
 });
+
+learnedDiv.addEventListener('keyup', (e) => {
+    if (learnedDiv.textContent.trim === '') {
+        console.log('empty');
+        learnedDiv.append('<div><br><div>')
+    }
+})
 
 window.addEventListener("keyup", (e) => {
     if (e.key === "Escape") {
@@ -180,9 +195,10 @@ function checkContent(bodyFunc) {
         }
     } else if (bodyFunc === 'edit') {
         // check if there are any changes
-        if (!checkChanges(formDivs)) {
-            contentWarning();
-        } else if (!titleDiv.textContent.trim()) {
+        // if (!checkChanges(formDivs)) {
+        //     contentWarning();
+        // } else 
+        if (!titleDiv.textContent.trim()) {
             // contentWarning();
             showError("The Title field cannot be empty!", titleDiv, titleBubble);
             return;
@@ -247,9 +263,9 @@ function contentWarning(reset=false) {
     }
 }
 
-function getBodyFunc() {
-    return document.body.getAttribute("function");
-}
+// function getBodyFunc() {
+//     return document.body.getAttribute("function");
+// }
 
 function getSelectLength() {
     var selectLength = 0;
@@ -272,9 +288,9 @@ function populateForm() {
             case `learned-${bodyFunc}-div`:
                 learned.textContent = learnedDiv.innerHTML;
                 break;
-            case `remember${bodyFunc}-div`:
-                remember.textContent = rememberDiv.innerHTML;
-                break;
+            // case `remember${bodyFunc}-div`:
+            //     remember.textContent = rememberDiv.innerHTML;
+            //     break;
             case `tags-${bodyFunc}-div`:
                 tags.setAttribute("value", tagsDiv.textContent);
                 break;
